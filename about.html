@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.8, maximum-scale=1.0, user-scalable=no">
+    <title>About - I AM MUGERA</title>
+    <link rel="icon" type="image/x-icon" href="https://i.postimg.cc/c4CzSQzq/Whats-App-Image-2025-11-13-at-14-53-50-1-removebg-preview.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --black: #000000;
+            --white: #ffffff;
+            --gray: #f5f5f5;
+            --dark-gray: #333333;
+            --light-gray: #e0e0e0;
+            --accent: #25D366;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--white);
+            color: var(--black);
+            line-height: 1.6;
+            padding-bottom: 70px;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--white);
+            color: var(--black);
+            padding: 0.5rem 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid var(--light-gray);
+            height: 60px;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            height: 100%;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 40px;
+            width: auto;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            text-align: center;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .hero-logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 2rem;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid var(--black);
+        }
+
+        .hero-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: var(--dark-gray);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Content Sections */
+        .content-section {
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: var(--black);
+        }
+
+        .story-content {
+            background: var(--gray);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .story-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .story-text:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Mission & Vision */
+        .mission-vision {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .mission-card, .vision-card {
+            background: var(--white);
+            border: 1px solid var(--light-gray);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--black);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .card-text {
+            color: var(--dark-gray);
+            line-height: 1.6;
+        }
+
+        /* Values Grid */
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .value-card {
+            background: var(--white);
+            border: 1px solid var(--light-gray);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .value-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .value-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--black);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.2rem;
+        }
+
+        .value-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .value-description {
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Impact Stats */
+        .impact-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 1.5rem;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--black);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Contact Section */
+        .contact-section {
+            background-color: var(--gray);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .contact-section h3 {
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .contact-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .contact-btn {
+            background-color: var(--black);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.3s;
+        }
+
+        .contact-btn:hover {
+            background-color: var(--dark-gray);
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 1.5rem;
+        }
+
+        .social-link {
+            width: 45px;
+            height: 45px;
+            background: var(--black);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: transform 0.3s;
+        }
+
+        .social-link:hover {
+            transform: scale(1.1);
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--white);
+            display: flex;
+            justify-content: space-around;
+            padding: 0.8rem 0;
+            z-index: 100;
+            border-top: 1px solid var(--light-gray);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--dark-gray);
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.3s;
+        }
+
+        .nav-icon {
+            font-size: 1.3rem;
+            margin-bottom: 3px;
+        }
+
+        .nav-item.active {
+            color: var(--black);
+        }
+
+        .nav-item:hover {
+            color: var(--black);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .mission-vision {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .values-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .impact-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0.5rem;
+            }
+            
+            .hero-section {
+                padding: 2rem 0;
+            }
+            
+            .story-content {
+                padding: 1.5rem;
+            }
+            
+            .contact-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .contact-btn {
+                width: 100%;
+                max-width: 250px;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <img src="https://i.postimg.cc/c4CzSQzq/Whats-App-Image-2025-11-13-at-14-53-50-1-removebg-preview.png" alt="I AM MUGERA Logo">
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-logo">
+                <img src="https://i.postimg.cc/c4CzSQzq/Whats-App-Image-2025-11-13-at-14-53-50-1-removebg-preview.png" alt="I AM MUGERA Logo">
+            </div>
+            <h1 class="hero-title">I AM MUGERA</h1>
+            <p class="hero-subtitle">A movement dedicated to awakening consciousness, empowering individuals, and creating meaningful change in society.</p>
+        </section>
+
+        <!-- Story Section -->
+        <section class="content-section">
+            <h2 class="section-title">The Story</h2>
+            <div class="story-content">
+                <p class="story-text">
+                    I AM MUGERA began as a personal journey of self-discovery and transformation. What started as one man's quest for purpose and authenticity has evolved into a platform dedicated to helping others awaken to their true potential.
+                </p>
+                <p class="story-text">
+                    Born from the realization that many people, especially men, struggle with identity, purpose, and authentic expression in our modern world, this movement emerged as a response to the need for genuine connection, meaningful conversations, and conscious leadership.
+                </p>
+                <p class="story-text">
+                    Today, I AM MUGERA stands as more than just a personal brand—it's a community, a conversation, and a catalyst for personal and collective transformation. Through content, events, and authentic engagement, we're building a space where people can explore what it truly means to live with purpose, integrity, and impact.
+                </p>
+            </div>
+        </section>
+
+        <!-- Mission & Vision -->
+        <section class="content-section">
+            <h2 class="section-title">Mission & Vision</h2>
+            <div class="mission-vision">
+                <div class="mission-card">
+                    <div class="card-icon">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <h3 class="card-title">Our Mission</h3>
+                    <p class="card-text">
+                        To awaken individuals to their authentic power and purpose, creating a community of conscious leaders who drive positive change in their lives and communities.
+                    </p>
+                </div>
+                <div class="vision-card">
+                    <div class="card-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h3 class="card-title">Our Vision</h3>
+                    <p class="card-text">
+                        A world where every person lives authentically, leads consciously, and contributes to building a more awakened, compassionate, and purpose-driven society.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Core Values -->
+        <section class="content-section">
+            <h2 class="section-title">Core Values</h2>
+            <div class="values-grid">
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3 class="value-title">Authenticity</h3>
+                    <p class="value-description">We believe in showing up as our true selves, embracing vulnerability, and living in alignment with our core values and purpose.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-hands-helping"></i>
+                    </div>
+                    <h3 class="value-title">Community</h3>
+                    <p class="value-description">We build spaces where people can connect, grow, and support each other in their journeys of transformation and awakening.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-seedling"></i>
+                    </div>
+                    <h3 class="value-title">Growth</h3>
+                    <p class="value-description">We embrace continuous learning, personal development, and the courage to evolve into our highest potential.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="value-title">Integrity</h3>
+                    <p class="value-description">We operate with honesty, transparency, and consistency in all our interactions and endeavors.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Impact -->
+        <section class="content-section">
+            <h2 class="section-title">Our Impact</h2>
+            <div class="impact-stats">
+                <div class="stat-card">
+                    <div class="stat-number">50K+</div>
+                    <div class="stat-label">People Reached</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">100+</div>
+                    <div class="stat-label">Events Hosted</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">25+</div>
+                    <div class="stat-label">Communities Built</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">3+</div>
+                    <div class="stat-label">Years of Impact</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section class="contact-section">
+            <h3>Join The Movement</h3>
+            <p>Ready to begin your journey of awakening and transformation? Connect with us and become part of the change.</p>
+            <div class="contact-buttons">
+                <a href="https://wa.me/254727211191" class="contact-btn">
+                    <i class="fab fa-whatsapp"></i> Start Conversation
+                </a>
+                <a href="mailto:connect@iammugera.com" class="contact-btn">
+                    <i class="fas fa-envelope"></i> Email Us
+                </a>
+                <a href="events.html" class="contact-btn">
+                    <i class="fas fa-calendar-alt"></i> Attend Events
+                </a>
+            </div>
+            <div class="social-links">
+                <a href="#" class="social-link">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="#" class="social-link">
+                    <i class="fab fa-youtube"></i>
+                </a>
+                <a href="#" class="social-link">
+                    <i class="fab fa-linkedin-in"></i>
+                </a>
+                <a href="#" class="social-link">
+                    <i class="fab fa-twitter"></i>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item">
+            <i class="fas fa-home nav-icon"></i>
+            <span>Home</span>
+        </a>
+        <a href="events.html" class="nav-item">
+            <i class="fas fa-calendar-alt nav-icon"></i>
+            <span>Events</span>
+        </a>
+        <a href="library.html" class="nav-item active">
+            <i class="fas fa-book nav-icon"></i>
+            <span>Library</span>
+        </a>
+        <a href="about.html" class="nav-item active">
+            <i class="fas fa-info-circle nav-icon"></i>
+            <span>About</span>
+        </a>
+    </nav>
+
+    <script>
+        // Bottom nav active state
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                // Only prevent default for current page navigation
+                if (this.href === window.location.href) {
+                    e.preventDefault();
+                }
+                
+                // Update active state visually
+                document.querySelectorAll('.nav-item').forEach(nav => {
+                    nav.classList.remove('active');
+                });
+                this.classList.add('active');
+            });
+        });
+
+        // Add some interactive animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const valueCards = document.querySelectorAll('.value-card');
+            const statCards = document.querySelectorAll('.stat-card');
+            
+            valueCards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+            
+            statCards.forEach((card, index) => {
+                card.style.opacity = '0';
+                
+                setTimeout(() => {
+                    card.style.transition = 'opacity 0.5s ease';
+                    card.style.opacity = '1';
+                }, 800 + (index * 100));
+            });
+        });
+
+        // Animate stat numbers (for demonstration)
+        function animateStats() {
+            const statNumbers = document.querySelectorAll('.stat-number');
+            statNumbers.forEach(stat => {
+                const target = parseInt(stat.textContent);
+                let current = 0;
+                const increment = target / 50;
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        current = target;
+                        clearInterval(timer);
+                    }
+                    stat.textContent = Math.floor(current) + (stat.textContent.includes('+') ? '+' : '');
+                }, 30);
+            });
+        }
+
+        // Start animation when stats come into view
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateStats();
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        observer.observe(document.querySelector('.impact-stats'));
+    </script>
+</body>
+</html>
