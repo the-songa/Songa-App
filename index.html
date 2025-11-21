@@ -1190,6 +1190,7 @@
     <script>
         // Configuration
         const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbwCo8RkC1zka9RxW1YiDxuPzzCPWqtl2_ZqE_TlBDxLYFFMxHCLoTVZz6nBUR_SaAVC7w/exec';
+        const WHATSAPP_NUMBER = '254727211191';
         
         // DOM Elements
         const welcomeModal = document.getElementById('welcomeModal');
@@ -1258,6 +1259,41 @@
             });
         });
 
+        // Format registration data for WhatsApp message
+        function formatWhatsAppMessage(data) {
+            const membershipText = data.membershipType === 'basic' ? 'Basic Membership (KSh 1,500/month)' : 'Premium Membership (KSh 3,000/month)';
+            
+            return `🎉 *NEW REGISTRATION - THE SONGA WELFARE* 🎉
+
+*Personal Details:*
+👤 Name: ${data.firstName} ${data.lastName}
+📧 Email: ${data.email}
+📞 Phone: ${data.phone}
+📍 Location: ${data.location}
+💼 Occupation: ${data.occupation}
+
+*Membership Information:*
+📋 Selected: ${membershipText}
+🔍 Heard About Us: ${data.hearAbout}
+
+*Goals & Expectations:*
+${data.goals || 'No specific goals mentioned'}
+
+*Registration Details:*
+📅 Registered: ${new Date().toLocaleString()}
+🌐 Source: Website Registration`;
+        }
+
+        // Send data to WhatsApp
+        function sendToWhatsApp(data) {
+            const message = formatWhatsAppMessage(data);
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
+            
+            // Open WhatsApp in a new tab
+            window.open(whatsappUrl, '_blank');
+        }
+
         // Form submission
         registrationForm.addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -1279,34 +1315,40 @@
             try {
                 showLoading(submitRegistration);
                 
-                // Send to Google Apps Script
-                const response = await fetch(BACKEND_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data)
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    // Show success modal
-                    registrationModal.classList.remove('active');
-                    successModal.classList.add('active');
+                // Send to Google Apps Script (optional - for backup)
+                try {
+                    const response = await fetch(BACKEND_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data)
+                    });
                     
-                    // Mark as visited to prevent showing welcome modal again
-                    markAsVisited();
-                    
-                    // Reset form
-                    registrationForm.reset();
-                    membershipOptions.forEach(opt => opt.classList.remove('selected'));
-                    membershipTypeInput.value = '';
-                    
-                    showNotification('Registration successful! Welcome to the community.');
-                } else {
-                    throw new Error(result.error || 'Registration failed');
+                    const result = await response.json();
+                    if (!result.success) {
+                        console.warn('Backup storage failed, but continuing with WhatsApp');
+                    }
+                } catch (backupError) {
+                    console.warn('Backup storage failed, but continuing with WhatsApp');
                 }
+                
+                // Send to WhatsApp
+                sendToWhatsApp(data);
+                
+                // Show success modal
+                registrationModal.classList.remove('active');
+                successModal.classList.add('active');
+                
+                // Mark as visited to prevent showing welcome modal again
+                markAsVisited();
+                
+                // Reset form
+                registrationForm.reset();
+                membershipOptions.forEach(opt => opt.classList.remove('selected'));
+                membershipTypeInput.value = '';
+                
+                showNotification('Registration successful! Opening WhatsApp to send details.');
             } catch (error) {
                 console.error('Registration error:', error);
                 showNotification('Registration failed. Please try again or contact us directly.', 'error');
