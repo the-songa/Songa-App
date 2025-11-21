@@ -3,9 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=0.8, maximum-scale=1.0, user-scalable=no">
-    <title>Events - I AM MUGERA</title>
-    <link rel="icon" type="image/x-icon" href="https://i.postimg.cc/c4CzSQzq/Whats-App-Image-2025-11-13-at-14-53-50-1-removebg-preview.png">
+    <title>Events - THE SONGA WELFARE</title>
+    <link rel="icon" type="image/x-icon" href="https://i.postimg.cc/QCfkMpcM/20251121-1617-Golden-Lion-Emblem-remix-01kak8vrfpfb9r1335qyg8w1gt.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#D4AF37">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="THE SONGA WELFARE">
+    <link rel="apple-touch-icon" href="https://i.postimg.cc/QCfkMpcM/20251121-1617-Golden-Lion-Emblem-remix-01kak8vrfpfb9r1335qyg8w1gt.png">
+    
     <style>
         * {
             margin: 0;
@@ -15,12 +24,19 @@
         }
 
         :root {
+            --gold: #D4AF37;
+            --gold-light: #F5E6B3;
+            --gold-dark: #B8860B;
             --black: #000000;
             --white: #ffffff;
             --gray: #f5f5f5;
             --dark-gray: #333333;
             --light-gray: #e0e0e0;
             --accent: #25D366;
+            --whatsapp-green: #25D366;
+            --whatsapp-dark: #128C7E;
+            --primary: #2c3e50;
+            --secondary: #3498db;
         }
 
         html {
@@ -49,7 +65,7 @@
 
         .header-container {
             display: flex;
-            justify-content: flex-start;
+            justify-content: space-between;
             align-items: center;
             height: 100%;
         }
@@ -64,6 +80,40 @@
             width: auto;
         }
 
+        .brand-name {
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-left: 10px;
+            color: var(--gold-dark);
+        }
+
+        .auth-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .join-btn {
+            background-color: var(--gold);
+            color: var(--black);
+            border: none;
+            border-radius: 4px;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.3s;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .join-btn:hover {
+            background-color: var(--gold-dark);
+            color: var(--white);
+        }
+
         /* Main Content */
         .container {
             max-width: 600px;
@@ -71,232 +121,386 @@
             padding: 1rem;
         }
 
-        /* Page Header */
-        .page-header {
+        .page-title {
+            text-align: center;
+            margin: 1.5rem 0;
+            color: var(--gold-dark);
+            font-size: 1.8rem;
+        }
+
+        .page-subtitle {
             text-align: center;
             margin-bottom: 2rem;
-            padding: 1rem 0;
-        }
-
-        .page-header h1 {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .page-header p {
             color: var(--dark-gray);
-            font-size: 1.1rem;
         }
 
-        /* Event Categories */
-        .event-categories {
-            display: flex;
-            gap: 10px;
-            padding: 1rem 0;
+        /* Events Section */
+        .events-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
             margin-bottom: 1rem;
-            overflow-x: auto;
-            scrollbar-width: none;
-        }
-
-        .event-categories::-webkit-scrollbar {
-            display: none;
-        }
-
-        .category-btn {
-            background: var(--white);
-            border: 1px solid var(--light-gray);
-            border-radius: 20px;
-            padding: 8px 16px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            white-space: nowrap;
-            transition: all 0.3s;
-        }
-
-        .category-btn.active {
-            background: var(--black);
-            color: var(--white);
-            border-color: var(--black);
-        }
-
-        /* Events Grid */
-        .events-grid {
-            display: grid;
-            gap: 1.5rem;
+            color: var(--gold-dark);
+            border-bottom: 2px solid var(--gold-light);
+            padding-bottom: 0.5rem;
         }
 
         .event-card {
             background-color: var(--white);
             border: 1px solid var(--light-gray);
-            border-radius: 12px;
+            border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
             transition: transform 0.3s, box-shadow 0.3s;
         }
 
         .event-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
-        .event-image {
-            width: 100%;
-            height: 200px;
-            overflow: hidden;
-        }
-
-        .event-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .event-content {
+        .event-header {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: var(--black);
             padding: 1.5rem;
-        }
-
-        .event-type {
-            background-color: var(--black);
-            color: var(--white);
-            padding: 0.3rem 0.8rem;
-            border-radius: 15px;
-            font-size: 0.7rem;
-            display: inline-block;
-            margin-bottom: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            text-align: center;
         }
 
         .event-title {
             font-size: 1.3rem;
-            font-weight: 600;
             margin-bottom: 0.5rem;
-            line-height: 1.3;
+            font-weight: 700;
         }
 
-        .event-description {
-            color: var(--dark-gray);
-            margin-bottom: 1rem;
-            font-size: 0.95rem;
+        .event-date {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .event-body {
+            padding: 1.5rem;
         }
 
         .event-details {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
             margin-bottom: 1.5rem;
-            padding: 1rem 0;
-            border-top: 1px solid var(--light-gray);
-            border-bottom: 1px solid var(--light-gray);
         }
 
         .event-detail {
             display: flex;
             align-items: center;
-            gap: 8px;
+            margin-bottom: 0.8rem;
         }
 
         .event-detail i {
-            color: var(--accent);
-            font-size: 1.1rem;
+            width: 20px;
+            margin-right: 10px;
+            color: var(--gold);
         }
 
-        .event-detail span {
-            font-size: 0.9rem;
+        .event-description {
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
         }
 
         .event-actions {
             display: flex;
-            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .btn-primary {
+            background-color: var(--gold);
+            color: var(--black);
+            font-weight: 600;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--gold-dark);
+            color: var(--white);
+        }
+
+        .btn-secondary {
+            background-color: var(--light-gray);
+            color: var(--dark-gray);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--dark-gray);
+            color: white;
+        }
+
+        .btn-whatsapp {
+            background-color: var(--whatsapp-green);
+            color: white;
+        }
+
+        .btn-whatsapp:hover {
+            background-color: var(--whatsapp-dark);
+        }
+
+        .event-tag {
+            display: inline-block;
+            background-color: var(--gold-light);
+            color: var(--gold-dark);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Upcoming Events */
+        .upcoming-events {
+            margin-bottom: 2rem;
+        }
+
+        /* Past Events */
+        .past-events .event-card {
+            opacity: 0.8;
+        }
+
+        .past-events .event-header {
+            background: linear-gradient(135deg, var(--light-gray), var(--dark-gray));
+            color: var(--white);
+        }
+
+        /* Registration Modal */
+        .registration-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            justify-content: center;
             align-items: center;
         }
 
-        .register-btn {
-            background-color: var(--black);
-            color: var(--white);
+        .registration-modal.active {
+            display: flex;
+        }
+
+        .registration-content {
+            background-color: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            animation: modalAppear 0.5s ease-out;
+        }
+
+        @keyframes modalAppear {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .registration-header {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: var(--black);
+            padding: 1.5rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .registration-header h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .registration-body {
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--light-gray);
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: var(--gold);
+            outline: none;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .submit-btn {
+            background-color: var(--gold);
+            color: var(--black);
             border: none;
-            border-radius: 25px;
-            padding: 10px 25px;
-            font-size: 0.9rem;
+            border-radius: 6px;
+            padding: 14px 20px;
+            font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
+            width: 100%;
             transition: background-color 0.3s;
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: center;
+            gap: 10px;
         }
 
-        .register-btn:hover {
-            background-color: var(--dark-gray);
+        .submit-btn:hover {
+            background-color: var(--gold-dark);
+            color: var(--white);
         }
 
-        .whatsapp-event {
-            background-color: var(--accent);
-            color: white;
-            width: 44px;
-            height: 44px;
+        .submit-btn:disabled {
+            background-color: var(--light-gray);
+            cursor: not-allowed;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border: none;
+            color: var(--black);
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            text-decoration: none;
-            font-size: 1.3rem;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s;
+            cursor: pointer;
+            font-size: 1.2rem;
         }
 
-        .whatsapp-event:hover {
-            transform: scale(1.1);
+        /* Success Modal */
+        .success-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
         }
 
-        /* Featured Event */
-        .featured-event {
-            background: linear-gradient(135deg, var(--black) 0%, var(--dark-gray) 100%);
-            color: var(--white);
+        .success-modal.active {
+            display: flex;
+        }
+
+        .success-content {
+            background-color: white;
             border-radius: 12px;
-            overflow: hidden;
-            margin-bottom: 2rem;
-            position: relative;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            padding: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            animation: modalAppear 0.5s ease-out;
         }
 
-        .featured-badge {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: var(--accent);
-            color: var(--white);
-            padding: 5px 12px;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            z-index: 2;
-        }
-
-        .featured-content {
-            padding: 2rem;
-        }
-
-        .featured-content .event-type {
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-        }
-
-        .featured-content .event-title {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .featured-content .event-description {
-            color: rgba(255, 255, 255, 0.9);
+        .success-icon {
+            font-size: 3.5rem;
+            color: var(--gold);
             margin-bottom: 1.5rem;
         }
 
-        .featured-content .register-btn {
-            background: var(--white);
-            color: var(--black);
+        .success-content h2 {
+            margin-bottom: 1rem;
+            color: var(--gold-dark);
         }
 
-        .featured-content .register-btn:hover {
-            background: var(--light-gray);
+        .success-content p {
+            margin-bottom: 1.5rem;
+            color: var(--dark-gray);
+        }
+
+        /* Loading spinner */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            background: var(--black);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 4px;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.3s;
+            max-width: 300px;
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .notification.error {
+            background: #e74c3c;
+        }
+
+        .notification.success {
+            background: var(--gold);
+            color: var(--black);
         }
 
         /* Bottom Navigation */
@@ -329,11 +533,11 @@
         }
 
         .nav-item.active {
-            color: var(--black);
+            color: var(--gold-dark);
         }
 
         .nav-item:hover {
-            color: var(--black);
+            color: var(--gold-dark);
         }
 
         /* Contact Section */
@@ -347,6 +551,7 @@
 
         .contact-section h3 {
             margin-bottom: 1rem;
+            color: var(--gold-dark);
         }
 
         .contact-buttons {
@@ -357,8 +562,8 @@
         }
 
         .contact-btn {
-            background-color: var(--black);
-            color: var(--white);
+            background-color: var(--gold);
+            color: var(--black);
             border: none;
             border-radius: 5px;
             padding: 10px 20px;
@@ -368,10 +573,12 @@
             align-items: center;
             gap: 8px;
             transition: background-color 0.3s;
+            font-weight: 600;
         }
 
         .contact-btn:hover {
-            background-color: var(--dark-gray);
+            background-color: var(--gold-dark);
+            color: var(--white);
         }
 
         /* Responsive Design */
@@ -379,236 +586,348 @@
             .container {
                 max-width: 600px;
             }
+            
+            .event-actions {
+                flex-direction: row;
+            }
         }
 
         @media (max-width: 480px) {
-            .event-details {
-                grid-template-columns: 1fr;
+            .event-actions {
+                flex-direction: column;
             }
             
-            .featured-content {
-                padding: 1.5rem;
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .notification {
+                right: 10px;
+                left: 10px;
+                max-width: none;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+
+    <!-- Registration Modal -->
+    <div class="registration-modal" id="registrationModal">
+        <div class="registration-content">
+            <div class="registration-header">
+                <h2>Register for Event</h2>
+                <p id="eventModalTitle">Complete your registration</p>
+                <button class="close-modal" id="closeRegistrationModal">&times;</button>
+            </div>
+            <div class="registration-body">
+                <form id="registrationForm">
+                    <input type="hidden" id="eventName" name="eventName">
+                    <input type="hidden" id="eventDate" name="eventDate">
+                    <input type="hidden" id="eventLocation" name="eventLocation">
+                    <input type="hidden" id="eventPrice" name="eventPrice">
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstName">First Name</label>
+                            <input type="text" id="firstName" name="firstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">Last Name</label>
+                            <input type="text" id="lastName" name="lastName" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="location">Your Location</label>
+                        <input type="text" id="location" name="location" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="occupation">Occupation</label>
+                        <input type="text" id="occupation" name="occupation" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="hearAbout">How did you hear about this event?</label>
+                        <select id="hearAbout" name="hearAbout" required>
+                            <option value="">Select an option</option>
+                            <option value="social-media">Social Media</option>
+                            <option value="friend">Friend/Colleague</option>
+                            <option value="website">THE SONGA WELFARE Website</option>
+                            <option value="previous-event">Previous Event</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="expectations">What do you hope to gain from this event?</label>
+                        <textarea id="expectations" name="expectations" rows="3" placeholder="Tell us about your expectations and what you hope to learn..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="dietary">Any dietary restrictions or special requirements?</label>
+                        <textarea id="dietary" name="dietary" rows="2" placeholder="For dining events, please let us know about any dietary restrictions..."></textarea>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn" id="submitRegistration">
+                        <i class="fas fa-paper-plane"></i> Complete Registration
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="success-modal" id="successModal">
+        <div class="success-content">
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2>Registration Successful!</h2>
+            <p>Thank you for registering for our event. We're excited to have you join us.</p>
+            <p>We'll contact you shortly with more details about the event.</p>
+            <button class="btn btn-primary" id="closeSuccessModal">
+                <i class="fas fa-thumbs-up"></i> Awesome!
+            </button>
+        </div>
+    </div>
+
     <!-- Header -->
     <header>
         <div class="header-container">
             <div class="logo">
-                <img src="https://i.postimg.cc/c4CzSQzq/Whats-App-Image-2025-11-13-at-14-53-50-1-removebg-preview.png" alt="I AM MUGERA Logo">
+                <img src="https://i.postimg.cc/QCfkMpcM/20251121-1617-Golden-Lion-Emblem-remix-01kak8vrfpfb9r1335qyg8w1gt.png" alt="THE SONGA WELFARE Logo">
+                <div class="brand-name">THE SONGA WELFARE</div>
+            </div>
+            <div class="auth-section">
+                <a href="https://wa.me/254727211191?text=Hi%20Mugera,%20I%20want%20to%20join%20your%20community" class="join-btn" target="_blank">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>Join Us</span>
+                </a>
             </div>
         </div>
     </header>
 
     <!-- Main Content -->
     <main class="container">
-        <!-- Page Header -->
-        <div class="page-header">
-            <h1>Upcoming Events</h1>
-            <p>Join me for transformative conversations and experiences</p>
-        </div>
+        <h1 class="page-title">Our Events</h1>
+        <p class="page-subtitle">Join us for transformative experiences and community building</p>
 
-        <!-- Event Categories -->
-        <div class="event-categories">
-            <button class="category-btn active" data-category="all">All Events</button>
-            <button class="category-btn" data-category="podcast">Podcasts</button>
-            <button class="category-btn" data-category="conference">Conferences</button>
-            <button class="category-btn" data-category="online">Online Events</button>
-            <button class="category-btn" data-category="workshop">Workshops</button>
-        </div>
-
-        <!-- Featured Event -->
-        <div class="featured-event" data-category="conference">
-            <div class="featured-badge">FEATURED</div>
-            <div class="featured-content">
-                <span class="event-type">Conference</span>
-                <h2 class="event-title">The Awakened Man Summit 2024</h2>
-                <p class="event-description">A 2-day immersive experience exploring modern masculinity, purpose, and leadership. Join thought leaders and change-makers in transforming how men show up in the world.</p>
-                <div class="event-details">
-                    <div class="event-detail">
-                        <i class="fas fa-calendar-alt"></i>
-                        <span>March 15-16, 2024</span>
-                    </div>
-                    <div class="event-detail">
-                        <i class="fas fa-clock"></i>
-                        <span>9:00 AM - 6:00 PM</span>
-                    </div>
-                    <div class="event-detail">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span>Nairobi Convention Center</span>
-                    </div>
-                    <div class="event-detail">
-                        <i class="fas fa-users"></i>
-                        <span>Limited to 200 attendees</span>
-                    </div>
+        <!-- Upcoming Events -->
+        <div class="events-section upcoming-events">
+            <h2 class="section-title">Upcoming Events</h2>
+            
+            <!-- Event 1 -->
+            <div class="event-card">
+                <div class="event-header">
+                    <h3 class="event-title">Mugs and Dines: Relationships & Communication</h3>
+                    <p class="event-date">December 15, 2025 | 6:00 PM - 9:00 PM</p>
                 </div>
-                <div class="event-actions">
-                    <button class="register-btn">
-                        <i class="fas fa-ticket-alt"></i>
-                        Register Now
-                    </button>
-                    <a href="https://wa.me/254727211191?text=Hi%20Mugera,%20I'm%20interested%20in%20The%20Awakened%20Man%20Summit%202024" class="whatsapp-event">
-                        <i class="fab fa-whatsapp"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Events Grid -->
-        <div class="events-grid">
-            <!-- Event 1 - Podcast -->
-            <div class="event-card" data-category="podcast">
-                <div class="event-image">
-                    <img src="https://images.unsplash.com/photo-1478737270239-2f02b77fc618?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Podcast Recording">
-                </div>
-                <div class="event-content">
-                    <span class="event-type">Podcast Live</span>
-                    <h3 class="event-title">Breaking Masculinity Stereotypes</h3>
-                    <p class="event-description">Live recording session discussing how men can break free from traditional stereotypes and embrace authentic expression.</p>
+                <div class="event-body">
+                    <div class="event-tag">Dining Experience</div>
+                    <div class="event-tag">Limited Seating</div>
+                    
+                    <div class="event-description">
+                        <p>An intimate dining experience focused on improving communication in relationships. Join us for an evening of meaningful conversations, delicious food, and practical insights.</p>
+                    </div>
+                    
                     <div class="event-details">
-                        <div class="event-detail">
-                            <i class="fas fa-calendar-alt"></i>
-                            <span>February 28, 2024</span>
-                        </div>
-                        <div class="event-detail">
-                            <i class="fas fa-clock"></i>
-                            <span>7:00 PM EAT</span>
-                        </div>
-                        <div class="event-detail">
-                            <i class="fas fa-globe"></i>
-                            <span>Online - YouTube Live</span>
-                        </div>
-                        <div class="event-detail">
-                            <i class="fas fa-microphone"></i>
-                            <span>Special Guests</span>
-                        </div>
-                    </div>
-                    <div class="event-actions">
-                        <button class="register-btn">
-                            <i class="fas fa-calendar-plus"></i>
-                            Set Reminder
-                        </button>
-                        <a href="https://wa.me/254727211191?text=Hi%20Mugera,%20I%20want%20to%20join%20the%20podcast%20on%20Breaking%20Masculinity%20Stereotypes" class="whatsapp-event">
-                            <i class="fab fa-whatsapp"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Event 2 - Workshop -->
-            <div class="event-card" data-category="workshop">
-                <div class="event-image">
-                    <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Personal Branding Workshop">
-                </div>
-                <div class="event-content">
-                    <span class="event-type">Workshop</span>
-                    <h3 class="event-title">Personal Branding Masterclass</h3>
-                    <p class="event-description">Learn how to build an authentic personal brand that attracts opportunities and creates impact in your industry.</p>
-                    <div class="event-details">
-                        <div class="event-detail">
-                            <i class="fas fa-calendar-alt"></i>
-                            <span>March 5, 2024</span>
-                        </div>
-                        <div class="event-detail">
-                            <i class="fas fa-clock"></i>
-                            <span>2:00 PM - 5:00 PM</span>
-                        </div>
                         <div class="event-detail">
                             <i class="fas fa-map-marker-alt"></i>
-                            <span>Creative Hub Nairobi</span>
+                            <span>The Signature Restaurant, Nairobi</span>
                         </div>
                         <div class="event-detail">
-                            <i class="fas fa-graduation-cap"></i>
-                            <span>Interactive Session</span>
+                            <i class="fas fa-users"></i>
+                            <span>Limited to 20 participants</span>
+                        </div>
+                        <div class="event-detail">
+                            <i class="fas fa-money-bill-wave"></i>
+                            <span>KSh 2,500 per person</span>
                         </div>
                     </div>
+                    
                     <div class="event-actions">
-                        <button class="register-btn">
-                            <i class="fas fa-ticket-alt"></i>
-                            Book Seat
+                        <button class="btn btn-primary register-btn" 
+                                data-event="Mugs and Dines: Relationships & Communication"
+                                data-date="December 15, 2025 | 6:00 PM - 9:00 PM"
+                                data-location="The Signature Restaurant, Nairobi"
+                                data-price="KSh 2,500 per person">
+                            <i class="fas fa-ticket-alt"></i> Register Now
                         </button>
-                        <a href="https://wa.me/254727211191?text=Hi%20Mugera,%20I%20want%20to%20register%20for%20the%20Personal%20Branding%20Masterclass" class="whatsapp-event">
-                            <i class="fab fa-whatsapp"></i>
+                        <a href="https://wa.me/254727211191?text=Hi%20Mugera,%20I'm%20interested%20in%20the%20Mugs%20and%20Dines%20event%20on%20December%2015" class="btn btn-whatsapp" target="_blank">
+                            <i class="fab fa-whatsapp"></i> Inquire
                         </a>
                     </div>
                 </div>
             </div>
-
-            <!-- Event 3 - Online Event -->
-            <div class="event-card" data-category="online">
-                <div class="event-image">
-                    <img src="https://images.unsplash.com/photo-1559136555-9303baea8ebd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Online Community">
+            
+            <!-- Event 2 -->
+            <div class="event-card">
+                <div class="event-header">
+                    <h3 class="event-title">Men's Awakening Circle</h3>
+                    <p class="event-date">January 12, 2026 | 2:00 PM - 5:00 PM</p>
                 </div>
-                <div class="event-content">
-                    <span class="event-type">Online Community</span>
-                    <h3 class="event-title">Men's Circle: Vulnerability & Strength</h3>
-                    <p class="event-description">A safe virtual space for men to share, connect, and explore the balance between vulnerability and strength in modern life.</p>
+                <div class="event-body">
+                    <div class="event-tag">Men's Group</div>
+                    <div class="event-tag">Discussion</div>
+                    
+                    <div class="event-description">
+                        <p>A safe space for men to explore modern masculinity, share challenges, and develop strategies for personal growth and leadership in their communities.</p>
+                    </div>
+                    
                     <div class="event-details">
                         <div class="event-detail">
-                            <i class="fas fa-calendar-alt"></i>
-                            <span>Every Tuesday</span>
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>THE SONGA WELFARE Center, Westlands</span>
                         </div>
                         <div class="event-detail">
-                            <i class="fas fa-clock"></i>
-                            <span>8:00 PM EAT</span>
+                            <i class="fas fa-users"></i>
+                            <span>Open to all men</span>
                         </div>
                         <div class="event-detail">
-                            <i class="fas fa-video"></i>
-                            <span>Zoom Meeting</span>
-                        </div>
-                        <div class="event-detail">
-                            <i class="fas fa-user-friends"></i>
-                            <span>Small Groups</span>
+                            <i class="fas fa-money-bill-wave"></i>
+                            <span>Free for members | KSh 500 for non-members</span>
                         </div>
                     </div>
+                    
                     <div class="event-actions">
-                        <button class="register-btn">
-                            <i class="fas fa-link"></i>
-                            Join Meeting
+                        <button class="btn btn-primary register-btn" 
+                                data-event="Men's Awakening Circle"
+                                data-date="January 12, 2026 | 2:00 PM - 5:00 PM"
+                                data-location="THE SONGA WELFARE Center, Westlands"
+                                data-price="Free for members | KSh 500 for non-members">
+                            <i class="fas fa-ticket-alt"></i> Register Now
                         </button>
-                        <a href="https://wa.me/254727211191?text=Hi%20Mugera,%20I%20want%20to%20join%20the%20Men's%20Circle" class="whatsapp-event">
-                            <i class="fab fa-whatsapp"></i>
+                        <a href="https://wa.me/254727211191?text=Hi%20Mugera,%20I'm%20interested%20in%20the%20Men's%20Awakening%20Circle%20on%20January%2012" class="btn btn-whatsapp" target="_blank">
+                            <i class="fab fa-whatsapp"></i> Inquire
                         </a>
                     </div>
                 </div>
             </div>
-
-            <!-- Event 4 - Podcast -->
-            <div class="event-card" data-category="podcast">
-                <div class="event-image">
-                    <img src="https://images.unsplash.com/photo-1590602847861-f357a9332bbc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Entrepreneurship Podcast">
+            
+            <!-- Event 3 -->
+            <div class="event-card">
+                <div class="event-header">
+                    <h3 class="event-title">Life Coaching Workshop: Purpose Discovery</h3>
+                    <p class="event-date">February 8, 2026 | 9:00 AM - 1:00 PM</p>
                 </div>
-                <div class="event-content">
-                    <span class="event-type">Podcast Launch</span>
-                    <h3 class="event-title">Conscious Entrepreneurship Series</h3>
-                    <p class="event-description">Launching a new podcast series exploring how to build businesses with purpose, ethics, and social impact.</p>
+                <div class="event-body">
+                    <div class="event-tag">Workshop</div>
+                    <div class="event-tag">Personal Development</div>
+                    
+                    <div class="event-description">
+                        <p>A half-day intensive workshop designed to help you uncover your life's purpose, align your actions with your values, and create a roadmap for meaningful living.</p>
+                    </div>
+                    
                     <div class="event-details">
                         <div class="event-detail">
-                            <i class="fas fa-calendar-alt"></i>
-                            <span>March 12, 2024</span>
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>THE SONGA WELFARE Center, Westlands</span>
                         </div>
                         <div class="event-detail">
-                            <i class="fas fa-clock"></i>
-                            <span>6:30 PM EAT</span>
+                            <i class="fas fa-users"></i>
+                            <span>Limited to 15 participants</span>
                         </div>
                         <div class="event-detail">
-                            <i class="fas fa-podcast"></i>
-                            <span>All Platforms</span>
-                        </div>
-                        <div class="event-detail">
-                            <i class="fas fa-star"></i>
-                            <span>Season Premiere</span>
+                            <i class="fas fa-money-bill-wave"></i>
+                            <span>KSh 3,000 per person</span>
                         </div>
                     </div>
+                    
                     <div class="event-actions">
-                        <button class="register-btn">
-                            <i class="fas fa-bell"></i>
-                            Get Notified
+                        <button class="btn btn-primary register-btn" 
+                                data-event="Life Coaching Workshop: Purpose Discovery"
+                                data-date="February 8, 2026 | 9:00 AM - 1:00 PM"
+                                data-location="THE SONGA WELFARE Center, Westlands"
+                                data-price="KSh 3,000 per person">
+                            <i class="fas fa-ticket-alt"></i> Register Now
                         </button>
-                        <a href="https://wa.me/254727211191?text=Hi%20Mugera,%20I%20want%20updates%20about%20the%20Conscious%20Entrepreneurship%20podcast" class="whatsapp-event">
-                            <i class="fab fa-whatsapp"></i>
+                        <a href="https://wa.me/254727211191?text=Hi%20Mugera,%20I'm%20interested%20in%20the%20Purpose%20Discovery%20Workshop%20on%20February%208" class="btn btn-whatsapp" target="_blank">
+                            <i class="fab fa-whatsapp"></i> Inquire
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Past Events -->
+        <div class="events-section past-events">
+            <h2 class="section-title">Past Events</h2>
+            
+            <!-- Past Event 1 -->
+            <div class="event-card">
+                <div class="event-header">
+                    <h3 class="event-title">Community Building Day</h3>
+                    <p class="event-date">October 20, 2025 | 10:00 AM - 4:00 PM</p>
+                </div>
+                <div class="event-body">
+                    <div class="event-tag">Community</div>
+                    <div class="event-tag">Team Building</div>
+                    
+                    <div class="event-description">
+                        <p>A day of connection, team-building activities, and community service projects that brought together members to strengthen bonds and give back to the community.</p>
+                    </div>
+                    
+                    <div class="event-details">
+                        <div class="event-detail">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>City Park, Nairobi</span>
+                        </div>
+                        <div class="event-detail">
+                            <i class="fas fa-users"></i>
+                            <span>45 participants</span>
+                        </div>
+                    </div>
+                    
+                    <div class="event-actions">
+                        <a href="gallery.html" class="btn btn-secondary">
+                            <i class="fas fa-images"></i> View Photos
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Past Event 2 -->
+            <div class="event-card">
+                <div class="event-header">
+                    <h3 class="event-title">Financial Literacy Seminar</h3>
+                    <p class="event-date">September 5, 2025 | 9:00 AM - 12:00 PM</p>
+                </div>
+                <div class="event-body">
+                    <div class="event-tag">Seminar</div>
+                    <div class="event-tag">Financial Education</div>
+                    
+                    <div class="event-description">
+                        <p>An educational seminar focused on practical financial management, investment basics, and wealth-building strategies for young professionals and entrepreneurs.</p>
+                    </div>
+                    
+                    <div class="event-details">
+                        <div class="event-detail">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>THE SONGA WELFARE Center, Westlands</span>
+                        </div>
+                        <div class="event-detail">
+                            <i class="fas fa-users"></i>
+                            <span>32 participants</span>
+                        </div>
+                    </div>
+                    
+                    <div class="event-actions">
+                        <a href="library.html#financial-resources" class="btn btn-secondary">
+                            <i class="fas fa-book"></i> Access Resources
                         </a>
                     </div>
                 </div>
@@ -617,13 +936,13 @@
 
         <!-- Contact Section -->
         <div class="contact-section">
-            <h3>Want to Host or Collaborate?</h3>
-            <p>Interested in partnering for events or have ideas for future gatherings? Let's connect:</p>
+            <h3>Have Questions About Our Events?</h3>
+            <p>Contact us directly for more information or custom event inquiries:</p>
             <div class="contact-buttons">
                 <a href="https://wa.me/254727211191" class="contact-btn">
                     <i class="fab fa-whatsapp"></i> WhatsApp
                 </a>
-                <a href="mailto:events@iammugera.com" class="contact-btn">
+                <a href="mailto:events@thesongawelfare.com" class="contact-btn">
                     <i class="fas fa-envelope"></i> Email
                 </a>
             </div>
@@ -640,7 +959,7 @@
             <i class="fas fa-calendar-alt nav-icon"></i>
             <span>Events</span>
         </a>
-        <a href="library.html" class="nav-item active">
+        <a href="library.html" class="nav-item">
             <i class="fas fa-book nav-icon"></i>
             <span>Library</span>
         </a>
@@ -651,83 +970,177 @@
     </nav>
 
     <script>
-        // Event category filtering
-        document.querySelectorAll('.category-btn').forEach(button => {
+        // Configuration
+        const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbwCo8RkC1zka9RxW1YiDxuPzzCPWqtl2_ZqE_TlBDxLYFFMxHCLoTVZz6nBUR_SaAVC7w/exec';
+        const WHATSAPP_NUMBER = '254727211191';
+        
+        // DOM Elements
+        const registrationModal = document.getElementById('registrationModal');
+        const successModal = document.getElementById('successModal');
+        const closeRegistrationModal = document.getElementById('closeRegistrationModal');
+        const closeSuccessModal = document.getElementById('closeSuccessModal');
+        const registrationForm = document.getElementById('registrationForm');
+        const submitRegistration = document.getElementById('submitRegistration');
+        const notification = document.getElementById('notification');
+        const eventModalTitle = document.getElementById('eventModalTitle');
+        const eventNameInput = document.getElementById('eventName');
+        const eventDateInput = document.getElementById('eventDate');
+        const eventLocationInput = document.getElementById('eventLocation');
+        const eventPriceInput = document.getElementById('eventPrice');
+        const registerButtons = document.querySelectorAll('.register-btn');
+
+        // Show notification
+        function showNotification(message, type = 'success') {
+            notification.textContent = message;
+            notification.className = `notification show ${type}`;
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 4000);
+        }
+
+        // Show loading state
+        function showLoading(button) {
+            const originalText = button.innerHTML;
+            button.disabled = true;
+            button.innerHTML = '<div class="loading"></div> Processing...';
+            button.setAttribute('data-original-text', originalText);
+        }
+
+        // Hide loading state
+        function hideLoading(button) {
+            button.disabled = false;
+            const originalText = button.getAttribute('data-original-text');
+            button.innerHTML = originalText || 'Complete Registration';
+        }
+
+        // Format event registration data for WhatsApp message
+        function formatWhatsAppMessage(data) {
+            return `🎟️ *NEW EVENT REGISTRATION - THE SONGA WELFARE* 🎟️
+
+*Event Details:*
+📅 Event: ${data.eventName}
+🗓️ Date & Time: ${data.eventDate}
+📍 Location: ${data.eventLocation}
+💰 Price: ${data.eventPrice}
+
+*Attendee Information:*
+👤 Name: ${data.firstName} ${data.lastName}
+📧 Email: ${data.email}
+📞 Phone: ${data.phone}
+📍 Location: ${data.location}
+💼 Occupation: ${data.occupation}
+
+*Registration Details:*
+🔍 Heard About Event: ${data.hearAbout}
+🎯 Expectations: ${data.expectations || 'Not specified'}
+🍽️ Dietary/Requirements: ${data.dietary || 'None specified'}
+
+*Registration Information:*
+📅 Registered: ${new Date().toLocaleString()}
+🌐 Source: Events Page Registration`;
+        }
+
+        // Send data to WhatsApp
+        function sendToWhatsApp(data) {
+            const message = formatWhatsAppMessage(data);
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
+            
+            // Open WhatsApp in a new tab
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // Event registration
+        registerButtons.forEach(button => {
             button.addEventListener('click', function() {
-                // Update active button
-                document.querySelectorAll('.category-btn').forEach(btn => {
-                    btn.classList.remove('active');
-                });
-                this.classList.add('active');
+                const eventName = this.getAttribute('data-event');
+                const eventDate = this.getAttribute('data-date');
+                const eventLocation = this.getAttribute('data-location');
+                const eventPrice = this.getAttribute('data-price');
                 
-                // Filter events
-                const category = this.getAttribute('data-category');
-                const featuredEvent = document.querySelector('.featured-event');
-                const eventCards = document.querySelectorAll('.event-card');
+                eventNameInput.value = eventName;
+                eventDateInput.value = eventDate;
+                eventLocationInput.value = eventLocation;
+                eventPriceInput.value = eventPrice;
                 
-                if (category === 'all') {
-                    featuredEvent.style.display = 'block';
-                    eventCards.forEach(card => {
-                        card.style.display = 'block';
+                eventModalTitle.textContent = `Register for: ${eventName}`;
+                registrationModal.classList.add('active');
+            });
+        });
+
+        // Form submission
+        registrationForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+            
+            // Add timestamp and source
+            data.timestamp = new Date().toISOString();
+            data.source = 'event_registration';
+            data.type = 'event';
+            
+            try {
+                showLoading(submitRegistration);
+                
+                // Send to Google Apps Script (optional - for backup)
+                try {
+                    const response = await fetch(BACKEND_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data)
                     });
-                } else {
-                    // Hide/show featured event
-                    if (featuredEvent.getAttribute('data-category') === category) {
-                        featuredEvent.style.display = 'block';
-                    } else {
-                        featuredEvent.style.display = 'none';
-                    }
                     
-                    // Hide/show event cards
-                    eventCards.forEach(card => {
-                        if (card.getAttribute('data-category') === category) {
-                            card.style.display = 'block';
-                        } else {
-                            card.style.display = 'none';
-                        }
-                    });
+                    const result = await response.json();
+                    if (!result.success) {
+                        console.warn('Backup storage failed, but continuing with WhatsApp');
+                    }
+                } catch (backupError) {
+                    console.warn('Backup storage failed, but continuing with WhatsApp');
                 }
-            });
-        });
-
-        // Register button functionality
-        document.querySelectorAll('.register-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                const eventTitle = this.closest('.event-card').querySelector('.event-title').textContent;
-                const eventType = this.closest('.event-card').querySelector('.event-type').textContent;
                 
-                // In a real implementation, this would open a registration form
-                // For now, we'll open WhatsApp with event details
-                const message = `Hi Mugera, I want to register for: ${eventTitle} (${eventType})`;
-                window.open(`https://wa.me/254727211191?text=${encodeURIComponent(message)}`, '_blank');
-            });
-        });
-
-        // Bottom nav active state - FIXED NAVIGATION
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.addEventListener('click', function(e) {
-                // Only prevent default for current page navigation
-                if (this.href === window.location.href || this.classList.contains('active')) {
-                    e.preventDefault();
-                }
-                // Allow navigation to other pages
-                // The browser will handle the navigation naturally
-            });
-        });
-
-        // Add some interactive animations
-        document.addEventListener('DOMContentLoaded', function() {
-            const eventCards = document.querySelectorAll('.event-card');
-            eventCards.forEach((card, index) => {
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(20px)';
+                // Send to WhatsApp
+                sendToWhatsApp(data);
                 
-                setTimeout(() => {
-                    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-                    card.style.opacity = '1';
-                    card.style.transform = 'translateY(0)';
-                }, index * 200);
-            });
+                // Show success modal
+                registrationModal.classList.remove('active');
+                successModal.classList.add('active');
+                
+                // Reset form
+                registrationForm.reset();
+                
+                showNotification('Event registration successful! Opening WhatsApp to send details.');
+            } catch (error) {
+                console.error('Registration error:', error);
+                showNotification('Registration failed. Please try again or contact us directly.', 'error');
+            } finally {
+                hideLoading(submitRegistration);
+            }
+        });
+
+        // Close modals
+        closeRegistrationModal.addEventListener('click', function() {
+            registrationModal.classList.remove('active');
+        });
+
+        closeSuccessModal.addEventListener('click', function() {
+            successModal.classList.remove('active');
+        });
+
+        // Close modals when clicking outside
+        registrationModal.addEventListener('click', function(e) {
+            if (e.target === registrationModal) {
+                registrationModal.classList.remove('active');
+            }
+        });
+
+        successModal.addEventListener('click', function(e) {
+            if (e.target === successModal) {
+                successModal.classList.remove('active');
+            }
         });
     </script>
 </body>
