@@ -1009,10 +1009,10 @@
                 <div class="brand-name">THE SONGA WELFARE</div>
             </div>
             <div class="auth-section">
-                <a href="https://wa.me/254727211191?text=Hi%20Mugera,%20I%20want%20to%20join%20your%20community" class="join-btn" target="_blank">
-                    <i class="fab fa-whatsapp"></i>
+                <button class="join-btn" id="headerJoinBtn">
+                    <i class="fas fa-user-plus"></i>
                     <span>Join Us</span>
-                </a>
+                </button>
             </div>
         </div>
     </header>
@@ -1157,11 +1157,11 @@
             <h3>Join The Movement</h3>
             <p>Ready to awaken your potential and be part of the change? Connect with us directly:</p>
             <div class="contact-buttons">
+                <button class="contact-btn" id="contactJoinBtn">
+                    <i class="fas fa-user-plus"></i> Join Membership
+                </button>
                 <a href="https://wa.me/254727211191" class="contact-btn">
                     <i class="fab fa-whatsapp"></i> WhatsApp
-                </a>
-                <a href="mailto:contact@thesongawelfare.com" class="contact-btn">
-                    <i class="fas fa-envelope"></i> Email
                 </a>
             </div>
         </div>
@@ -1201,6 +1201,8 @@
         const closeSuccessModal = document.getElementById('closeSuccessModal');
         const registerNowBtn = document.getElementById('registerNowBtn');
         const maybeLaterBtn = document.getElementById('maybeLaterBtn');
+        const headerJoinBtn = document.getElementById('headerJoinBtn');
+        const contactJoinBtn = document.getElementById('contactJoinBtn');
         const registrationForm = document.getElementById('registrationForm');
         const submitRegistration = document.getElementById('submitRegistration');
         const notification = document.getElementById('notification');
@@ -1263,7 +1265,7 @@
         function formatWhatsAppMessage(data) {
             const membershipText = data.membershipType === 'basic' ? 'Basic Membership (KSh 1,500/month)' : 'Premium Membership (KSh 3,000/month)';
             
-            return `🎉 *NEW REGISTRATION - THE SONGA WELFARE* 🎉
+            return `🎉 *NEW MEMBERSHIP REGISTRATION - THE SONGA WELFARE* 🎉
 
 *Personal Details:*
 👤 Name: ${data.firstName} ${data.lastName}
@@ -1281,7 +1283,7 @@ ${data.goals || 'No specific goals mentioned'}
 
 *Registration Details:*
 📅 Registered: ${new Date().toLocaleString()}
-🌐 Source: Website Registration`;
+🌐 Source: Website Membership Registration`;
         }
 
         // Send data to WhatsApp
@@ -1375,6 +1377,16 @@ ${data.goals || 'No specific goals mentioned'}
         maybeLaterBtn.addEventListener('click', function() {
             welcomeModal.classList.remove('active');
             markAsVisited();
+        });
+
+        // Header Join Us button
+        headerJoinBtn.addEventListener('click', function() {
+            registrationModal.classList.add('active');
+        });
+
+        // Contact section Join Membership button
+        contactJoinBtn.addEventListener('click', function() {
+            registrationModal.classList.add('active');
         });
 
         // Close modals
