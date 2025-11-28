@@ -104,6 +104,22 @@
             color: var(--white);
         }
 
+        /* Theme Toggle */
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--dark-gray);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+        .theme-toggle:hover {
+            background-color: var(--gold-light);
+        }
+
         /* Main Content */
         .container {
             max-width: 1200px;
@@ -568,6 +584,7 @@
             justify-content: center;
             gap: 8px;
             font-weight: 600;
+            text-decoration: none;
         }
 
         .read-btn:hover {
@@ -838,6 +855,44 @@
             color: var(--gold-dark);
         }
 
+        /* Dark Theme */
+        body.dark-theme {
+            --white: #1a1a1a;
+            --black: #ffffff;
+            --gray: #2d2d2d;
+            --dark-gray: #cccccc;
+            --light-gray: #404040;
+            background-color: var(--white);
+            color: var(--black);
+        }
+
+        body.dark-theme .book-card,
+        body.dark-theme .article-card,
+        body.dark-theme .plan-card {
+            background-color: #2d2d2d;
+            border-color: #404040;
+        }
+
+        body.dark-theme .search-input {
+            background-color: #2d2d2d;
+            color: var(--black);
+            border-color: var(--gold);
+        }
+
+        body.dark-theme .search-results {
+            background-color: #2d2d2d;
+            color: var(--black);
+        }
+
+        body.dark-theme .contact-section {
+            background-color: #2d2d2d;
+        }
+
+        body.dark-theme .bottom-nav {
+            background-color: #2d2d2d;
+            border-color: #404040;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .subscription-plans {
@@ -908,6 +963,9 @@
                 <div class="brand-name">THE SONGA™</div>
             </div>
             <div class="auth-section">
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
                 <button class="join-btn" id="headerJoinBtn">
                     <i class="fas fa-user-plus"></i>
                     <span>Join Us</span>
@@ -926,65 +984,65 @@
             </div>
             <div class="subscription-body">
                 <div class="subscription-plans">
-                    <!-- 1 Month Plan -->
+                    <!-- Explorer Plan -->
                     <div class="plan-card">
                         <div class="plan-icon">
                             <i class="fas fa-book-open"></i>
                         </div>
                         <h3 class="plan-title">Explorer Plan</h3>
-                        <div class="plan-price">KSh 1,500</div>
+                        <div class="plan-price">KSh 500</div>
                         <div class="plan-duration">1 Month Access</div>
                         <ul class="plan-features">
                             <li><i class="fas fa-check"></i> Access to 500+ books</li>
-                            <li><i class="fas fa-check"></i> 2 books at a time</li>
+                            <li><i class="fas fa-check"></i> 1 book at a time</li>
                             <li><i class="fas fa-check"></i> Basic genres</li>
                             <li><i class="fas fa-check"></i> Email support</li>
                         </ul>
-                        <button class="subscribe-btn" data-plan="1 Month" data-price="1500">
+                        <button class="subscribe-btn" data-plan="Explorer Plan" data-price="500">
                             <i class="fas fa-bookmark"></i>
                             Subscribe Now
                         </button>
                     </div>
 
-                    <!-- 2 Month Plan -->
+                    <!-- Scholar Plan -->
                     <div class="plan-card featured">
                         <div class="plan-badge">Most Popular</div>
                         <div class="plan-icon">
                             <i class="fas fa-gem"></i>
                         </div>
                         <h3 class="plan-title">Scholar Plan</h3>
-                        <div class="plan-price">KSh 2,500</div>
-                        <div class="plan-duration">2 Months Access</div>
+                        <div class="plan-price">KSh 800</div>
+                        <div class="plan-duration">1 Month Access</div>
                         <ul class="plan-features">
                             <li><i class="fas fa-check"></i> Access to 1000+ books</li>
-                            <li><i class="fas fa-check"></i> 4 books at a time</li>
+                            <li><i class="fas fa-check"></i> 3 books at a time</li>
                             <li><i class="fas fa-check"></i> All genres included</li>
                             <li><i class="fas fa-check"></i> Priority support</li>
                             <li><i class="fas fa-check"></i> Book recommendations</li>
                         </ul>
-                        <button class="subscribe-btn" data-plan="2 Months" data-price="2500">
+                        <button class="subscribe-btn" data-plan="Scholar Plan" data-price="800">
                             <i class="fas fa-crown"></i>
                             Subscribe Now
                         </button>
                     </div>
 
-                    <!-- 3 Month Plan -->
+                    <!-- Visionary Plan -->
                     <div class="plan-card">
                         <div class="plan-icon">
                             <i class="fas fa-infinity"></i>
                         </div>
                         <h3 class="plan-title">Visionary Plan</h3>
-                        <div class="plan-price">KSh 3,500</div>
-                        <div class="plan-duration">3 Months Access</div>
+                        <div class="plan-price">KSh 1,000</div>
+                        <div class="plan-duration">1 Month Access</div>
                         <ul class="plan-features">
                             <li><i class="fas fa-check"></i> Access to all books</li>
-                            <li><i class="fas fa-check"></i> 6 books at a time</li>
+                            <li><i class="fas fa-check"></i> 5 books at a time</li>
                             <li><i class="fas fa-check"></i> All genres + new releases</li>
                             <li><i class="fas fa-check"></i> 24/7 WhatsApp support</li>
                             <li><i class="fas fa-check"></i> Personalized reading plan</li>
                             <li><i class="fas fa-check"></i> Exclusive author content</li>
                         </ul>
-                        <button class="subscribe-btn" data-plan="3 Months" data-price="3500">
+                        <button class="subscribe-btn" data-plan="Visionary Plan" data-price="1000">
                             <i class="fas fa-rocket"></i>
                             Subscribe Now
                         </button>
@@ -1052,7 +1110,7 @@
                             <div class="article-read-time">8 min read</div>
                         </div>
                         <div class="article-actions">
-                            <a href="article-one.html" class="read-btn" style="text-decoration: none;">
+                            <a href="article-one.html" class="read-btn">
                                 <i class="fas fa-book-reader"></i>
                                 Read Article
                             </a>
@@ -1074,10 +1132,10 @@
                             <div class="article-read-time">12 min read</div>
                         </div>
                         <div class="article-actions">
-                            <button class="read-btn">
+                            <a href="#" class="read-btn">
                                 <i class="fas fa-book-reader"></i>
                                 Read Article
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -1096,10 +1154,10 @@
                             <div class="article-read-time">10 min read</div>
                         </div>
                         <div class="article-actions">
-                            <button class="read-btn">
+                            <a href="#" class="read-btn">
                                 <i class="fas fa-book-reader"></i>
                                 Read Article
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -1118,10 +1176,10 @@
                             <div class="article-read-time">15 min read</div>
                         </div>
                         <div class="article-actions">
-                            <button class="read-btn">
+                            <a href="#" class="read-btn">
                                 <i class="fas fa-book-reader"></i>
                                 Read Article
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -1245,7 +1303,32 @@
         const booksGrid = document.getElementById('booksGrid');
         const searchInput = document.getElementById('searchInput');
         const searchResults = document.getElementById('searchResults');
-        const readButtons = document.querySelectorAll('.read-btn');
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = themeToggle.querySelector('i');
+
+        // Theme functionality
+        function toggleTheme() {
+            document.body.classList.toggle('dark-theme');
+            if (document.body.classList.contains('dark-theme')) {
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        // Initialize theme from localStorage
+        function initializeTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-theme');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            }
+        }
 
         // Initialize the books grid
         function initializeBooksGrid() {
@@ -1379,6 +1462,9 @@
             }
         });
 
+        // Theme toggle
+        themeToggle.addEventListener('click', toggleTheme);
+
         // Open subscription modal
         subscriptionBtn.addEventListener('click', function() {
             subscriptionModal.classList.add('active');
@@ -1431,19 +1517,9 @@
             });
         });
 
-        // Read article functionality
-        readButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const articleCard = this.closest('.article-card');
-                const articleTitle = articleCard.querySelector('.article-title').textContent;
-                
-                // In a real implementation, this would navigate to the article page
-                alert(`This would navigate to the full article: "${articleTitle}"\n\nIn a complete implementation, each article would have its own dedicated page with the full content.`);
-            });
-        });
-
         // Add some interactive animations
         document.addEventListener('DOMContentLoaded', function() {
+            initializeTheme();
             initializeBooksGrid();
             
             const bookCards = document.querySelectorAll('.book-card');
