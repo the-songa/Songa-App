@@ -7,6 +7,9 @@
     <link rel="icon" type="image/x-icon" href="https://i.postimg.cc/QCfkMpcM/20251121-1617-Golden-Lion-Emblem-remix-01kak8vrfpfb9r1335qyg8w1gt.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- Google Sign-In API -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    
     <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#D4AF37">
@@ -115,6 +118,35 @@
         .join-btn:hover {
             background-color: var(--gold-dark);
             color: var(--white);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 5px 10px;
+            border-radius: 20px;
+            background: var(--gold-light);
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--black);
         }
 
         /* Welcome Modal */
@@ -245,6 +277,18 @@
         .btn-secondary:hover {
             background-color: var(--dark-gray);
             color: white;
+        }
+
+        .google-signin-container {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--light-gray);
+            text-align: center;
+        }
+
+        .google-signin-container p {
+            margin-bottom: 1rem;
+            color: var(--dark-gray);
         }
 
         .close-modal {
@@ -824,6 +868,10 @@
                 left: 10px;
                 max-width: none;
             }
+            
+            .user-name {
+                display: none;
+            }
         }
     </style>
 </head>
@@ -889,6 +937,25 @@
                         Maybe Later
                     </button>
                 </div>
+                
+                <div class="google-signin-container">
+                    <p>Already have a Google account?</p>
+                    <div id="g_id_onload"
+                         data-client_id="138110899008-60ae40rmsh5v7oqv50o18kuuo08kvvus.apps.googleusercontent.com"
+                         data-context="signin"
+                         data-ux_mode="popup"
+                         data-callback="handleGoogleSignIn"
+                         data-auto_prompt="false">
+                    </div>
+                    <div class="g_id_signin"
+                         data-type="standard"
+                         data-shape="rectangular"
+                         data-theme="outline"
+                         data-text="signin_with"
+                         data-size="large"
+                         data-logo_alignment="left">
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -921,7 +988,7 @@
                     
                     <div class="form-group">
                         <label for="phone">Phone Number</label>
-                        <input type="tel" id="phone" name="phone" required>
+                        <input type="tel" id="phone" name="phone">
                     </div>
                     
                     <div class="form-group">
@@ -1001,6 +1068,12 @@
                 <div class="brand-name">THE SONGA™</div>
             </div>
             <div class="auth-section">
+                <div id="userProfile" class="user-profile" style="display: none;">
+                    <div class="user-avatar">
+                        <img id="userAvatar" src="" alt="User Avatar">
+                    </div>
+                    <div class="user-name" id="userDisplayName"></div>
+                </div>
                 <button class="join-btn" id="headerJoinBtn">
                     <i class="fas fa-user-plus"></i>
                     <span>Join Us</span>
@@ -1189,8 +1262,9 @@
     </nav>
 
     <script>
-        // Configuration - REPLACE THIS WITH YOUR GOOGLE APPS SCRIPT URL
+        // Configuration
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby-9qz3gHM-RJutgLedlsxbdG5-6TbOgm5OTxRxl_uVO_jN7r4vqtl9tX1cqp2gqh9ing/exec';
+        const GOOGLE_CLIENT_ID = '138110899008-60ae40rmsh5v7oqv50o18kuuo08kvvus.apps.googleusercontent.com';
         
         // DOM Elements
         const welcomeModal = document.getElementById('welcomeModal');
@@ -1206,9 +1280,19 @@
         const registrationForm = document.getElementById('registrationForm');
         const submitRegistration = document.getElementById('submitRegistration');
         const notification = document.getElementById('notification');
+        const userProfile = document.getElementById('userProfile');
+        const userAvatar = document.getElementById('userAvatar');
+        const userDisplayName = document.getElementById('userDisplayName');
+        const firstNameInput = document.getElementById('firstName');
+        const lastNameInput = document.getElementById('lastName');
+        const emailInput = document.getElementById('email');
+        const phoneInput = document.getElementById('phone');
         const likeButtons = document.querySelectorAll('.action-like');
         const shareButtons = document.querySelectorAll('.action-share');
         const saveButtons = document.querySelectorAll('.action-save');
+
+        // User state
+        let currentUser = null;
 
         // Show notification
         function showNotification(message, type = 'success') {
@@ -1251,6 +1335,111 @@
                     welcomeModal.classList.add('active');
                 }, 1000);
             }
+        }
+
+        // Google Sign-In Handler
+        function handleGoogleSignIn(response) {
+            console.log('Google Sign-In response:', response);
+            
+            // Decode the JWT token to get user info
+            const userData = parseJwt(response.credential);
+            console.log('User data:', userData);
+            
+            // Store user data
+            currentUser = {
+                id: userData.sub,
+                email: userData.email,
+                firstName: userData.given_name,
+                lastName: userData.family_name,
+                fullName: userData.name,
+                picture: userData.picture,
+                emailVerified: userData.email_verified
+            };
+            
+            // Update UI
+            updateUserProfile();
+            
+            // Pre-fill registration form
+            prefillRegistrationForm();
+            
+            // Show success message
+            showNotification(`Welcome back, ${currentUser.firstName}!`, 'success');
+            
+            // Close welcome modal if open
+            welcomeModal.classList.remove('active');
+        }
+
+        // Parse JWT token
+        function parseJwt(token) {
+            try {
+                const base64Url = token.split('.')[1];
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+                return JSON.parse(jsonPayload);
+            } catch (error) {
+                console.error('Error parsing JWT:', error);
+                return {};
+            }
+        }
+
+        // Update user profile in header
+        function updateUserProfile() {
+            if (currentUser) {
+                userAvatar.src = currentUser.picture;
+                userDisplayName.textContent = currentUser.firstName;
+                userProfile.style.display = 'flex';
+                headerJoinBtn.style.display = 'none';
+                
+                // Store user data in localStorage
+                localStorage.setItem('the_songa_welfare_user', JSON.stringify(currentUser));
+            }
+        }
+
+        // Pre-fill registration form with user data
+        function prefillRegistrationForm() {
+            if (currentUser) {
+                if (firstNameInput) firstNameInput.value = currentUser.firstName || '';
+                if (lastNameInput) lastNameInput.value = currentUser.lastName || '';
+                if (emailInput) emailInput.value = currentUser.email || '';
+                
+                // Make email field read-only since it's from Google
+                if (emailInput) {
+                    emailInput.readOnly = true;
+                    emailInput.title = 'Email from Google account (cannot be changed)';
+                }
+            }
+        }
+
+        // Load user from localStorage
+        function loadUserFromStorage() {
+            const storedUser = localStorage.getItem('the_songa_welfare_user');
+            if (storedUser) {
+                currentUser = JSON.parse(storedUser);
+                updateUserProfile();
+                prefillRegistrationForm();
+            }
+        }
+
+        // Sign out user
+        function signOut() {
+            currentUser = null;
+            userProfile.style.display = 'none';
+            headerJoinBtn.style.display = 'flex';
+            localStorage.removeItem('the_songa_welfare_user');
+            
+            // Clear form fields
+            if (firstNameInput) firstNameInput.value = '';
+            if (lastNameInput) lastNameInput.value = '';
+            if (emailInput) {
+                emailInput.value = '';
+                emailInput.readOnly = false;
+                emailInput.title = '';
+            }
+            if (phoneInput) phoneInput.value = '';
+            
+            showNotification('Signed out successfully', 'success');
         }
 
         // Post interaction functionality
@@ -1420,6 +1609,11 @@ Source: Website Membership Registration
             const formData = new FormData(this);
             const data = Object.fromEntries(formData);
             
+            // Add user ID if signed in
+            if (currentUser) {
+                data.googleUserId = currentUser.id;
+            }
+            
             // Add timestamp
             data.timestamp = new Date().toISOString();
             data.source = 'website_registration';
@@ -1471,6 +1665,9 @@ Source: Website Membership Registration
 
         // Event Listeners
         document.addEventListener('DOMContentLoaded', function() {
+            // Load user from storage
+            loadUserFromStorage();
+            
             // Show welcome modal for first-time visitors
             showWelcomeModal();
             
@@ -1479,12 +1676,20 @@ Source: Website Membership Registration
             
             // Restore interaction states
             restoreInteractionStates();
+            
+            // Add sign-out functionality to user profile
+            userProfile.addEventListener('click', signOut);
         });
 
         // Welcome modal actions
         registerNowBtn.addEventListener('click', function() {
             welcomeModal.classList.remove('active');
             registrationModal.classList.add('active');
+            
+            // Pre-fill form if user is signed in
+            if (currentUser) {
+                prefillRegistrationForm();
+            }
         });
 
         maybeLaterBtn.addEventListener('click', function() {
@@ -1495,11 +1700,21 @@ Source: Website Membership Registration
         // Header Join Us button
         headerJoinBtn.addEventListener('click', function() {
             registrationModal.classList.add('active');
+            
+            // Pre-fill form if user is signed in
+            if (currentUser) {
+                prefillRegistrationForm();
+            }
         });
 
         // Contact section Join Membership button
         contactJoinBtn.addEventListener('click', function() {
             registrationModal.classList.add('active');
+            
+            // Pre-fill form if user is signed in
+            if (currentUser) {
+                prefillRegistrationForm();
+            }
         });
 
         // Close modals
@@ -1566,6 +1781,9 @@ Source: Website Membership Registration
                 }
             });
         }
+
+        // Global function for Google Sign-In callback
+        window.handleGoogleSignIn = handleGoogleSignIn;
     </script>
 </body>
 </html>
