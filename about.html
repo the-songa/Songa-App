@@ -3,17 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=0.8, maximum-scale=1.0, user-scalable=no">
-    <title>About - THE SONGA
-    </title>
+    <title>About - THE SONGA WELFARE</title>
     <link rel="icon" type="image/x-icon" href="https://i.postimg.cc/QCfkMpcM/20251121-1617-Golden-Lion-Emblem-remix-01kak8vrfpfb9r1335qyg8w1gt.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Sign-In API -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     
     <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#D4AF37">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="THE SONG">
+    <meta name="apple-mobile-web-app-title" content="THE SONGA WELFARE">
     <link rel="apple-touch-icon" href="https://i.postimg.cc/QCfkMpcM/20251121-1617-Golden-Lion-Emblem-remix-01kak8vrfpfb9r1335qyg8w1gt.png">
     
     <style>
@@ -62,7 +64,7 @@
 
         .header-container {
             display: flex;
-            justify-content: flex-start;
+            justify-content: space-between;
             align-items: center;
             height: 100%;
         }
@@ -81,6 +83,107 @@
             font-weight: bold;
             font-size: 1.2rem;
             margin-left: 10px;
+            color: var(--gold-dark);
+        }
+
+        .auth-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+        }
+
+        .join-btn {
+            background-color: var(--gold);
+            color: var(--black);
+            border: none;
+            border-radius: 4px;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.3s;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .join-btn:hover {
+            background-color: var(--gold-dark);
+            color: var(--white);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 5px 10px;
+            border-radius: 20px;
+            background: var(--gold-light);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--black);
+        }
+
+        /* User Profile Dropdown */
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            min-width: 180px;
+            z-index: 1000;
+            display: none;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+
+        .user-dropdown.active {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--gold-light);
+        }
+
+        .dropdown-item i {
+            width: 20px;
+            text-align: center;
             color: var(--gold-dark);
         }
 
@@ -444,6 +547,112 @@
             justify-content: center;
         }
 
+        /* Google Form Modal */
+        .google-form-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .google-form-modal.active {
+            display: flex;
+        }
+
+        .google-form-content {
+            background-color: white;
+            border-radius: 12px;
+            width: 95%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            animation: modalAppear 0.5s ease-out;
+        }
+
+        @keyframes modalAppear {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .google-form-header {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: var(--black);
+            padding: 1.5rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .google-form-header h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .google-form-body {
+            padding: 0;
+            height: 600px;
+            overflow: hidden;
+        }
+
+        .google-form-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border: none;
+            color: var(--black);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            background: var(--black);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 4px;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.3s;
+            max-width: 300px;
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .notification.error {
+            background: #e74c3c;
+        }
+
+        .notification.success {
+            background: var(--gold);
+            color: var(--black);
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .mission-vision {
@@ -471,6 +680,19 @@
                 flex-direction: column;
                 text-align: center;
                 gap: 8px;
+            }
+            
+            .google-form-content {
+                width: 98%;
+                height: 90vh;
+            }
+            
+            .google-form-body {
+                height: calc(90vh - 80px);
+            }
+            
+            .user-name {
+                display: none;
             }
         }
 
@@ -501,21 +723,73 @@
     </style>
 </head>
 <body>
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+
     <!-- Install Prompt -->
     <div class="install-prompt" id="installPrompt">
-        <span>Install THE SONGA
- App</span>
+        <span>Install THE SONGA WELFARE App</span>
         <button class="install-btn" id="installButton">Install</button>
         <button class="close-prompt" id="closePrompt">&times;</button>
+    </div>
+
+    <!-- Google Form Modal -->
+    <div class="google-form-modal" id="googleFormModal">
+        <div class="google-form-content">
+            <div class="google-form-header">
+                <h2>THE SONGA WELFARE Membership Registration</h2>
+                <p>Complete the form below to join our community</p>
+                <button class="close-modal" id="closeGoogleFormModal">&times;</button>
+            </div>
+            <div class="google-form-body">
+                <iframe 
+                    src="https://docs.google.com/forms/d/e/1FAIpQLScann_IwZdMXihlYHa6jQK1gLy7qEsIVDR-mKUzc3CroZgvOQ/viewform?embedded=true" 
+                    class="google-form-iframe"
+                    frameborder="0"
+                    marginheight="0"
+                    marginwidth="0">
+                    Loading…
+                </iframe>
+            </div>
+        </div>
     </div>
 
     <!-- Header -->
     <header>
         <div class="header-container">
             <div class="logo">
-                <img src="https://i.postimg.cc/QCfkMpcM/20251121-1617-Golden-Lion-Emblem-remix-01kak8vrfpfb9r1335qyg8w1gt.png" alt="THE SONGA
-     Logo">
+                <img src="https://i.postimg.cc/QCfkMpcM/20251121-1617-Golden-Lion-Emblem-remix-01kak8vrfpfb9r1335qyg8w1gt.png" alt="THE SONGA WELFARE Logo">
                 <div class="brand-name">THE SONGA™</div>
+            </div>
+            <div class="auth-section">
+                <div id="userProfile" class="user-profile" style="display: none;">
+                    <div class="user-avatar">
+                        <img id="userAvatar" src="" alt="User Avatar">
+                    </div>
+                    <div class="user-name" id="userDisplayName"></div>
+                    <div class="user-dropdown" id="userDropdown">
+                        <div class="dropdown-item" id="viewProfileOption">
+                            <i class="fas fa-user"></i>
+                            <span>View Profile</span>
+                        </div>
+                        <div class="dropdown-item" id="membershipOption">
+                            <i class="fas fa-crown"></i>
+                            <span>Membership</span>
+                        </div>
+                        <div class="dropdown-item" id="settingsOption">
+                            <i class="fas fa-cog"></i>
+                            <span>Settings</span>
+                        </div>
+                        <div class="dropdown-item" id="signOutOption">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Sign Out</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="join-btn" id="headerJoinBtn">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Join Us</span>
+                </button>
             </div>
         </div>
     </header>
@@ -525,8 +799,7 @@
         <!-- Hero Section -->
         <section class="hero-section">
             <div class="hero-logo">
-                <img src="https://i.postimg.cc/QCfkMpcM/20251121-1617-Golden-Lion-Emblem-remix-01kak8vrfpfb9r1335qyg8w1gt.png" alt="THE SONGA
-     Logo">
+                <img src="https://i.postimg.cc/QCfkMpcM/20251121-1617-Golden-Lion-Emblem-remix-01kak8vrfpfb9r1335qyg8w1gt.png" alt="THE SONGA WELFARE Logo">
             </div>
             <h1 class="hero-title">THE SONGA™</h1>
             <p class="hero-subtitle">The community that believes in personal growth, financial stability and social well-being</p>
@@ -540,8 +813,8 @@
                     SonGa is a consortium of programs aimed at developing and nurturing the human mind, to make great achievements and beyond. It envisions a built-up society that holds on to core disciplines of bodily fitness, mental acuity and spiritual strength and stability.
                 </p>
                 <p class="story-text">
-                    The worldly systems and their definitions have brought many to a sequence of serving these systems, which are not all beneficial. SonGa seeks to awaken the many sleeping giants within our people.</p>
-                <p class="story-text">
+                    The worldly systems and their definitions have brought many to a sequence of serving these systems, which are not all beneficial. SonGa seeks to awaken the many sleeping giants within our people.
+                </p>
             </div>
         </section>
 
@@ -629,8 +902,7 @@
         <!-- Contact Section -->
         <section class="contact-section">
             <h3>Join Our Community</h3>
-            <p>Ready to grow with us and make a positive impact? Connect with THE SONGA
-     today.</p>
+            <p>Ready to grow with us and make a positive impact? Connect with THE SONGA WELFARE today.</p>
             <div class="contact-buttons">
                 <a href="https://wa.me/254784599322" class="contact-btn">
                     <i class="fab fa-whatsapp"></i> WhatsApp Us
@@ -666,11 +938,210 @@
     </nav>
 
     <script>
-        // PWA Installation
-        let deferredPrompt;
+        // DOM Elements
         const installPrompt = document.getElementById('installPrompt');
         const installButton = document.getElementById('installButton');
         const closePrompt = document.getElementById('closePrompt');
+        const googleFormModal = document.getElementById('googleFormModal');
+        const closeGoogleFormModal = document.getElementById('closeGoogleFormModal');
+        const headerJoinBtn = document.getElementById('headerJoinBtn');
+        const notification = document.getElementById('notification');
+        const userProfile = document.getElementById('userProfile');
+        const userAvatar = document.getElementById('userAvatar');
+        const userDisplayName = document.getElementById('userDisplayName');
+        const userDropdown = document.getElementById('userDropdown');
+        const viewProfileOption = document.getElementById('viewProfileOption');
+        const membershipOption = document.getElementById('membershipOption');
+        const settingsOption = document.getElementById('settingsOption');
+        const signOutOption = document.getElementById('signOutOption');
+
+        // User state
+        let currentUser = null;
+        let dropdownOpen = false;
+
+        // Show notification
+        function showNotification(message, type = 'success') {
+            // Create a temporary notification element
+            const notification = document.createElement('div');
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 70px;
+                right: 20px;
+                background: ${type === 'error' ? '#e74c3c' : 'var(--gold)'};
+                color: ${type === 'error' ? 'white' : 'var(--black)'};
+                padding: 12px 20px;
+                border-radius: 4px;
+                z-index: 1000;
+                max-width: 300px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            `;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 4000);
+        }
+
+        // Google Sign-In Handler
+        function handleGoogleSignIn(response) {
+            console.log('Google Sign-In response:', response);
+            
+            // Decode the JWT token to get user info
+            const userData = parseJwt(response.credential);
+            console.log('User data:', userData);
+            
+            // Store user data
+            currentUser = {
+                id: userData.sub,
+                email: userData.email,
+                firstName: userData.given_name,
+                lastName: userData.family_name,
+                fullName: userData.name,
+                picture: userData.picture,
+                emailVerified: userData.email_verified
+            };
+            
+            // Update UI
+            updateUserProfile();
+            
+            // Show success message
+            showNotification(`Welcome, ${currentUser.firstName}!`, 'success');
+        }
+
+        // Parse JWT token
+        function parseJwt(token) {
+            try {
+                const base64Url = token.split('.')[1];
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+                return JSON.parse(jsonPayload);
+            } catch (error) {
+                console.error('Error parsing JWT:', error);
+                return {};
+            }
+        }
+
+        // Update user profile in header
+        function updateUserProfile() {
+            if (currentUser) {
+                userAvatar.src = currentUser.picture;
+                userDisplayName.textContent = currentUser.firstName;
+                userProfile.style.display = 'flex';
+                headerJoinBtn.style.display = 'none';
+                
+                // Store user data in localStorage
+                localStorage.setItem('the_songa_welfare_user', JSON.stringify(currentUser));
+            }
+        }
+
+        // Load user from localStorage
+        function loadUserFromStorage() {
+            const storedUser = localStorage.getItem('the_songa_welfare_user');
+            if (storedUser) {
+                currentUser = JSON.parse(storedUser);
+                updateUserProfile();
+            }
+        }
+
+        // Sign out user
+        function signOut() {
+            currentUser = null;
+            userProfile.style.display = 'none';
+            headerJoinBtn.style.display = 'flex';
+            localStorage.removeItem('the_songa_welfare_user');
+            closeDropdown();
+            
+            showNotification('Signed out successfully', 'success');
+        }
+
+        // Toggle dropdown
+        function toggleDropdown() {
+            dropdownOpen = !dropdownOpen;
+            if (dropdownOpen) {
+                userDropdown.classList.add('active');
+            } else {
+                userDropdown.classList.remove('active');
+            }
+        }
+
+        // Close dropdown
+        function closeDropdown() {
+            dropdownOpen = false;
+            userDropdown.classList.remove('active');
+        }
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserFromStorage();
+            
+            // Add click event to user profile to toggle dropdown
+            userProfile.addEventListener('click', function(e) {
+                e.stopPropagation();
+                toggleDropdown();
+            });
+            
+            // Close dropdown when clicking elsewhere
+            document.addEventListener('click', function() {
+                closeDropdown();
+            });
+            
+            // Prevent dropdown from closing when clicking inside it
+            userDropdown.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        });
+
+        // Dropdown option event listeners
+        viewProfileOption.addEventListener('click', function() {
+            showNotification('Profile feature coming soon!', 'success');
+            closeDropdown();
+        });
+
+        membershipOption.addEventListener('click', function() {
+            if (currentUser) {
+                googleFormModal.classList.add('active');
+                closeDropdown();
+            } else {
+                showNotification('Please sign in first', 'error');
+            }
+        });
+
+        settingsOption.addEventListener('click', function() {
+            showNotification('Settings feature coming soon!', 'success');
+            closeDropdown();
+        });
+
+        signOutOption.addEventListener('click', function() {
+            signOut();
+            closeDropdown();
+        });
+
+        // Header Join Us button
+        headerJoinBtn.addEventListener('click', function() {
+            if (!currentUser) {
+                showNotification('Please sign in with Google first', 'error');
+            } else {
+                googleFormModal.classList.add('active');
+            }
+        });
+
+        // Close Google Form modal
+        closeGoogleFormModal.addEventListener('click', function() {
+            googleFormModal.classList.remove('active');
+        });
+
+        // Close modal when clicking outside
+        googleFormModal.addEventListener('click', function(e) {
+            if (e.target === googleFormModal) {
+                googleFormModal.classList.remove('active');
+            }
+        });
+
+        // PWA Installation
+        let deferredPrompt;
 
         // Listen for beforeinstallprompt event
         window.addEventListener('beforeinstallprompt', (e) => {
@@ -799,6 +1270,9 @@
         }, { threshold: 0.5 });
 
         observer.observe(document.querySelector('.impact-stats'));
+
+        // Global function for Google Sign-In callback
+        window.handleGoogleSignIn = handleGoogleSignIn;
     </script>
 </body>
 </html>
