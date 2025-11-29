@@ -1097,6 +1097,29 @@
 
         // Global function for Google Sign-In callback
         window.handleGoogleSignIn = handleGoogleSignIn;
+        // Service Worker Registration - Add this to your existing JavaScript
+        function registerServiceWorker() {
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/innercircle/sw.js')
+                    .then((registration) => {
+                        console.log('Service Worker registered successfully:', registration);
+                        console.log('Scope: ', registration.scope);
+                    })
+                    .catch((error) => {
+                        console.log('Service Worker registration failed:', error);
+                    });
+            }
+        }
+        
+        // Update your existing DOMContentLoaded event to register the service worker
+        document.addEventListener('DOMContentLoaded', function() {
+            // Your existing code...
+            loadUserFromStorage();
+            showWelcomeModal();
+            
+            // Add this line to register service worker
+            registerServiceWorker();
+        });
     </script>
 </body>
 </html>
