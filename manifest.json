@@ -1,6 +1,6 @@
 {
   "name": "THE SONGA WELFARE",
-  "short_name": "SONGA WELFARE", 
+  "short_name": "SONGA WELFARE",
   "description": "Join our community of conscious individuals",
   "icons": [
     {
@@ -9,7 +9,7 @@
       "type": "image/png"
     },
     {
-      "src": "https://i.postimg.cc/QCfkMpcM/20251121-1617-Golden-Lion-Emblem-remix-01kak8vrfpfb9r1335qyg8w1gt.png", 
+      "src": "https://i.postimg.cc/QCfkMpcM/20251121-1617-Golden-Lion-Emblem-remix-01kak8vrfpfb9r1335qyg8w1gt.png",
       "sizes": "512x512",
       "type": "image/png"
     }
@@ -17,6 +17,6 @@
   "theme_color": "#D4AF37",
   "background_color": "#FFFFFF",
   "display": "standalone",
-  "start_url": "/",
-  "scope": "/"
+  "start_url": "/innercircle/",
+  "scope": "/innercircle/"
 }
