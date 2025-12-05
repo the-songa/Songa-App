@@ -1392,9 +1392,9 @@
         const myClubsContainer = document.getElementById('myClubsContainer');
         const noClubsMessage = document.getElementById('noClubsMessage');
 
-        // Configuration
+        // Configuration - UPDATE THIS URL WITH YOUR GOOGLE APPS SCRIPT URL
         const CONFIG = {
-            GOOGLE_APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbzQxaStTslVJLFiFPouX1E84LvT_Mc1SVLw3iJX6TEOln0EVIDMDW2kLv4Fv0XED11m7A/exec', // Replace with your Google Apps Script web app URL
+            GOOGLE_APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbzQxaStTslVJLFiFPouX1E84LvT_Mc1SVLw3iJX6TEOln0EVIDMDW2kLv4Fv0XED11m7A/exec', // REPLACE WITH YOUR ACTUAL WEB APP URL
             ENABLE_OFFLINE_MODE: true,
             SUBMISSION_TIMEOUT: 10000 // 10 seconds
         };
@@ -1428,8 +1428,8 @@
                 ],
                 actionText: 'Join Readers Club',
                 questions: {
-                    q1: 'What genres are you most interested in reading?',
-                    q2: 'How many books do you typically read per month?'
+                    q1: 'What are your main goals for joining this club? *',
+                    q2: 'How did you hear about this club? *'
                 }
             },
             {
@@ -1450,8 +1450,8 @@
                 ],
                 actionText: 'Join Finance Club',
                 questions: {
-                    q1: 'What is your primary financial goal?',
-                    q2: 'What is your current investment experience level?'
+                    q1: 'What are your main goals for joining this club? *',
+                    q2: 'How did you hear about this club? *'
                 }
             },
             {
@@ -1472,8 +1472,8 @@
                 ],
                 actionText: 'Join Relationships Club',
                 questions: {
-                    q1: 'What type of networking are you most interested in?',
-                    q2: 'What industries would you like to connect with?'
+                    q1: 'What are your main goals for joining this club? *',
+                    q2: 'How did you hear about this club? *'
                 }
             },
             {
@@ -1494,8 +1494,8 @@
                 ],
                 actionText: 'Join Family Club',
                 questions: {
-                    q1: 'What are your main family-related goals?',
-                    q2: 'Are you interested in family business planning?'
+                    q1: 'What are your main goals for joining this club? *',
+                    q2: 'How did you hear about this club? *'
                 }
             },
             {
@@ -1516,8 +1516,8 @@
                 ],
                 actionText: 'Join Leadership Club',
                 questions: {
-                    q1: 'What leadership skills do you want to develop?',
-                    q2: 'What is your current leadership experience?'
+                    q1: 'What are your main goals for joining this club? *',
+                    q2: 'How did you hear about this club? *'
                 }
             },
             {
@@ -1538,8 +1538,8 @@
                 ],
                 actionText: 'Join Fitness Club',
                 questions: {
-                    q1: 'What are your main fitness goals?',
-                    q2: 'What types of exercise do you prefer?'
+                    q1: 'What are your main goals for joining this club? *',
+                    q2: 'How did you hear about this club? *'
                 }
             }
         ];
@@ -1684,7 +1684,7 @@
                             </div>
                         </div>
                         <button class="club-join-btn ${isJoined ? (isPending ? 'pending' : 'joined') : ''}" 
-                                data-club-id="${club.id}"us
+                                data-club-id="${club.id}"
                                 ${isPending ? 'disabled' : ''}>
                             ${isJoined ? 
                                 (isPending ? 
@@ -1796,26 +1796,6 @@
             }
             
             return userClubs.find(c => c.id === clubId);
-        }
-
-        // Update club status
-        function updateClubStatus(clubId, status, submissionId = null) {
-            const clubIndex = userClubs.findIndex(c => c.id === clubId);
-            
-            if (clubIndex !== -1) {
-                userClubs[clubIndex].status = status;
-                if (submissionId) {
-                    userClubs[clubIndex].submissionId = submissionId;
-                }
-                localStorage.setItem(`the_songa_clubs_${currentUser.id}`, JSON.stringify(userClubs));
-                
-                renderClubs();
-                renderMyClubs();
-                
-                return true;
-            }
-            
-            return false;
         }
 
         // Show application status
@@ -2138,36 +2118,45 @@
             
             try {
                 // Check if we should use the API
-                if (CONFIG.GOOGLE_APPS_SCRIPT_URL && CONFIG.GOOGLE_APPS_SCRIPT_URL !== 'YOUR_WEB_APP_URL_HERE') {
+                if (CONFIG.GOOGLE_APPS_SCRIPT_URL && CONFIG.GOOGLE_APPS_SCRIPT_URL !== 'https://script.google.com/macros/s/AKfycbzQxaStTslVJLFiFPouX1E84LvT_Mc1SVLw3iJX6TEOln0EVIDMDW2kLv4Fv0XED11m7A/exec') {
                     // Send to Google Apps Script
-                    const response = await fetchWithTimeout(CONFIG.GOOGLE_APPS_SCRIPT_URL, {
+                    const response = await fetch(CONFIG.GOOGLE_APPS_SCRIPT_URL, {
                         method: 'POST',
+                        mode: 'no-cors', // Important: Use no-cors mode for Google Apps Script
                         headers: {
-                            'Content-Type': 'application/json',
+                            'Content-Type': 'application/json'
                         },
                         body: JSON.stringify(formData)
-                    }, CONFIG.SUBMISSION_TIMEOUT);
+                    });
                     
-                    const result = await response.json();
+                    // Since we're using no-cors, we can't read the response
+                    // So we'll assume success and update local storage
                     
-                    if (result.success) {
-                        // Success - update local storage with submission ID
-                        const submissionData = {
-                            submissionId: result.submissionId,
-                            status: 'pending',
-                            applicationDate: new Date().toISOString().split('T')[0]
-                        };
-                        
-                        joinClubLocal(currentClubForForm.id, submissionData);
-                        
-                        // Show success modal
-                        showSuccessModal(result);
-                        
-                        // Close form modal
-                        googleFormModal.classList.remove('active');
-                    } else {
-                        throw new Error(result.message || 'Submission failed');
-                    }
+                    // Generate a submission ID
+                    const submissionId = 'SONGA-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).substring(2, 5).toUpperCase();
+                    
+                    const submissionData = {
+                        submissionId: submissionId,
+                        status: 'pending',
+                        applicationDate: new Date().toISOString().split('T')[0],
+                        formData: formData
+                    };
+                    
+                    // Save to local storage
+                    joinClubLocal(currentClubForForm.id, submissionData);
+                    
+                    // Show success modal
+                    showSuccessModal({
+                        success: true,
+                        submissionId: submissionId,
+                        message: 'Application submitted successfully!',
+                        clubName: currentClubForForm.title,
+                        timestamp: new Date().toLocaleString()
+                    });
+                    
+                    // Close form modal
+                    googleFormModal.classList.remove('active');
+                    
                 } else {
                     // API URL not configured, use offline mode
                     if (CONFIG.ENABLE_OFFLINE_MODE) {
@@ -2188,14 +2177,14 @@
                             success: true,
                             submissionId: submissionId,
                             message: 'Application submitted successfully! (Offline Mode)',
-                            clubName: currentClubForForm.name,
+                            clubName: currentClubForForm.title,
                             timestamp: new Date().toLocaleString()
                         });
                         
                         // Close form modal
                         googleFormModal.classList.remove('active');
                     } else {
-                        throw new Error('API not configured');
+                        throw new Error('API not configured. Please update the GOOGLE_APPS_SCRIPT_URL in the CONFIG object.');
                     }
                 }
                 
@@ -2220,7 +2209,7 @@
                         success: true,
                         submissionId: submissionId,
                         message: 'Application saved locally. It will sync when online.',
-                        clubName: currentClubForForm.name,
+                        clubName: currentClubForForm.title,
                         timestamp: new Date().toLocaleString(),
                         offline: true
                     });
@@ -2235,24 +2224,6 @@
                 submitText.style.display = 'inline';
                 spinner.style.display = 'none';
                 isSubmitting = false;
-            }
-        }
-
-        // Fetch with timeout
-        async function fetchWithTimeout(url, options, timeout) {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), timeout);
-            
-            try {
-                const response = await fetch(url, {
-                    ...options,
-                    signal: controller.signal
-                });
-                clearTimeout(timeoutId);
-                return response;
-            } catch (error) {
-                clearTimeout(timeoutId);
-                throw error;
             }
         }
 
