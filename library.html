@@ -4,11 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=0.8, maximum-scale=1.0, user-scalable=no">
     <title>Library - THE SONGA WELFARE</title>
-    <link rel="icon" type="image/x-icon" href="https://i.postimg.cc/QCfkMpcM/20251121-1617-Golden-Lion-Emblem-remix-01kak8vrfpfb9r1335qyg8w1gt.png">
+    <link rel="icon" type="image/x-icon" href="https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Google Sign-In API -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
     
     <!-- Browser Theme Color -->
     <meta name="theme-color" content="#D4AF37">
@@ -71,6 +76,7 @@
         .logo {
             display: flex;
             align-items: center;
+            gap: 10px;
         }
 
         .logo img {
@@ -78,11 +84,21 @@
             width: auto;
         }
 
+        .brand-info {
+            display: flex;
+            flex-direction: column;
+        }
+
         .brand-name {
             font-weight: bold;
             font-size: 1.2rem;
-            margin-left: 10px;
             color: var(--gold-dark);
+        }
+
+        .brand-subtitle {
+            font-size: 0.7rem;
+            color: var(--dark-gray);
+            font-style: italic;
         }
 
         .auth-section {
@@ -141,6 +157,17 @@
             font-weight: 600;
             font-size: 0.9rem;
             color: var(--black);
+        }
+
+        /* Membership Badge */
+        .membership-badge {
+            background: var(--gold);
+            color: var(--black);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 5px;
         }
 
         /* User Profile Dropdown */
@@ -240,6 +267,37 @@
             margin-top: 0.5rem;
         }
 
+        /* Stats Section */
+        .stats-section {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: var(--white);
+            border: 1px solid var(--gold-light);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            min-width: 200px;
+            box-shadow: 0 2px 10px rgba(212, 175, 55, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--dark-gray);
+        }
+
         /* Search Section */
         .search-section {
             margin: 2rem 0;
@@ -336,6 +394,63 @@
             color: var(--dark-gray);
         }
 
+        /* Filter Section */
+        .filter-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 2rem 0;
+            padding: 1rem;
+            background: var(--gray);
+            border-radius: 12px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            min-width: 200px;
+        }
+
+        .filter-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--gold-dark);
+        }
+
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid var(--light-gray);
+            border-radius: 6px;
+            background: var(--white);
+            color: var(--black);
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+
+        .clear-filters {
+            background: var(--gold);
+            color: var(--black);
+            border: none;
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            font-weight: 600;
+            align-self: flex-end;
+            transition: background-color 0.3s;
+        }
+
+        .clear-filters:hover {
+            background-color: var(--gold-dark);
+            color: var(--white);
+        }
+
         /* Subscription Button */
         .subscription-section {
             text-align: center;
@@ -383,6 +498,7 @@
             transition: all 0.3s;
             font-weight: 600;
             color: var(--dark-gray);
+            position: relative;
         }
 
         .tab-btn.active {
@@ -392,6 +508,15 @@
 
         .tab-btn:hover:not(.active) {
             background-color: var(--gold-light);
+        }
+
+        .tab-count {
+            background: var(--gold-dark);
+            color: var(--white);
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-left: 5px;
         }
 
         /* Content Sections */
@@ -418,6 +543,7 @@
             overflow: hidden;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
         }
 
         .book-card:hover {
@@ -456,6 +582,32 @@
             z-index: 2;
         }
 
+        .availability-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            z-index: 2;
+        }
+
+        .available {
+            background: var(--accent);
+            color: var(--white);
+        }
+
+        .limited {
+            background: #f39c12;
+            color: var(--white);
+        }
+
+        .unavailable {
+            background: #e74c3c;
+            color: var(--white);
+        }
+
         .book-content {
             padding: 1.5rem;
         }
@@ -490,6 +642,21 @@
             -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
             overflow: hidden;
+        }
+
+        .book-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 1rem;
+        }
+
+        .book-tag {
+            background: var(--gold-light);
+            color: var(--gold-dark);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
         }
 
         .book-meta {
@@ -535,9 +702,14 @@
             font-weight: 600;
         }
 
-        .borrow-btn:hover {
+        .borrow-btn:hover:not(:disabled) {
             background-color: var(--gold-dark);
             color: var(--white);
+        }
+
+        .borrow-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         .whatsapp-btn {
@@ -672,6 +844,98 @@
         .read-btn:hover {
             background-color: var(--gold-dark);
             color: var(--white);
+        }
+
+        /* Loading States */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--gold-dark);
+        }
+
+        .loading-spinner {
+            border: 3px solid var(--gold-light);
+            border-top: 3px solid var(--gold);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--dark-gray);
+            grid-column: 1 / -1;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: var(--gold-light);
+            margin-bottom: 1rem;
+        }
+
+        /* Borrowed Books Section */
+        .borrowed-section {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #fefce8 0%, #fef3c7 100%);
+            border-radius: 12px;
+            border: 1px solid var(--gold-light);
+        }
+
+        .borrowed-section h3 {
+            color: var(--gold-dark);
+            margin-bottom: 1rem;
+        }
+
+        .borrowed-books {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .borrowed-book {
+            background: var(--white);
+            border: 1px solid var(--gold);
+            border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .borrowed-cover {
+            width: 60px;
+            height: 80px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .borrowed-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .borrowed-info {
+            flex: 1;
+        }
+
+        .borrowed-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .borrowed-due-date {
+            font-size: 0.8rem;
+            color: var(--dark-gray);
         }
 
         /* Subscription Modal */
@@ -1004,7 +1268,9 @@
 
         body.dark-theme .book-card,
         body.dark-theme .article-card,
-        body.dark-theme .plan-card {
+        body.dark-theme .plan-card,
+        body.dark-theme .stat-card,
+        body.dark-theme .borrowed-book {
             background-color: #2d2d2d;
             border-color: #404040;
         }
@@ -1020,7 +1286,8 @@
             color: var(--black);
         }
 
-        body.dark-theme .contact-section {
+        body.dark-theme .contact-section,
+        body.dark-theme .borrowed-section {
             background-color: #2d2d2d;
         }
 
@@ -1039,7 +1306,7 @@
                 transform: none;
             }
             
-            .books-grid, .articles-grid {
+            .books-grid, .articles-grid, .borrowed-books {
                 grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
                 gap: 1.5rem;
             }
@@ -1063,6 +1330,19 @@
             
             .borrow-body {
                 height: calc(90vh - 80px);
+            }
+            
+            .stats-section {
+                gap: 1rem;
+            }
+            
+            .stat-card {
+                min-width: 150px;
+                padding: 1rem;
+            }
+            
+            .stat-number {
+                font-size: 2rem;
             }
         }
 
@@ -1100,6 +1380,14 @@
             .user-name {
                 display: none;
             }
+            
+            .stats-section {
+                flex-direction: column;
+            }
+            
+            .stat-card {
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -1108,8 +1396,11 @@
     <header>
         <div class="header-container">
             <div class="logo">
-                <img src="https://i.postimg.cc/QCfkMpcM/20251121-1617-Golden-Lion-Emblem-remix-01kak8vrfpfb9r1335qyg8w1gt.png" alt="THE SONGA WELFARE Logo">
-                <div class="brand-name">THE SONGA™</div>
+                <img src="https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp" alt="THE SONGA Logo">
+                <div class="brand-info">
+                    <div class="brand-name">THE SONGA</div>
+                    <div class="brand-subtitle">Mind. Body. Spirit. Beyond.</div>
+                </div>
             </div>
             <div class="auth-section">
                 <button class="theme-toggle" id="themeToggle">
@@ -1123,15 +1414,16 @@
                     <div class="user-dropdown" id="userDropdown">
                         <div class="dropdown-item" id="viewProfileOption">
                             <i class="fas fa-user"></i>
-                            <span>View Profile</span>
+                            <span>My Profile</span>
                         </div>
-                        <div class="dropdown-item" id="subscriptionOption">
+                        <div class="dropdown-item" id="membershipOption">
                             <i class="fas fa-crown"></i>
-                            <span>Subscription</span>
+                            <span>Membership Status</span>
+                            <span id="membershipBadge" class="membership-badge" style="margin-left: auto;"></span>
                         </div>
                         <div class="dropdown-item" id="settingsOption">
                             <i class="fas fa-cog"></i>
-                            <span>Settings</span>
+                            <span>Preferences</span>
                         </div>
                         <div class="dropdown-item" id="signOutOption">
                             <i class="fas fa-sign-out-alt"></i>
@@ -1156,70 +1448,8 @@
                 <button class="close-modal" id="closeSubscriptionModal">&times;</button>
             </div>
             <div class="subscription-body">
-                <div class="subscription-plans">
-                    <!-- Explorer Plan -->
-                    <div class="plan-card">
-                        <div class="plan-icon">
-                            <i class="fas fa-book-open"></i>
-                        </div>
-                        <h3 class="plan-title">Explorer Plan</h3>
-                        <div class="plan-price">KSh 500</div>
-                        <div class="plan-duration">1 Month Access</div>
-                        <ul class="plan-features">
-                            <li><i class="fas fa-check"></i> Access to 500+ books</li>
-                            <li><i class="fas fa-check"></i> 1 book at a time</li>
-                            <li><i class="fas fa-check"></i> Basic genres</li>
-                            <li><i class="fas fa-check"></i> Email support</li>
-                        </ul>
-                        <button class="subscribe-btn" data-plan="Explorer Plan" data-price="500">
-                            <i class="fas fa-bookmark"></i>
-                            Subscribe Now
-                        </button>
-                    </div>
-
-                    <!-- Scholar Plan -->
-                    <div class="plan-card featured">
-                        <div class="plan-badge">Most Popular</div>
-                        <div class="plan-icon">
-                            <i class="fas fa-gem"></i>
-                        </div>
-                        <h3 class="plan-title">Scholar Plan</h3>
-                        <div class="plan-price">KSh 800</div>
-                        <div class="plan-duration">1 Month Access</div>
-                        <ul class="plan-features">
-                            <li><i class="fas fa-check"></i> Access to 1000+ books</li>
-                            <li><i class="fas fa-check"></i> 3 books at a time</li>
-                            <li><i class="fas fa-check"></i> All genres included</li>
-                            <li><i class="fas fa-check"></i> Priority support</li>
-                            <li><i class="fas fa-check"></i> Book recommendations</li>
-                        </ul>
-                        <button class="subscribe-btn" data-plan="Scholar Plan" data-price="800">
-                            <i class="fas fa-crown"></i>
-                            Subscribe Now
-                        </button>
-                    </div>
-
-                    <!-- Visionary Plan -->
-                    <div class="plan-card">
-                        <div class="plan-icon">
-                            <i class="fas fa-infinity"></i>
-                        </div>
-                        <h3 class="plan-title">Visionary Plan</h3>
-                        <div class="plan-price">KSh 1,000</div>
-                        <div class="plan-duration">1 Month Access</div>
-                        <ul class="plan-features">
-                            <li><i class="fas fa-check"></i> Access to all books</li>
-                            <li><i class="fas fa-check"></i> 5 books at a time</li>
-                            <li><i class="fas fa-check"></i> All genres + new releases</li>
-                            <li><i class="fas fa-check"></i> 24/7 WhatsApp support</li>
-                            <li><i class="fas fa-check"></i> Personalized reading plan</li>
-                            <li><i class="fas fa-check"></i> Exclusive author content</li>
-                        </ul>
-                        <button class="subscribe-btn" data-plan="Visionary Plan" data-price="1000">
-                            <i class="fas fa-rocket"></i>
-                            Subscribe Now
-                        </button>
-                    </div>
+                <div class="subscription-plans" id="subscriptionPlans">
+                    <!-- Plans will be loaded from Firebase -->
                 </div>
             </div>
         </div>
@@ -1251,19 +1481,68 @@
         <!-- Brand Header -->
         <div class="brand-header">
             <div class="brand-logo">
-                <img src="https://i.postimg.cc/QCfkMpcM/20251121-1617-Golden-Lion-Emblem-remix-01kak8vrfpfb9r1335qyg8w1gt.png" alt="THE SONGA WELFARE Logo">
+                <img src="https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp" alt="THE SONGA Logo">
             </div>
             <h1 class="brand-title">DIGITAL LIBRARY</h1>
             <p class="brand-subtitle">Your gateway to knowledge and personal growth</p>
         </div>
 
+        <!-- Stats Section -->
+        <div class="stats-section">
+            <div class="stat-card">
+                <div class="stat-number" id="totalBooks">0</div>
+                <div class="stat-label">Books Available</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalArticles">0</div>
+                <div class="stat-label">Articles</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="borrowedBooks">0</div>
+                <div class="stat-label">Currently Borrowed</div>
+            </div>
+        </div>
+
+        <!-- Borrowed Books Section -->
+        <div class="borrowed-section" id="borrowedSection" style="display: none;">
+            <h3><i class="fas fa-book-open"></i> Your Borrowed Books</h3>
+            <div class="borrowed-books" id="borrowedBooksList">
+                <!-- Borrowed books will be loaded here -->
+            </div>
+        </div>
+
         <!-- Search Section -->
         <div class="search-section">
             <div class="search-container">
-                <input type="text" class="search-input" id="searchInput" placeholder="Search for books by title or author...">
+                <input type="text" class="search-input" id="searchInput" placeholder="Search for books by title, author, or category...">
                 <i class="fas fa-search search-icon"></i>
                 <div class="search-results" id="searchResults"></div>
             </div>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="filter-section" id="filterSection">
+            <div class="filter-group">
+                <label class="filter-label">Category</label>
+                <select class="filter-select" id="categoryFilter">
+                    <option value="">All Categories</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label class="filter-label">Genre</label>
+                <select class="filter-select" id="genreFilter">
+                    <option value="">All Genres</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label class="filter-label">Availability</label>
+                <select class="filter-select" id="availabilityFilter">
+                    <option value="">All Books</option>
+                    <option value="available">Available Now</option>
+                    <option value="featured">Featured Books</option>
+                </select>
+            </div>
+            <button class="clear-filters" id="clearFilters">Clear Filters</button>
         </div>
 
         <!-- Subscription Button -->
@@ -1276,106 +1555,32 @@
 
         <!-- Content Tabs -->
         <div class="content-tabs">
-            <button class="tab-btn active" data-tab="books">Books</button>
-            <button class="tab-btn" data-tab="articles">Articles</button>
+            <button class="tab-btn active" data-tab="books">
+                Books
+                <span class="tab-count" id="booksCount">0</span>
+            </button>
+            <button class="tab-btn" data-tab="articles">
+                Articles
+                <span class="tab-count" id="articlesCount">0</span>
+            </button>
         </div>
 
         <!-- Books Section -->
         <div class="content-section active" id="books-section">
             <div class="books-grid" id="booksGrid">
-                <!-- Book cards will be populated by JavaScript -->
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>Loading books...</p>
+                </div>
             </div>
         </div>
 
         <!-- Articles Section -->
         <div class="content-section" id="articles-section">
-            <div class="articles-grid">
-                <!-- Article 1 -->
-                <div class="article-card">
-                    <div class="article-image">
-                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Mindfulness">
-                    </div>
-                    <div class="article-content">
-                        <div class="article-category">Personal Growth</div>
-                        <h3 class="article-title">The Science of Mindfulness and Its Impact on Daily Life</h3>
-                        <p class="article-excerpt">Discover how practicing mindfulness can transform your mental health, improve focus, and enhance overall well-being in our modern, fast-paced world.</p>
-                        <div class="article-meta">
-                            <div class="article-date">Nov 15, 2025</div>
-                            <div class="article-read-time">8 min read</div>
-                        </div>
-                        <div class="article-actions">
-                            <a href="article-one.html" class="read-btn">
-                                <i class="fas fa-book-reader"></i>
-                                Read Article
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Article 2 -->
-                <div class="article-card">
-                    <div class="article-image">
-                        <img src="https://images.unsplash.com/photo-1553877522-43269d4ea984?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Entrepreneurship">
-                    </div>
-                    <div class="article-content">
-                        <div class="article-category">Business</div>
-                        <h3 class="article-title">Building a Sustainable Business in the Digital Age</h3>
-                        <p class="article-excerpt">Learn the key principles for creating businesses that not only generate profit but also create positive social impact and environmental sustainability.</p>
-                        <div class="article-meta">
-                            <div class="article-date">Nov 10, 2025</div>
-                            <div class="article-read-time">12 min read</div>
-                        </div>
-                        <div class="article-actions">
-                            <a href="#" class="read-btn">
-                                <i class="fas fa-book-reader"></i>
-                                Read Article
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Article 3 -->
-                <div class="article-card">
-                    <div class="article-image">
-                        <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Meditation">
-                    </div>
-                    <div class="article-content">
-                        <div class="article-category">Spirituality</div>
-                        <h3 class="article-title">The Ancient Practice of Meditation: Modern Applications</h3>
-                        <p class="article-excerpt">Explore how ancient meditation techniques are being validated by modern science and how you can incorporate them into your daily routine for better mental health.</p>
-                        <div class="article-meta">
-                            <div class="article-date">Nov 5, 2025</div>
-                            <div class="article-read-time">10 min read</div>
-                        </div>
-                        <div class="article-actions">
-                            <a href="#" class="read-btn">
-                                <i class="fas fa-book-reader"></i>
-                                Read Article
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Article 4 -->
-                <div class="article-card">
-                    <div class="article-image">
-                        <img src="https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="African Philosophy">
-                    </div>
-                    <div class="article-content">
-                        <div class="article-category">African Literature</div>
-                        <h3 class="article-title">Ubuntu Philosophy: The African Concept of Humanity</h3>
-                        <p class="article-excerpt">Delve into the profound African philosophy of Ubuntu and discover how this concept of interconnectedness can transform our understanding of community and humanity.</p>
-                        <div class="article-meta">
-                            <div class="article-date">Oct 28, 2025</div>
-                            <div class="article-read-time">15 min read</div>
-                        </div>
-                        <div class="article-actions">
-                            <a href="#" class="read-btn">
-                                <i class="fas fa-book-reader"></i>
-                                Read Article
-                            </a>
-                        </div>
-                    </div>
+            <div class="articles-grid" id="articlesGrid">
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>Loading articles...</p>
                 </div>
             </div>
         </div>
@@ -1399,7 +1604,7 @@
     <nav class="bottom-nav">
         <a href="index.html" class="nav-item">
             <i class="fas fa-home nav-icon"></i>
-            <span>Home</span>
+            <span>Feed</span>
         </a>
         <a href="events.html" class="nav-item">
             <i class="fas fa-calendar-alt nav-icon"></i>
@@ -1409,82 +1614,27 @@
             <i class="fas fa-book nav-icon"></i>
             <span>Library</span>
         </a>
-        <a href="about.html" class="nav-item">
-            <i class="fas fa-info-circle nav-icon"></i>
-            <span>About</span>
+        <a href="profile.html" class="nav-item">
+            <i class="fas fa-user nav-icon"></i>
+            <span>Profile</span>
         </a>
     </nav>
 
     <script>
-        // Book Catalogue Data
-        const bookCatalogue = [
-            {
-                id: 1,
-                title: "Atomic Habits",
-                author: "James Clear",
-                category: "Personal Growth",
-                description: "Tiny Changes, Remarkable Results: An Easy & Proven Way to Build Good Habits & Break Bad Ones",
-                cover: "https://i.postimg.cc/QxvdH4P0/atomic-habits-gallery-hi-res-01.jpg",
-                rating: 4.8,
-                pages: 320,
-                badge: "Bestseller"
-            },
-            {
-                id: 2,
-                title: "The Lean Startup",
-                author: "Eric Ries",
-                category: "Business",
-                description: "How Today's Entrepreneurs Use Continuous Innovation to Create Radically Successful Businesses",
-                cover: "https://i.postimg.cc/yxgWbwtd/Buy-The-Lean-Start-Upinthephilippines2.jpg",
-                rating: 4.6,
-                pages: 336,
-                badge: null
-            },
-            {
-                id: 3,
-                title: "The Power of Now",
-                author: "Eckhart Tolle",
-                category: "Spirituality",
-                description: "A Guide to Spiritual Enlightenment that has the potential to completely transform your life",
-                cover: "https://i.postimg.cc/vZcGypvz/6777a02acc4544001d9bed6e.jpg",
-                rating: 4.7,
-                pages: 236,
-                badge: null
-            },
-            {
-                id: 4,
-                title: "Things Fall Apart",
-                author: "Chinua Achebe",
-                category: "African Literature",
-                description: "A masterpiece that has sold over 20 million copies worldwide about traditional African life",
-                cover: "https://i.postimg.cc/pL6zXMMr/f3ce3b76-c6cf-4d13-9c84-2503d297eccb.webp",
-                rating: 4.9,
-                pages: 209,
-                badge: "Classic"
-            },
-            {
-                id: 5,
-                title: "The 7 Habits of Highly Effective People",
-                author: "Stephen R. Covey",
-                category: "Personal Growth",
-                description: "Powerful Lessons in Personal Change that have transformed millions of lives worldwide",
-                cover: "https://i.postimg.cc/WpByzxjQ/7-habits-of-highly-effective-people-steven-covey.webp",
-                rating: 4.7,
-                pages: 381,
-                badge: "Classic"
-            },
-            {
-                id: 6,
-                title: "The 5AM Club",
-                author: "Robin Sharma",
-                category: "Self Help",
-                description: "Own Your Morning, Elevate your Life",
-                cover: "https://i.postimg.cc/6QKwZyXP/1-Yd-Gqkz-Z9NTgm-Mwp-S0x-Vw.jpg",
-                rating: 4.6,
-                pages: 499,
-                badge: null
-            }
-        ];
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBDZicoo7dFLtSmgRPvQE_gdm-tNOyCTXA",
+            authDomain: "the-songa-77b1b.firebaseapp.com",
+            databaseURL: "https://the-songa-77b1b-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "the-songa-77b1b",
+            storageBucket: "the-songa-77b1b.firebasestorage.app",
+            messagingSenderId: "123922889572",
+            appId: "1:123922889572:web:482b2a624930baaf92d871"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
 
         // DOM Elements
         const subscriptionModal = document.getElementById('subscriptionModal');
@@ -1495,8 +1645,8 @@
         const headerJoinBtn = document.getElementById('headerJoinBtn');
         const tabButtons = document.querySelectorAll('.tab-btn');
         const contentSections = document.querySelectorAll('.content-section');
-        const subscribeButtons = document.querySelectorAll('.subscribe-btn');
         const booksGrid = document.getElementById('booksGrid');
+        const articlesGrid = document.getElementById('articlesGrid');
         const searchInput = document.getElementById('searchInput');
         const searchResults = document.getElementById('searchResults');
         const themeToggle = document.getElementById('themeToggle');
@@ -1505,18 +1655,36 @@
         const userAvatar = document.getElementById('userAvatar');
         const userDisplayName = document.getElementById('userDisplayName');
         const userDropdown = document.getElementById('userDropdown');
+        const membershipBadge = document.getElementById('membershipBadge');
         const viewProfileOption = document.getElementById('viewProfileOption');
-        const subscriptionOption = document.getElementById('subscriptionOption');
+        const membershipOption = document.getElementById('membershipOption');
         const settingsOption = document.getElementById('settingsOption');
         const signOutOption = document.getElementById('signOutOption');
+        const subscriptionPlans = document.getElementById('subscriptionPlans');
+        const categoryFilter = document.getElementById('categoryFilter');
+        const genreFilter = document.getElementById('genreFilter');
+        const availabilityFilter = document.getElementById('availabilityFilter');
+        const clearFilters = document.getElementById('clearFilters');
+        const booksCount = document.getElementById('booksCount');
+        const articlesCount = document.getElementById('articlesCount');
+        const totalBooks = document.getElementById('totalBooks');
+        const totalArticles = document.getElementById('totalArticles');
+        const borrowedBooks = document.getElementById('borrowedBooks');
+        const borrowedSection = document.getElementById('borrowedSection');
+        const borrowedBooksList = document.getElementById('borrowedBooksList');
 
         // User state
         let currentUser = null;
+        let currentUserData = null;
         let dropdownOpen = false;
+        let libraryBooks = [];
+        let libraryArticles = [];
+        let subscriptionPlansData = [];
+        let filteredBooks = [];
+        let filteredArticles = [];
 
         // Show notification
         function showNotification(message, type = 'success') {
-            // Create a temporary notification element
             const notification = document.createElement('div');
             notification.textContent = message;
             notification.style.cssText = `
@@ -1562,30 +1730,606 @@
             }
         }
 
-        // Google Sign-In Handler
-        function handleGoogleSignIn(response) {
-            console.log('Google Sign-In response:', response);
+        // Format date
+        function formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        // Get availability badge
+        function getAvailabilityBadge(book) {
+            if (!book.availableCopies || book.availableCopies === 0) {
+                return '<span class="availability-badge unavailable">Unavailable</span>';
+            } else if (book.availableCopies < 2) {
+                return '<span class="availability-badge limited">Limited</span>';
+            } else {
+                return '<span class="availability-badge available">Available</span>';
+            }
+        }
+
+        // Check if user can borrow based on subscription
+        function canUserBorrowBook(book) {
+            if (!currentUserData) return false;
             
-            // Decode the JWT token to get user info
-            const userData = parseJwt(response.credential);
-            console.log('User data:', userData);
+            const userTier = currentUserData.membershipTier || 'explorer';
+            const bookTiers = book.subscriptionTiers || ['all'];
             
-            // Store user data
-            currentUser = {
-                id: userData.sub,
-                email: userData.email,
-                firstName: userData.given_name,
-                lastName: userData.family_name,
-                fullName: userData.name,
-                picture: userData.picture,
-                emailVerified: userData.email_verified
+            return bookTiers.includes('all') || bookTiers.includes(userTier);
+        }
+
+        // Get user's borrowed books
+        function getUserBorrowedBooks() {
+            if (!currentUserData || !currentUserData.borrowedBooks || currentUserData.borrowedBooks.length === 0) {
+                borrowedSection.style.display = 'none';
+                return [];
+            }
+            
+            // Show borrowed section
+            borrowedSection.style.display = 'block';
+            return currentUserData.borrowedBooks;
+        }
+
+        // Render borrowed books
+        function renderBorrowedBooks(bookIds) {
+            borrowedBooksList.innerHTML = '';
+            
+            if (bookIds.length === 0) {
+                borrowedBooksList.innerHTML = '<p>No books currently borrowed.</p>';
+                return;
+            }
+            
+            // Find book details for each borrowed book
+            const borrowedBooksCount = bookIds.length;
+            borrowedBooks.textContent = borrowedBooksCount;
+            
+            bookIds.forEach(bookId => {
+                const book = libraryBooks.find(b => b.id === bookId);
+                if (book) {
+                    const borrowedBookElement = document.createElement('div');
+                    borrowedBookElement.className = 'borrowed-book';
+                    borrowedBookElement.innerHTML = `
+                        <div class="borrowed-cover">
+                            <img src="${book.coverImage || 'https://via.placeholder.com/60x80?text=No+Cover'}" alt="${book.title}">
+                        </div>
+                        <div class="borrowed-info">
+                            <div class="borrowed-title">${book.title}</div>
+                            <div class="borrowed-author">${book.author}</div>
+                            <div class="borrowed-due-date">Due: ${formatDate(new Date(Date.now() + 14 * 24 * 60 * 60 * 1000))}</div>
+                        </div>
+                    `;
+                    borrowedBooksList.appendChild(borrowedBookElement);
+                }
+            });
+        }
+
+        // Render books
+        function renderBooks(books) {
+            booksGrid.innerHTML = '';
+            
+            if (!books || books.length === 0) {
+                booksGrid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-book"></i>
+                        <h3>No books found</h3>
+                        <p>Try adjusting your filters or search terms</p>
+                    </div>
+                `;
+                return;
+            }
+
+            books.forEach(book => {
+                const canBorrow = canUserBorrowBook(book);
+                const availabilityBadgeHtml = getAvailabilityBadge(book);
+                const tagsHtml = book.tags && book.tags.length > 0 ? 
+                    `<div class="book-tags">${book.tags.map(tag => `<span class="book-tag">#${tag}</span>`).join('')}</div>` : '';
+                
+                const bookCard = document.createElement('div');
+                bookCard.className = 'book-card';
+                bookCard.setAttribute('data-book-id', book.id);
+                
+                bookCard.innerHTML = `
+                    <div class="book-cover">
+                        <img src="${book.coverImage || 'https://via.placeholder.com/280x380?text=No+Cover'}" alt="${book.title}">
+                        ${book.featured ? `<div class="book-badge">FEATURED</div>` : ''}
+                        ${availabilityBadgeHtml}
+                    </div>
+                    <div class="book-content">
+                        <div class="book-category">${book.category || 'General'}</div>
+                        <h3 class="book-title">${book.title}</h3>
+                        <div class="book-author">${book.author}</div>
+                        <p class="book-description">${book.description || 'No description available.'}</p>
+                        ${tagsHtml}
+                        <div class="book-meta">
+                            <div class="book-rating">
+                                <i class="fas fa-star"></i>
+                                <span>${book.rating || 'N/A'}</span>
+                            </div>
+                            <div class="book-pages">${book.pages || 'N/A'} pages</div>
+                        </div>
+                        <div class="book-actions">
+                            <button class="borrow-btn" ${canBorrow && book.availableCopies > 0 ? '' : 'disabled'}>
+                                <i class="fas fa-book-open"></i>
+                                ${canBorrow ? (book.availableCopies > 0 ? 'Borrow Now' : 'Unavailable') : 'Upgrade Plan'}
+                            </button>
+                            <a href="https://wa.me/254727211191?text=Hi%20THE%20SONGA,%20I%20want%20to%20borrow%20'${encodeURIComponent(book.title)}'%20by%20${encodeURIComponent(book.author)}%20from%20your%20library" class="whatsapp-btn" target="_blank">
+                                <i class="fab fa-whatsapp"></i>
+                            </a>
+                        </div>
+                    </div>
+                `;
+                
+                booksGrid.appendChild(bookCard);
+            });
+            
+            // Add event listeners to borrow buttons
+            const borrowButtons = booksGrid.querySelectorAll('.borrow-btn:not(:disabled)');
+            borrowButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const bookCard = this.closest('.book-card');
+                    const bookId = bookCard.getAttribute('data-book-id');
+                    const book = books.find(b => b.id === bookId);
+                    
+                    if (book) {
+                        // Store book info in localStorage for the form
+                        localStorage.setItem('borrowing_book', JSON.stringify({
+                            title: book.title,
+                            author: book.author,
+                            id: book.id
+                        }));
+                        
+                        borrowModal.classList.add('active');
+                    }
+                });
+            });
+        }
+
+        // Render articles
+        function renderArticles(articles) {
+            articlesGrid.innerHTML = '';
+            
+            if (!articles || articles.length === 0) {
+                articlesGrid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-newspaper"></i>
+                        <h3>No articles found</h3>
+                        <p>Check back later for new content</p>
+                    </div>
+                `;
+                return;
+            }
+
+            articles.forEach(article => {
+                const articleCard = document.createElement('div');
+                articleCard.className = 'article-card';
+                
+                articleCard.innerHTML = `
+                    <div class="article-image">
+                        <img src="${article.coverImage || 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'}" alt="${article.title}">
+                    </div>
+                    <div class="article-content">
+                        <div class="article-category">${article.category || 'General'}</div>
+                        <h3 class="article-title">${article.title}</h3>
+                        <p class="article-excerpt">${article.excerpt || article.content?.substring(0, 150) + '...' || 'No excerpt available.'}</p>
+                        <div class="article-meta">
+                            <div class="article-date">${formatDate(article.publishedDate)}</div>
+                            <div class="article-read-time">${article.readTime || '5 min'} read</div>
+                        </div>
+                        <div class="article-actions">
+                            <a href="#" class="read-btn" data-article-id="${article.id}">
+                                <i class="fas fa-book-reader"></i>
+                                Read Article
+                            </a>
+                        </div>
+                    </div>
+                `;
+                
+                articlesGrid.appendChild(articleCard);
+            });
+            
+            // Add event listeners to read buttons
+            const readButtons = articlesGrid.querySelectorAll('.read-btn');
+            readButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const articleId = this.getAttribute('data-article-id');
+                    showNotification(`Article reading feature coming soon! (ID: ${articleId})`);
+                });
+            });
+        }
+
+        // Render subscription plans
+        function renderSubscriptionPlans(plans) {
+            subscriptionPlans.innerHTML = '';
+            
+            if (!plans || plans.length === 0) {
+                subscriptionPlans.innerHTML = '<p>No subscription plans available at the moment.</p>';
+                return;
+            }
+
+            plans.forEach(plan => {
+                const isFeatured = plan.popularity === 'popular';
+                const planCard = document.createElement('div');
+                planCard.className = `plan-card ${isFeatured ? 'featured' : ''}`;
+                
+                planCard.innerHTML = `
+                    ${isFeatured ? '<div class="plan-badge">Most Popular</div>' : ''}
+                    <div class="plan-icon">
+                        <i class="${plan.id === 'visionary_plan' ? 'fas fa-infinity' : plan.id === 'scholar_plan' ? 'fas fa-gem' : 'fas fa-book-open'}"></i>
+                    </div>
+                    <h3 class="plan-title">${plan.name}</h3>
+                    <div class="plan-price">${plan.currency} ${plan.price}</div>
+                    <div class="plan-duration">${plan.duration}</div>
+                    <ul class="plan-features">
+                        ${plan.features.map(feature => `<li><i class="fas fa-check"></i> ${feature}</li>`).join('')}
+                    </ul>
+                    <button class="subscribe-btn" data-plan="${plan.name}" data-price="${plan.price}">
+                        <i class="fas fa-bookmark"></i>
+                        Subscribe Now
+                    </button>
+                `;
+                
+                subscriptionPlans.appendChild(planCard);
+            });
+            
+            // Add event listeners to subscribe buttons
+            const subscribeButtons = subscriptionPlans.querySelectorAll('.subscribe-btn');
+            subscribeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const plan = this.getAttribute('data-plan');
+                    const price = this.getAttribute('data-price');
+                    
+                    const message = `Hi THE SONGA, I want to subscribe to your ${plan} Library plan for KSh ${price}`;
+                    window.open(`https://wa.me/254727211191?text=${encodeURIComponent(message)}`, '_blank');
+                });
+            });
+        }
+
+        // Filter books
+        function filterBooks() {
+            const category = categoryFilter.value;
+            const genre = genreFilter.value;
+            const availability = availabilityFilter.value;
+            
+            filteredBooks = libraryBooks.filter(book => {
+                // Filter by category
+                if (category && book.category !== category) return false;
+                
+                // Filter by genre
+                if (genre && (!book.genre || !book.genre.includes(genre))) return false;
+                
+                // Filter by availability
+                if (availability === 'available' && (!book.availableCopies || book.availableCopies === 0)) return false;
+                if (availability === 'featured' && !book.featured) return false;
+                
+                return true;
+            });
+            
+            renderBooks(filteredBooks);
+            booksCount.textContent = filteredBooks.length;
+        }
+
+        // Update filter options
+        function updateFilterOptions() {
+            // Update category filter
+            const categories = [...new Set(libraryBooks.map(book => book.category).filter(Boolean))];
+            categoryFilter.innerHTML = '<option value="">All Categories</option>' +
+                categories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
+            
+            // Update genre filter
+            const allGenres = libraryBooks.flatMap(book => book.genre || []).filter(Boolean);
+            const uniqueGenres = [...new Set(allGenres)];
+            genreFilter.innerHTML = '<option value="">All Genres</option>' +
+                uniqueGenres.map(genre => `<option value="${genre}">${genre}</option>`).join('');
+        }
+
+        // Fetch library data from Firebase
+        async function fetchLibraryData() {
+            try {
+                // Fetch books
+                const booksRef = database.ref('libraryBooks');
+                const booksSnapshot = await booksRef.once('value');
+                if (booksSnapshot.exists()) {
+                    const booksData = booksSnapshot.val();
+                    libraryBooks = Object.keys(booksData).map(key => ({
+                        id: key,
+                        ...booksData[key]
+                    }));
+                    totalBooks.textContent = libraryBooks.length;
+                    filteredBooks = [...libraryBooks];
+                    updateFilterOptions();
+                    filterBooks();
+                } else {
+                    // Load sample books if none exist
+                    await loadSampleBooks();
+                    await fetchLibraryData(); // Fetch again after loading samples
+                }
+                
+                // Fetch articles
+                const articlesRef = database.ref('libraryArticles');
+                const articlesSnapshot = await articlesRef.once('value');
+                if (articlesSnapshot.exists()) {
+                    const articlesData = articlesSnapshot.val();
+                    libraryArticles = Object.keys(articlesData).map(key => ({
+                        id: key,
+                        ...articlesData[key]
+                    }));
+                    totalArticles.textContent = libraryArticles.length;
+                    filteredArticles = [...libraryArticles];
+                    renderArticles(filteredArticles);
+                    articlesCount.textContent = filteredArticles.length;
+                }
+                
+                // Fetch subscription plans
+                const plansRef = database.ref('subscriptionPlans');
+                const plansSnapshot = await plansRef.once('value');
+                if (plansSnapshot.exists()) {
+                    const plansData = plansSnapshot.val();
+                    subscriptionPlansData = Object.keys(plansData).map(key => ({
+                        id: key,
+                        ...plansData[key]
+                    }));
+                    renderSubscriptionPlans(subscriptionPlansData);
+                }
+                
+            } catch (error) {
+                console.error('Error fetching library data:', error);
+                showNotification('Failed to load library data', 'error');
+            }
+        }
+
+        // Load sample books (aligned with songa.json)
+        async function loadSampleBooks() {
+            const sampleBooks = {
+                book_001: {
+                    id: "book_001",
+                    title: "Atomic Habits",
+                    author: "James Clear",
+                    category: "Personal Growth",
+                    description: "Tiny Changes, Remarkable Results: An Easy & Proven Way to Build Good Habits & Break Bad Ones",
+                    coverImage: "https://i.postimg.cc/QxvdH4P0/atomic-habits-gallery-hi-res-01.jpg",
+                    rating: 4.8,
+                    totalRatings: 42,
+                    pages: 320,
+                    isbn: "978-0735211292",
+                    genre: ["self-help", "psychology", "productivity"],
+                    tags: ["habits", "productivity", "self-improvement"],
+                    availability: "available",
+                    totalCopies: 5,
+                    availableCopies: 3,
+                    borrowCount: 15,
+                    featured: true,
+                    addedDate: new Date().toISOString(),
+                    subscriptionTiers: ["explorer", "scholar", "visionary"]
+                },
+                book_002: {
+                    id: "book_002",
+                    title: "The Lean Startup",
+                    author: "Eric Ries",
+                    category: "Business",
+                    description: "How Today's Entrepreneurs Use Continuous Innovation to Create Radically Successful Businesses",
+                    coverImage: "https://i.postimg.cc/yxgWbwtd/Buy-The-Lean-Start-Upinthephilippines2.jpg",
+                    rating: 4.6,
+                    totalRatings: 28,
+                    pages: 336,
+                    isbn: "978-0307887894",
+                    genre: ["business", "entrepreneurship", "innovation"],
+                    tags: ["startup", "entrepreneurship", "innovation"],
+                    availability: "available",
+                    totalCopies: 3,
+                    availableCopies: 2,
+                    borrowCount: 8,
+                    featured: false,
+                    addedDate: new Date().toISOString(),
+                    subscriptionTiers: ["scholar", "visionary"]
+                },
+                book_003: {
+                    id: "book_003",
+                    title: "The Power of Now",
+                    author: "Eckhart Tolle",
+                    category: "Spirituality",
+                    description: "A Guide to Spiritual Enlightenment that has the potential to completely transform your life",
+                    coverImage: "https://i.postimg.cc/vZcGypvz/6777a02acc4544001d9bed6e.jpg",
+                    rating: 4.7,
+                    totalRatings: 35,
+                    pages: 236,
+                    isbn: "978-1577314806",
+                    genre: ["spirituality", "self-help", "mindfulness"],
+                    tags: ["mindfulness", "spiritual", "enlightenment"],
+                    availability: "available",
+                    totalCopies: 4,
+                    availableCopies: 1,
+                    borrowCount: 12,
+                    featured: true,
+                    addedDate: new Date().toISOString(),
+                    subscriptionTiers: ["explorer", "scholar", "visionary"]
+                },
+                book_004: {
+                    id: "book_004",
+                    title: "Things Fall Apart",
+                    author: "Chinua Achebe",
+                    category: "African Literature",
+                    description: "A masterpiece that has sold over 20 million copies worldwide about traditional African life",
+                    coverImage: "https://i.postimg.cc/pL6zXMMr/f3ce3b76-c6cf-4d13-9c84-2503d297eccb.webp",
+                    rating: 4.9,
+                    totalRatings: 56,
+                    pages: 209,
+                    isbn: "978-0385474542",
+                    genre: ["african", "literature", "classic"],
+                    tags: ["african", "classic", "literature"],
+                    availability: "available",
+                    totalCopies: 6,
+                    availableCopies: 4,
+                    borrowCount: 22,
+                    featured: false,
+                    addedDate: new Date().toISOString(),
+                    subscriptionTiers: ["all"]
+                }
             };
+
+            try {
+                const booksRef = database.ref('libraryBooks');
+                await booksRef.set(sampleBooks);
+                showNotification('Sample books loaded!', 'success');
+            } catch (error) {
+                console.error('Error loading sample books:', error);
+            }
+        }
+
+        // Search functionality
+        function performSearch(query) {
+            if (query.length < 2) {
+                searchResults.classList.remove('active');
+                return;
+            }
             
-            // Update UI
-            updateUserProfile();
+            const searchLower = query.toLowerCase();
+            const results = libraryBooks.filter(book => 
+                book.title.toLowerCase().includes(searchLower) || 
+                book.author.toLowerCase().includes(searchLower) ||
+                (book.category && book.category.toLowerCase().includes(searchLower)) ||
+                (book.tags && book.tags.some(tag => tag.toLowerCase().includes(searchLower))) ||
+                (book.genre && book.genre.some(g => g.toLowerCase().includes(searchLower)))
+            );
             
-            // Show success message
-            showNotification(`Welcome, ${currentUser.firstName}!`, 'success');
+            displaySearchResults(results.slice(0, 10)); // Limit to 10 results
+        }
+
+        function displaySearchResults(books) {
+            searchResults.innerHTML = '';
+            
+            if (books.length === 0) {
+                const noResults = document.createElement('div');
+                noResults.className = 'search-result-item';
+                noResults.textContent = 'No books found';
+                searchResults.appendChild(noResults);
+            } else {
+                books.forEach(book => {
+                    const resultItem = document.createElement('div');
+                    resultItem.className = 'search-result-item';
+                    resultItem.setAttribute('data-book-id', book.id);
+                    
+                    resultItem.innerHTML = `
+                        <img src="${book.coverImage || 'https://via.placeholder.com/40x50?text=No+Cover'}" alt="${book.title}" class="search-result-cover">
+                        <div class="search-result-info">
+                            <div class="search-result-title">${book.title}</div>
+                            <div class="search-result-author">${book.author}</div>
+                        </div>
+                    `;
+                    
+                    resultItem.addEventListener('click', function() {
+                        const bookId = this.getAttribute('data-book-id');
+                        
+                        // Switch to books tab
+                        tabButtons.forEach(btn => btn.classList.remove('active'));
+                        contentSections.forEach(section => section.classList.remove('active'));
+                        document.getElementById('books-section').classList.add('active');
+                        document.querySelector('[data-tab="books"]').classList.add('active');
+                        
+                        // Scroll to and highlight the book
+                        setTimeout(() => {
+                            const bookCard = document.querySelector(`.book-card[data-book-id="${bookId}"]`);
+                            if (bookCard) {
+                                bookCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                bookCard.style.boxShadow = '0 0 0 3px var(--gold)';
+                                setTimeout(() => {
+                                    bookCard.style.boxShadow = '';
+                                }, 2000);
+                            }
+                        }, 100);
+                        
+                        // Clear search and close results
+                        searchInput.value = '';
+                        searchResults.classList.remove('active');
+                    });
+                    
+                    searchResults.appendChild(resultItem);
+                });
+            }
+            
+            searchResults.classList.add('active');
+        }
+
+        // Google Sign-In Handler
+        async function handleGoogleSignIn(response) {
+            try {
+                const userData = parseJwt(response.credential);
+                
+                currentUser = {
+                    uid: userData.sub,
+                    email: userData.email,
+                    firstName: userData.given_name,
+                    lastName: userData.family_name,
+                    fullName: userData.name,
+                    picture: userData.picture,
+                    emailVerified: userData.email_verified
+                };
+                
+                // Save to localStorage
+                localStorage.setItem('the_songa_welfare_user', JSON.stringify(currentUser));
+                
+                // Check if user exists in Firebase
+                const userRef = database.ref(`users/${currentUser.uid}`);
+                const snapshot = await userRef.once('value');
+                
+                if (!snapshot.exists()) {
+                    // Create new user in Firebase
+                    const newUser = {
+                        uid: currentUser.uid,
+                        email: currentUser.email,
+                        firstName: currentUser.firstName,
+                        lastName: currentUser.lastName,
+                        profilePicture: currentUser.picture,
+                        joinedDate: new Date().toISOString(),
+                        lastLogin: new Date().toISOString(),
+                        membershipStatus: "active",
+                        membershipTier: "explorer",
+                        membershipSince: new Date().toISOString(),
+                        subscriptionPlan: "explorer_plan",
+                        readingPreferences: [],
+                        bookmarkedPosts: [],
+                        borrowedBooks: [],
+                        attendedEvents: [],
+                        notificationsEnabled: true,
+                        isAdmin: false,
+                        isModerator: false,
+                        status: "active",
+                        stats: {
+                            postsLiked: 0,
+                            booksBorrowed: 0,
+                            eventsAttended: 0,
+                            communityPoints: 0
+                        }
+                    };
+                    
+                    await userRef.set(newUser);
+                    currentUserData = newUser;
+                    
+                    showNotification(`Welcome to THE SONGA, ${currentUser.firstName}! Your account has been created.`, 'success');
+                } else {
+                    // Update last login
+                    await userRef.update({
+                        lastLogin: new Date().toISOString()
+                    });
+                    currentUserData = snapshot.val();
+                    showNotification(`Welcome back, ${currentUser.firstName}!`, 'success');
+                }
+                
+                updateUserProfile();
+                updateUserBadges();
+                
+                // Load user's borrowed books
+                const borrowed = getUserBorrowedBooks();
+                renderBorrowedBooks(borrowed);
+                
+            } catch (error) {
+                console.error('Error in Google Sign-In:', error);
+                showNotification('Error signing in. Please try again.', 'error');
+            }
         }
 
         // Parse JWT token
@@ -1610,9 +2354,17 @@
                 userDisplayName.textContent = currentUser.firstName;
                 userProfile.style.display = 'flex';
                 headerJoinBtn.style.display = 'none';
-                
-                // Store user data in localStorage
-                localStorage.setItem('the_songa_welfare_user', JSON.stringify(currentUser));
+            }
+        }
+
+        // Update user badges
+        function updateUserBadges() {
+            if (currentUserData) {
+                // Update membership badge
+                if (currentUserData.membershipTier) {
+                    membershipBadge.textContent = currentUserData.membershipTier.toUpperCase();
+                    membershipBadge.style.display = 'inline-block';
+                }
             }
         }
 
@@ -1622,16 +2374,40 @@
             if (storedUser) {
                 currentUser = JSON.parse(storedUser);
                 updateUserProfile();
+                
+                // Fetch user data from Firebase
+                fetchUserData(currentUser.uid);
+            }
+        }
+
+        // Fetch user data from Firebase
+        async function fetchUserData(userId) {
+            try {
+                const userRef = database.ref(`users/${userId}`);
+                const snapshot = await userRef.once('value');
+                
+                if (snapshot.exists()) {
+                    currentUserData = snapshot.val();
+                    updateUserBadges();
+                    
+                    // Load user's borrowed books
+                    const borrowed = getUserBorrowedBooks();
+                    renderBorrowedBooks(borrowed);
+                }
+            } catch (error) {
+                console.error('Error fetching user data:', error);
             }
         }
 
         // Sign out user
         function signOut() {
             currentUser = null;
+            currentUserData = null;
             userProfile.style.display = 'none';
             headerJoinBtn.style.display = 'flex';
             localStorage.removeItem('the_songa_welfare_user');
             closeDropdown();
+            borrowedSection.style.display = 'none';
             
             showNotification('Signed out successfully', 'success');
         }
@@ -1652,186 +2428,73 @@
             userDropdown.classList.remove('active');
         }
 
-        // Initialize the books grid
-        function initializeBooksGrid() {
-            booksGrid.innerHTML = '';
-            
-            bookCatalogue.forEach(book => {
-                const bookCard = document.createElement('div');
-                bookCard.className = 'book-card';
-                bookCard.setAttribute('data-book-id', book.id);
-                
-                bookCard.innerHTML = `
-                    <div class="book-cover">
-                        <img src="${book.cover}" alt="${book.title}">
-                        ${book.badge ? `<div class="book-badge">${book.badge}</div>` : ''}
-                    </div>
-                    <div class="book-content">
-                        <div class="book-category">${book.category}</div>
-                        <h3 class="book-title">${book.title}</h3>
-                        <div class="book-author">${book.author}</div>
-                        <p class="book-description">${book.description}</p>
-                        <div class="book-meta">
-                            <div class="book-rating">
-                                <i class="fas fa-star"></i>
-                                <span>${book.rating}</span>
-                            </div>
-                            <div class="book-pages">${book.pages} pages</div>
-                        </div>
-                        <div class="book-actions">
-                            <button class="borrow-btn">
-                                <i class="fas fa-book-open"></i>
-                                Borrow Now
-                            </button>
-                            <a href="https://wa.me/254727211191?text=Hi%20THE%20SONGA%20WELFARE,%20I%20want%20to%20borrow%20'${encodeURIComponent(book.title)}'%20by%20${encodeURIComponent(book.author)}%20from%20your%20library" class="whatsapp-btn">
-                                <i class="fab fa-whatsapp"></i>
-                            </a>
-                        </div>
-                    </div>
-                `;
-                
-                booksGrid.appendChild(bookCard);
-            });
-            
-            // Add event listeners to the newly created borrow buttons
-            const borrowButtons = document.querySelectorAll('.borrow-btn');
-            borrowButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    if (!currentUser) {
-                        showNotification('Please sign in with Google first', 'error');
-                    } else {
-                        borrowModal.classList.add('active');
-                    }
-                });
-            });
-        }
-
-        // Search functionality
-        function performSearch(query) {
-            if (query.length < 2) {
-                searchResults.classList.remove('active');
-                return;
-            }
-            
-            const filteredBooks = bookCatalogue.filter(book => 
-                book.title.toLowerCase().includes(query.toLowerCase()) || 
-                book.author.toLowerCase().includes(query.toLowerCase())
-            );
-            
-            displaySearchResults(filteredBooks);
-        }
-
-        function displaySearchResults(books) {
-            searchResults.innerHTML = '';
-            
-            if (books.length === 0) {
-                const noResults = document.createElement('div');
-                noResults.className = 'search-result-item';
-                noResults.textContent = 'No books found';
-                searchResults.appendChild(noResults);
-            } else {
-                books.forEach(book => {
-                    const resultItem = document.createElement('div');
-                    resultItem.className = 'search-result-item';
-                    resultItem.setAttribute('data-book-id', book.id);
-                    
-                    resultItem.innerHTML = `
-                        <img src="${book.cover}" alt="${book.title}" class="search-result-cover">
-                        <div class="search-result-info">
-                            <div class="search-result-title">${book.title}</div>
-                            <div class="search-result-author">${book.author}</div>
-                        </div>
-                    `;
-                    
-                    resultItem.addEventListener('click', function() {
-                        const bookId = this.getAttribute('data-book-id');
-                        const book = bookCatalogue.find(b => b.id == bookId);
-                        
-                        // Scroll to the book in the grid instead of booking directly
-                        const bookCard = document.querySelector(`.book-card[data-book-id="${bookId}"]`);
-                        if (bookCard) {
-                            bookCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                            
-                            // Add a highlight effect
-                            bookCard.style.boxShadow = '0 0 0 3px var(--gold)';
-                            setTimeout(() => {
-                                bookCard.style.boxShadow = '';
-                            }, 2000);
-                        }
-                        
-                        // Clear search and close results
-                        searchInput.value = '';
-                        searchResults.classList.remove('active');
-                    });
-                    
-                    searchResults.appendChild(resultItem);
-                });
-            }
-            
-            searchResults.classList.add('active');
-        }
-
         // Event Listeners
         document.addEventListener('DOMContentLoaded', function() {
             initializeTheme();
-            initializeBooksGrid();
             loadUserFromStorage();
+            fetchLibraryData();
             
-            // Add click event to user profile to toggle dropdown
+            // Animation for book cards
+            const animateCards = () => {
+                const bookCards = document.querySelectorAll('.book-card');
+                const articleCards = document.querySelectorAll('.article-card');
+                
+                bookCards.forEach((card, index) => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    
+                    setTimeout(() => {
+                        card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, index * 100);
+                });
+                
+                articleCards.forEach((card, index) => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    
+                    setTimeout(() => {
+                        card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 400 + (index * 100));
+                });
+            };
+
+            // Run animation after content loads
+            setTimeout(animateCards, 500);
+            
+            // User profile dropdown
             userProfile.addEventListener('click', function(e) {
                 e.stopPropagation();
                 toggleDropdown();
             });
             
-            // Close dropdown when clicking elsewhere
             document.addEventListener('click', function() {
                 closeDropdown();
             });
             
-            // Prevent dropdown from closing when clicking inside it
             userDropdown.addEventListener('click', function(e) {
                 e.stopPropagation();
-            });
-            
-            const bookCards = document.querySelectorAll('.book-card');
-            const articleCards = document.querySelectorAll('.article-card');
-            
-            bookCards.forEach((card, index) => {
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(20px)';
-                
-                setTimeout(() => {
-                    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-                    card.style.opacity = '1';
-                    card.style.transform = 'translateY(0)';
-                }, index * 100);
-            });
-            
-            articleCards.forEach((card, index) => {
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(20px)';
-                
-                setTimeout(() => {
-                    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-                    card.style.opacity = '1';
-                    card.style.transform = 'translateY(0)';
-                }, 400 + (index * 100));
             });
         });
 
         // Dropdown option event listeners
         viewProfileOption.addEventListener('click', function() {
-            showNotification('Profile feature coming soon!', 'success');
+            showNotification('Profile page coming soon!');
             closeDropdown();
         });
 
-        subscriptionOption.addEventListener('click', function() {
-            subscriptionModal.classList.add('active');
+        membershipOption.addEventListener('click', function() {
+            if (currentUserData) {
+                showNotification(`Your ${currentUserData.membershipTier} membership is active and in good standing.`);
+            }
             closeDropdown();
         });
 
         settingsOption.addEventListener('click', function() {
-            showNotification('Settings feature coming soon!', 'success');
+            showNotification('Settings page coming soon!');
             closeDropdown();
         });
 
@@ -1840,11 +2503,11 @@
             closeDropdown();
         });
 
+        // Search functionality
         searchInput.addEventListener('input', function() {
             performSearch(this.value);
         });
 
-        // Close search results when clicking outside
         document.addEventListener('click', function(e) {
             if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
                 searchResults.classList.remove('active');
@@ -1854,12 +2517,11 @@
         // Theme toggle
         themeToggle.addEventListener('click', toggleTheme);
 
-        // Open subscription modal
+        // Modals
         subscriptionBtn.addEventListener('click', function() {
             subscriptionModal.classList.add('active');
         });
 
-        // Header Join Us button
         headerJoinBtn.addEventListener('click', function() {
             if (!currentUser) {
                 showNotification('Please sign in with Google first', 'error');
@@ -1868,17 +2530,14 @@
             }
         });
 
-        // Close subscription modal
         closeSubscriptionModal.addEventListener('click', function() {
             subscriptionModal.classList.remove('active');
         });
 
-        // Close borrow modal
         closeBorrowModal.addEventListener('click', function() {
             borrowModal.classList.remove('active');
         });
 
-        // Close modals when clicking outside
         subscriptionModal.addEventListener('click', function(e) {
             if (e.target === subscriptionModal) {
                 subscriptionModal.classList.remove('active');
@@ -1896,29 +2555,25 @@
             button.addEventListener('click', function() {
                 const tabId = this.getAttribute('data-tab');
                 
-                // Update active tab
-                tabButtons.forEach(btn => {
-                    btn.classList.remove('active');
-                });
+                tabButtons.forEach(btn => btn.classList.remove('active'));
                 this.classList.add('active');
                 
-                // Show corresponding section
-                contentSections.forEach(section => {
-                    section.classList.remove('active');
-                });
+                contentSections.forEach(section => section.classList.remove('active'));
                 document.getElementById(`${tabId}-section`).classList.add('active');
             });
         });
 
-        // Subscription plan selection
-        subscribeButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const plan = this.getAttribute('data-plan');
-                const price = this.getAttribute('data-price');
-                
-                const message = `Hi THE SONGA WELFARE, I want to subscribe to your ${plan} Library plan for KSh ${price}`;
-                window.open(`https://wa.me/254727211191?text=${encodeURIComponent(message)}`, '_blank');
-            });
+        // Filter functionality
+        categoryFilter.addEventListener('change', filterBooks);
+        genreFilter.addEventListener('change', filterBooks);
+        availabilityFilter.addEventListener('change', filterBooks);
+
+        clearFilters.addEventListener('click', function() {
+            categoryFilter.value = '';
+            genreFilter.value = '';
+            availabilityFilter.value = '';
+            filterBooks();
+            showNotification('Filters cleared', 'success');
         });
 
         // Global function for Google Sign-In callback
