@@ -4,17 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>THE SONGA - Admin Panel</title>
-    <link rel="icon" type="image/x-icon" href="https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Firebase SDK (Version 8.10.1) -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    
     <style>
-        /* All CSS styles remain exactly the same as before */
+        :root {
+            --primary-color: #D4AF37;
+            --primary-dark: #B8941F;
+            --secondary-color: #1a1a1a;
+            --light-bg: #f8f9fa;
+            --dark-bg: #121212;
+            --sidebar-bg: #1e1e1e;
+            --card-bg: #ffffff;
+            --border-color: #e0e0e0;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --info-color: #3b82f6;
+        }
+
+        .dark-mode {
+            --light-bg: #121212;
+            --card-bg: #1e1e1e;
+            --border-color: #333333;
+            --text-primary: #f0f0f0;
+            --text-secondary: #a0a0a0;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -22,441 +39,380 @@
             font-family: 'Inter', sans-serif;
         }
 
-        :root {
-            --gold: #D4AF37;
-            --gold-light: #F5E6B3;
-            --gold-dark: #B8860B;
-            --black: #000000;
-            --white: #ffffff;
-            --gray: #f5f5f5;
-            --dark-gray: #333333;
-            --light-gray: #e0e0e0;
-            --success: #10B981;
-            --warning: #F59E0B;
-            --danger: #EF4444;
-            --info: #3B82F6;
-            --sidebar-bg: #1F2937;
-            --sidebar-text: #F9FAFB;
-            --sidebar-hover: #374151;
-            --content-bg: #F9FAFB;
-        }
-
         body {
-            background-color: var(--content-bg);
-            color: var(--dark-gray);
-            line-height: 1.6;
-            height: 100vh;
-            overflow: hidden;
+            background-color: var(--light-bg);
+            color: var(--text-primary);
+            transition: background-color 0.3s, color 0.3s;
         }
 
-        /* Login Page */
-        .login-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
-        }
-
-        .login-box {
-            background: var(--white);
-            padding: 3rem;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-        }
-
-        .login-logo {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 1.5rem;
-            border-radius: 50%;
-            overflow: hidden;
-            border: 3px solid var(--gold);
-        }
-
-        .login-logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .login-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            color: var(--gold-dark);
-        }
-
-        .login-subtitle {
-            color: var(--dark-gray);
-            margin-bottom: 2rem;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-            text-align: left;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: var(--dark-gray);
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid var(--light-gray);
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: border 0.3s;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--gold);
-            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
-        }
-
-        .login-btn {
-            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
-            color: var(--black);
-            border: none;
-            border-radius: 8px;
-            padding: 14px 20px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            transition: transform 0.3s;
-        }
-
-        .login-btn:hover {
-            transform: translateY(-2px);
-        }
-
-        .error-message {
-            background-color: rgba(239, 68, 68, 0.1);
-            color: var(--danger);
-            padding: 10px;
-            border-radius: 6px;
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
-            display: none;
-        }
-
-        /* Admin Dashboard Layout */
         .admin-container {
             display: flex;
-            height: 100vh;
+            min-height: 100vh;
         }
 
-        /* Sidebar */
+        /* Sidebar Styles */
         .sidebar {
             width: 260px;
             background-color: var(--sidebar-bg);
-            color: var(--sidebar-text);
+            color: white;
+            padding: 20px 0;
             display: flex;
             flex-direction: column;
-            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
         }
 
-        .sidebar-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid var(--sidebar-hover);
+        .logo-section {
+            padding: 0 20px 30px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
             text-align: center;
         }
 
-        .admin-logo {
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .logo-img {
             width: 50px;
             height: 50px;
-            margin: 0 auto 1rem;
             border-radius: 50%;
-            overflow: hidden;
-            border: 2px solid var(--gold);
+            object-fit: contain;
         }
 
-        .admin-logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .admin-title {
-            font-size: 1.2rem;
+        .logo-text {
+            font-size: 22px;
             font-weight: 700;
-            color: var(--gold);
+            color: var(--primary-color);
+        }
+
+        .logo-subtitle {
+            font-size: 12px;
+            color: rgba(255,255,255,0.7);
+            letter-spacing: 1px;
         }
 
         .nav-menu {
             flex: 1;
-            padding: 1rem 0;
-            overflow-y: auto;
+            padding: 20px 0;
         }
 
         .nav-item {
             display: flex;
             align-items: center;
-            padding: 12px 1.5rem;
-            color: var(--sidebar-text);
+            padding: 14px 25px;
+            color: rgba(255,255,255,0.8);
             text-decoration: none;
-            transition: background-color 0.3s;
-            border-left: 4px solid transparent;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
         }
 
         .nav-item:hover {
-            background-color: var(--sidebar-hover);
+            background-color: rgba(212, 175, 55, 0.1);
+            color: white;
+            border-left-color: var(--primary-color);
         }
 
         .nav-item.active {
-            background-color: var(--sidebar-hover);
-            border-left-color: var(--gold);
+            background-color: rgba(212, 175, 55, 0.15);
+            color: var(--primary-color);
+            border-left-color: var(--primary-color);
         }
 
         .nav-icon {
             width: 24px;
             margin-right: 12px;
-            font-size: 1.1rem;
-            color: var(--gold);
+            font-size: 18px;
+            text-align: center;
+        }
+
+        .nav-text {
+            font-size: 15px;
+            font-weight: 500;
         }
 
         .sidebar-footer {
-            padding: 1rem 1.5rem;
-            border-top: 1px solid var(--sidebar-hover);
+            padding: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+        }
+
+        .admin-profile {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
 
-        .user-avatar {
-            width: 36px;
-            height: 36px;
+        .admin-avatar {
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            overflow: hidden;
-        }
-
-        .user-avatar img {
-            width: 100%;
-            height: 100%;
             object-fit: cover;
+            border: 2px solid var(--primary-color);
         }
 
-        .user-info {
-            flex: 1;
+        .admin-info h4 {
+            font-size: 14px;
+            color: white;
+            margin-bottom: 2px;
         }
 
-        .user-name {
-            font-weight: 600;
-            font-size: 0.9rem;
+        .admin-info p {
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
         }
 
-        .user-role {
-            font-size: 0.8rem;
-            color: var(--gold-light);
-        }
-
-        .logout-btn {
-            background: none;
-            border: none;
-            color: var(--sidebar-text);
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 4px;
-            transition: background-color 0.3s;
-        }
-
-        .logout-btn:hover {
-            background-color: var(--danger);
-        }
-
-        /* Main Content */
+        /* Main Content Styles */
         .main-content {
             flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
+            margin-left: 260px;
+            padding: 20px;
         }
 
         .top-bar {
-            background-color: var(--white);
-            padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 15px 0;
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--border-color);
         }
 
         .page-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--gold-dark);
-        }
-
-        .stats-cards {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .stat-card {
-            background: var(--white);
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            border-left: 4px solid var(--gold);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        }
-
-        .stat-value {
-            font-size: 1.5rem;
+            font-size: 24px;
             font-weight: 700;
-            color: var(--gold-dark);
+            color: var(--primary-color);
         }
 
-        .stat-label {
-            font-size: 0.9rem;
-            color: var(--dark-gray);
+        .top-bar-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
-        .content-area {
-            flex: 1;
-            padding: 2rem;
-            overflow-y: auto;
+        .mode-toggle, .notification-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 18px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.3s;
         }
 
-        /* Content Sections */
-        .content-section {
-            background-color: var(--white);
+        .mode-toggle:hover, .notification-btn:hover {
+            background-color: rgba(0,0,0,0.05);
+            color: var(--primary-color);
+        }
+
+        .dark-mode .mode-toggle:hover, .dark-mode .notification-btn:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        /* Dashboard Cards */
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
             border-radius: 12px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            display: none;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid var(--border-color);
         }
 
-        .content-section.active {
-            display: block;
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
         }
 
-        .section-header {
+        .card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid var(--gray);
+            margin-bottom: 15px;
         }
 
-        .section-title {
-            font-size: 1.3rem;
+        .card-title {
+            font-size: 16px;
             font-weight: 600;
-            color: var(--gold-dark);
+            color: var(--text-secondary);
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        .users-icon { background-color: var(--info-color); }
+        .posts-icon { background-color: var(--success-color); }
+        .books-icon { background-color: var(--warning-color); }
+        .events-icon { background-color: var(--danger-color); }
+
+        .card-value {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .card-change {
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .positive {
+            color: var(--success-color);
+        }
+
+        .negative {
+            color: var(--danger-color);
+        }
+
+        /* Table Styles */
+        .table-container {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            border: 1px solid var(--border-color);
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .table-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 10px;
         }
 
         .btn {
-            padding: 10px 20px;
+            padding: 8px 16px;
+            border-radius: 8px;
             border: none;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            font-weight: 600;
+            font-weight: 500;
             cursor: pointer;
-            transition: all 0.3s;
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            transition: all 0.3s;
         }
 
         .btn-primary {
-            background-color: var(--gold);
-            color: var(--black);
+            background-color: var(--primary-color);
+            color: white;
         }
 
         .btn-primary:hover {
-            background-color: var(--gold-dark);
-            color: var(--white);
+            background-color: var(--primary-dark);
         }
 
         .btn-secondary {
-            background-color: var(--light-gray);
-            color: var(--dark-gray);
+            background-color: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
         }
 
         .btn-secondary:hover {
-            background-color: var(--dark-gray);
-            color: var(--white);
+            background-color: rgba(0,0,0,0.05);
         }
 
-        .btn-danger {
-            background-color: var(--danger);
-            color: var(--white);
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 14px;
         }
 
-        .btn-danger:hover {
-            background-color: #DC2626;
+        .btn-icon {
+            font-size: 14px;
         }
 
-        .btn-success {
-            background-color: var(--success);
-            color: var(--white);
-        }
-
-        .btn-success:hover {
-            background-color: #059669;
-        }
-
-        /* Data Tables */
-        .data-table-container {
-            overflow-x: auto;
-            border-radius: 8px;
-            border: 1px solid var(--light-gray);
-        }
-
-        .data-table {
+        table {
             width: 100%;
             border-collapse: collapse;
         }
 
-        .data-table th {
-            background-color: var(--gray);
-            padding: 12px 16px;
+        th {
             text-align: left;
+            padding: 16px 24px;
+            background-color: rgba(0,0,0,0.03);
             font-weight: 600;
-            color: var(--dark-gray);
-            border-bottom: 2px solid var(--light-gray);
+            color: var(--text-secondary);
+            font-size: 14px;
+            border-bottom: 1px solid var(--border-color);
         }
 
-        .data-table td {
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--light-gray);
+        .dark-mode th {
+            background-color: rgba(255,255,255,0.05);
         }
 
-        .data-table tr:hover {
-            background-color: var(--gray);
+        td {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 14px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background-color: rgba(0,0,0,0.02);
+        }
+
+        .dark-mode tr:hover {
+            background-color: rgba(255,255,255,0.05);
         }
 
         .status-badge {
             padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            font-weight: 600;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
             display: inline-block;
         }
 
         .status-active {
             background-color: rgba(16, 185, 129, 0.1);
-            color: var(--success);
+            color: var(--success-color);
         }
 
         .status-inactive {
             background-color: rgba(239, 68, 68, 0.1);
-            color: var(--danger);
+            color: var(--danger-color);
         }
 
         .status-pending {
             background-color: rgba(245, 158, 11, 0.1);
-            color: var(--warning);
+            color: var(--warning-color);
         }
 
         .action-buttons {
@@ -464,34 +420,17 @@
             gap: 8px;
         }
 
-        .action-btn {
-            padding: 6px 12px;
-            border: none;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: background-color 0.3s;
+        .btn-edit {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: var(--info-color);
         }
 
-        .action-btn.edit {
-            background-color: var(--info);
-            color: white;
+        .btn-delete {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
         }
 
-        .action-btn.edit:hover {
-            background-color: #2563EB;
-        }
-
-        .action-btn.delete {
-            background-color: var(--danger);
-            color: white;
-        }
-
-        .action-btn.delete:hover {
-            background-color: #DC2626;
-        }
-
-        /* Modal */
+        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -499,671 +438,580 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(0,0,0,0.5);
             z-index: 1000;
-            justify-content: center;
             align-items: center;
-        }
-
-        .modal.active {
-            display: flex;
+            justify-content: center;
         }
 
         .modal-content {
-            background-color: var(--white);
-            border-radius: 12px;
+            background-color: var(--card-bg);
+            border-radius: 16px;
             width: 90%;
             max-width: 600px;
             max-height: 90vh;
             overflow-y: auto;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
         }
 
         .modal-header {
-            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
-            color: var(--black);
-            padding: 1.5rem;
-            border-radius: 12px 12px 0 0;
-            position: relative;
+            padding: 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .modal-header h2 {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
         }
 
         .close-modal {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: rgba(0, 0, 0, 0.2);
+            background: none;
             border: none;
-            color: var(--black);
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            font-size: 24px;
+            color: var(--text-secondary);
             cursor: pointer;
-            font-size: 1.2rem;
+            line-height: 1;
         }
 
         .modal-body {
-            padding: 2rem;
+            padding: 24px;
         }
 
-        .form-row {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1rem;
+        .form-group {
+            margin-bottom: 20px;
         }
 
-        .form-row .form-group {
-            flex: 1;
-            margin-bottom: 0;
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-primary);
         }
 
-        textarea {
+        .form-control {
             width: 100%;
             padding: 12px 16px;
-            border: 1px solid var(--light-gray);
             border-radius: 8px;
-            font-size: 1rem;
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        textarea:focus {
-            outline: none;
-            border-color: var(--gold);
-            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
-        }
-
-        select {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid var(--light-gray);
-            border-radius: 8px;
-            font-size: 1rem;
-            background-color: var(--white);
-        }
-
-        select:focus {
-            outline: none;
-            border-color: var(--gold);
-        }
-
-        .file-upload {
-            border: 2px dashed var(--light-gray);
-            border-radius: 8px;
-            padding: 2rem;
-            text-align: center;
-            cursor: pointer;
+            border: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+            color: var(--text-primary);
+            font-size: 15px;
             transition: border-color 0.3s;
         }
 
-        .file-upload:hover {
-            border-color: var(--gold);
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
         }
 
-        .file-upload i {
-            font-size: 2rem;
-            color: var(--gold);
-            margin-bottom: 1rem;
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
         }
 
-        /* Loading Spinner */
-        .loading-spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid var(--gold);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 2rem auto;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .modal-footer {
+            padding: 20px 24px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
         }
 
         /* Responsive Design */
-        @media (max-width: 1024px) {
+        @media (max-width: 1200px) {
             .sidebar {
-                width: 220px;
+                width: 80px;
             }
             
-            .stats-cards {
-                flex-wrap: wrap;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .admin-container {
-                flex-direction: column;
+            .main-content {
+                margin-left: 80px;
             }
             
-            .sidebar {
-                width: 100%;
-                height: auto;
+            .logo-text, .logo-subtitle, .nav-text, .admin-info {
+                display: none;
             }
             
-            .nav-menu {
-                display: flex;
-                overflow-x: auto;
-                padding: 0.5rem;
+            .logo {
+                justify-content: center;
+            }
+            
+            .logo-img {
+                width: 40px;
+                height: 40px;
             }
             
             .nav-item {
-                flex-direction: column;
-                text-align: center;
-                padding: 0.5rem;
-                min-width: 80px;
+                justify-content: center;
+                padding: 16px;
             }
             
             .nav-icon {
                 margin-right: 0;
-                margin-bottom: 4px;
+                font-size: 20px;
             }
             
             .sidebar-footer {
-                display: none;
+                padding: 15px 10px;
             }
             
-            .content-area {
-                padding: 1rem;
-            }
-            
-            .modal-content {
-                width: 95%;
+            .admin-profile {
+                justify-content: center;
             }
         }
 
-        @media (max-width: 480px) {
-            .login-box {
-                padding: 2rem 1rem;
-            }
-            
-            .top-bar {
-                flex-direction: column;
-                gap: 1rem;
-                padding: 1rem;
+        @media (max-width: 768px) {
+            .dashboard-cards {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             }
             
             .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .table-header {
                 flex-direction: column;
-                gap: 0;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .table-actions {
+                width: 100%;
+                justify-content: flex-end;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Login Page -->
-    <div id="loginPage" class="login-container">
-        <div class="login-box">
-            <div class="login-logo">
-                <img src="https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp" alt="THE SONGA Logo">
-            </div>
-            <h1 class="login-title">THE SONGA Admin</h1>
-            <p class="login-subtitle">Administrator Access Only</p>
-            
-            <div class="error-message" id="loginError"></div>
-            
-            <div class="form-group">
-                <label for="email">Email Address</label>
-                <input type="email" id="email" placeholder="admin@thesongawelfare.com" autocomplete="email">
-            </div>
-            
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
-            </div>
-            
-            <button class="login-btn" id="loginBtn">
-                <i class="fas fa-sign-in-alt"></i> Sign In
-            </button>
-        </div>
-    </div>
-
-    <!-- Admin Dashboard -->
-    <div id="adminDashboard" class="admin-container" style="display: none;">
+    <div class="admin-container">
         <!-- Sidebar -->
         <div class="sidebar">
-            <div class="sidebar-header">
-                <div class="admin-logo">
-                    <img src="https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp" alt="THE SONGA Logo">
+            <div class="logo-section">
+                <div class="logo">
+                    <img src="https://i.postimg.cc/BbdzCkxQ/20260116_0851_Elegant_Lion_Emblem_remix_01kf2npwbtf06ttr4htekjnd47_removebg_preview_2.webp" alt="THE SONGA Logo" class="logo-img">
+                    <div>
+                        <div class="logo-text">SONGA</div>
+                        <div class="logo-subtitle">ADMIN PANEL</div>
+                    </div>
                 </div>
-                <div class="admin-title">THE SONGA Admin</div>
             </div>
             
-            <nav class="nav-menu">
+            <div class="nav-menu">
                 <a href="#" class="nav-item active" data-section="dashboard">
                     <i class="fas fa-tachometer-alt nav-icon"></i>
-                    Dashboard
+                    <span class="nav-text">Dashboard</span>
                 </a>
                 <a href="#" class="nav-item" data-section="users">
                     <i class="fas fa-users nav-icon"></i>
-                    Users
+                    <span class="nav-text">Users</span>
                 </a>
                 <a href="#" class="nav-item" data-section="posts">
                     <i class="fas fa-newspaper nav-icon"></i>
-                    Community Posts
+                    <span class="nav-text">Community Posts</span>
                 </a>
-                <a href="#" class="nav-item" data-section="books">
+                <a href="#" class="nav-item" data-section="library">
                     <i class="fas fa-book nav-icon"></i>
-                    Library Books
-                </a>
-                <a href="#" class="nav-item" data-section="subscriptions">
-                    <i class="fas fa-crown nav-icon"></i>
-                    Subscriptions
+                    <span class="nav-text">Library</span>
                 </a>
                 <a href="#" class="nav-item" data-section="events">
                     <i class="fas fa-calendar-alt nav-icon"></i>
-                    Events
+                    <span class="nav-text">Events</span>
+                </a>
+                <a href="#" class="nav-item" data-section="subscriptions">
+                    <i class="fas fa-credit-card nav-icon"></i>
+                    <span class="nav-text">Subscriptions</span>
                 </a>
                 <a href="#" class="nav-item" data-section="analytics">
                     <i class="fas fa-chart-bar nav-icon"></i>
-                    Analytics
+                    <span class="nav-text">Analytics</span>
                 </a>
                 <a href="#" class="nav-item" data-section="settings">
                     <i class="fas fa-cog nav-icon"></i>
-                    Settings
+                    <span class="nav-text">Settings</span>
                 </a>
-            </nav>
+            </div>
             
             <div class="sidebar-footer">
-                <div class="user-avatar" id="adminAvatar">
-                    <img src="https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp" alt="Admin">
+                <div class="admin-profile">
+                    <img src="https://i.postimg.cc/BbdzCkxQ/20260116_0851_Elegant_Lion_Emblem_remix_01kf2npwbtf06ttr4htekjnd47_removebg_preview_2.webp" alt="Admin Avatar" class="admin-avatar">
+                    <div class="admin-info">
+                        <h4>THE SONGA Admin</h4>
+                        <p>Super Administrator</p>
+                    </div>
                 </div>
-                <div class="user-info">
-                    <div class="user-name" id="adminName">Admin User</div>
-                    <div class="user-role">Administrator</div>
-                </div>
-                <button class="logout-btn" id="logoutBtn" title="Logout">
-                    <i class="fas fa-sign-out-alt"></i>
-                </button>
             </div>
         </div>
 
         <!-- Main Content -->
         <div class="main-content">
             <div class="top-bar">
-                <h1 class="page-title" id="pageTitle">Dashboard</h1>
-                <div class="stats-cards">
-                    <div class="stat-card">
-                        <div class="stat-value" id="totalUsers">0</div>
-                        <div class="stat-label">Total Users</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="totalPosts">0</div>
-                        <div class="stat-label">Posts</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="totalBooks">0</div>
-                        <div class="stat-label">Books</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="activeSubscriptions">0</div>
-                        <div class="stat-label">Active Subs</div>
-                    </div>
+                <h1 class="page-title">Admin Dashboard</h1>
+                <div class="top-bar-actions">
+                    <button class="mode-toggle" id="modeToggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button class="notification-btn">
+                        <i class="fas fa-bell"></i>
+                    </button>
+                    <button class="btn btn-primary btn-sm" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt btn-icon"></i> Logout
+                    </button>
                 </div>
             </div>
 
-            <div class="content-area">
-                <!-- Dashboard Section -->
-                <section id="dashboardSection" class="content-section active">
-                    <div class="section-header">
-                        <h2 class="section-title">Platform Overview</h2>
-                        <div class="last-updated" id="lastUpdated"></div>
-                    </div>
-                    
-                    <div class="quick-stats-grid">
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
-                            <div class="stat-card">
-                                <div class="stat-value" id="todayUsers">0</div>
-                                <div class="stat-label">Today's Active Users</div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-value" id="todayBorrows">0</div>
-                                <div class="stat-label">Today's Book Borrows</div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-value" id="upcomingEvents">0</div>
-                                <div class="stat-label">Upcoming Events</div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-value" id="pendingRegistrations">0</div>
-                                <div class="stat-label">Pending Registrations</div>
+            <!-- Dashboard Section -->
+            <section id="dashboard-section" class="content-section">
+                <div class="dashboard-cards">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Total Users</h3>
+                            <div class="card-icon users-icon">
+                                <i class="fas fa-users"></i>
                             </div>
                         </div>
-                    </div>
-                    
-                    <div style="margin-top: 2rem;">
-                        <h3 style="margin-bottom: 1rem; color: var(--gold-dark);">Recent Activity</h3>
-                        <div class="data-table-container">
-                            <table class="data-table" id="recentActivityTable">
-                                <thead>
-                                    <tr>
-                                        <th>Time</th>
-                                        <th>User</th>
-                                        <th>Activity</th>
-                                        <th>Details</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- Activity data will be populated here -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Users Section -->
-                <section id="usersSection" class="content-section">
-                    <div class="section-header">
-                        <h2 class="section-title">User Management</h2>
-                        <button class="btn btn-primary" id="addUserBtn">
-                            <i class="fas fa-user-plus"></i> Add User
-                        </button>
-                    </div>
-                    
-                    <div class="data-table-container">
-                        <table class="data-table" id="usersTable">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Membership</th>
-                                    <th>Joined</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- User data will be populated here -->
-                            </tbody>
-                        </table>
-                    </div>
-                </section>
-
-                <!-- Posts Section -->
-                <section id="postsSection" class="content-section">
-                    <div class="section-header">
-                        <h2 class="section-title">Community Posts</h2>
-                        <button class="btn btn-primary" id="addPostBtn">
-                            <i class="fas fa-plus"></i> Create Post
-                        </button>
-                    </div>
-                    
-                    <div class="data-table-container">
-                        <table class="data-table" id="postsTable">
-                            <thead>
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Author</th>
-                                    <th>Category</th>
-                                    <th>Likes</th>
-                                    <th>Created</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Post data will be populated here -->
-                            </tbody>
-                        </table>
-                    </div>
-                </section>
-
-                <!-- Books Section -->
-                <section id="booksSection" class="content-section">
-                    <div class="section-header">
-                        <h2 class="section-title">Library Books</h2>
-                        <button class="btn btn-primary" id="addBookBtn">
-                            <i class="fas fa-book-medical"></i> Add Book
-                        </button>
-                    </div>
-                    
-                    <div class="data-table-container">
-                        <table class="data-table" id="booksTable">
-                            <thead>
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Author</th>
-                                    <th>Category</th>
-                                    <th>Available</th>
-                                    <th>Borrows</th>
-                                    <th>Rating</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Book data will be populated here -->
-                            </tbody>
-                        </table>
-                    </div>
-                </section>
-
-                <!-- Subscriptions Section -->
-                <section id="subscriptionsSection" class="content-section">
-                    <div class="section-header">
-                        <h2 class="section-title">Subscription Plans</h2>
-                        <button class="btn btn-primary" id="addSubscriptionBtn">
-                            <i class="fas fa-plus"></i> Add Plan
-                        </button>
-                    </div>
-                    
-                    <div class="data-table-container">
-                        <table class="data-table" id="subscriptionsTable">
-                            <thead>
-                                <tr>
-                                    <th>Plan Name</th>
-                                    <th>Price</th>
-                                    <th>Duration</th>
-                                    <th>Features</th>
-                                    <th>Popularity</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Subscription data will be populated here -->
-                            </tbody>
-                        </table>
-                    </div>
-                </section>
-
-                <!-- Events Section -->
-                <section id="eventsSection" class="content-section">
-                    <div class="section-header">
-                        <h2 class="section-title">Events Management</h2>
-                        <button class="btn btn-primary" id="addEventBtn">
-                            <i class="fas fa-calendar-plus"></i> Create Event
-                        </button>
-                    </div>
-                    
-                    <div class="data-table-container">
-                        <table class="data-table" id="eventsTable">
-                            <thead>
-                                <tr>
-                                    <th>Event Title</th>
-                                    <th>Date</th>
-                                    <th>Location</th>
-                                    <th>Attendees</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Event data will be populated here -->
-                            </tbody>
-                        </table>
-                    </div>
-                </section>
-
-                <!-- Analytics Section -->
-                <section id="analyticsSection" class="content-section">
-                    <div class="section-header">
-                        <h2 class="section-title">Analytics & Reports</h2>
-                        <div>
-                            <select id="analyticsPeriod" style="padding: 8px 12px; border-radius: 6px;">
-                                <option value="7">Last 7 Days</option>
-                                <option value="30" selected>Last 30 Days</option>
-                                <option value="90">Last 90 Days</option>
-                                <option value="365">Last Year</option>
-                            </select>
+                        <div class="card-value" id="totalUsers">50</div>
+                        <div class="card-change positive">
+                            <i class="fas fa-arrow-up"></i> <span>+5 this week</span>
                         </div>
                     </div>
                     
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
-                        <div class="stat-card">
-                            <div class="stat-value" id="totalVisits">0</div>
-                            <div class="stat-label">Total Visits</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="newRegistrations">0</div>
-                            <div class="stat-label">New Registrations</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="bookBorrows">0</div>
-                            <div class="stat-label">Book Borrows</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="eventRegistrations">0</div>
-                            <div class="stat-label">Event Registrations</div>
-                        </div>
-                    </div>
-                    
-                    <div style="background: white; padding: 1.5rem; border-radius: 8px; border: 1px solid var(--light-gray);">
-                        <h3 style="margin-bottom: 1rem; color: var(--gold-dark);">Activity Chart</h3>
-                        <div id="activityChart" style="height: 300px; display: flex; align-items: center; justify-content: center; color: var(--dark-gray);">
-                            Chart will be displayed here
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Settings Section -->
-                <section id="settingsSection" class="content-section">
-                    <div class="section-header">
-                        <h2 class="section-title">Platform Settings</h2>
-                    </div>
-                    
-                    <div style="max-width: 600px;">
-                        <div class="form-group" style="margin-bottom: 1.5rem;">
-                            <label>Platform Name</label>
-                            <input type="text" id="platformName" value="THE SONGA" style="font-weight: 600;">
-                        </div>
-                        
-                        <div class="form-group" style="margin-bottom: 1.5rem;">
-                            <label>Contact WhatsApp Number</label>
-                            <input type="text" id="whatsappNumber" value="254727211191">
-                        </div>
-                        
-                        <div class="form-group" style="margin-bottom: 1.5rem;">
-                            <label>Contact Email</label>
-                            <input type="email" id="contactEmail" value="office.songawelfare@gmail.com">
-                        </div>
-                        
-                        <div class="form-group" style="margin-bottom: 1.5rem;">
-                            <label>Library Email</label>
-                            <input type="email" id="libraryEmail" value="library@thesongawelfare.com">
-                        </div>
-                        
-                        <div class="form-group" style="margin-bottom: 2rem;">
-                            <label>Maintenance Mode</label>
-                            <div style="display: flex; align-items: center; gap: 10px; margin-top: 0.5rem;">
-                                <input type="checkbox" id="maintenanceMode">
-                                <label for="maintenanceMode" style="margin-bottom: 0;">Enable maintenance mode</label>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Community Posts</h3>
+                            <div class="card-icon posts-icon">
+                                <i class="fas fa-newspaper"></i>
                             </div>
                         </div>
-                        
-                        <button class="btn btn-primary" id="saveSettingsBtn">
-                            <i class="fas fa-save"></i> Save Settings
-                        </button>
+                        <div class="card-value" id="totalPosts">15</div>
+                        <div class="card-change positive">
+                            <i class="fas fa-arrow-up"></i> <span>+2 today</span>
+                        </div>
                     </div>
-                </section>
-            </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Library Books</h3>
+                            <div class="card-icon books-icon">
+                                <i class="fas fa-book"></i>
+                            </div>
+                        </div>
+                        <div class="card-value" id="totalBooks">100</div>
+                        <div class="card-change positive">
+                            <i class="fas fa-arrow-up"></i> <span>+8 borrowed</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Active Events</h3>
+                            <div class="card-icon events-icon">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                        </div>
+                        <div class="card-value" id="totalEvents">10</div>
+                        <div class="card-change negative">
+                            <i class="fas fa-arrow-down"></i> <span>2 upcoming</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity Table -->
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 class="table-title">Recent Activity</h3>
+                        <div class="table-actions">
+                            <button class="btn btn-secondary btn-sm">
+                                <i class="fas fa-download btn-icon"></i> Export
+                            </button>
+                        </div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Action</th>
+                                <th>Details</th>
+                                <th>Time</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="activityTable">
+                            <!-- Activity data will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Users Section (Hidden by default) -->
+            <section id="users-section" class="content-section" style="display: none;">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 class="table-title">Manage Users</h3>
+                        <div class="table-actions">
+                            <button class="btn btn-secondary btn-sm" id="refreshUsers">
+                                <i class="fas fa-sync-alt btn-icon"></i> Refresh
+                            </button>
+                            <button class="btn btn-primary btn-sm" id="addUserBtn">
+                                <i class="fas fa-plus btn-icon"></i> Add User
+                            </button>
+                        </div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Membership</th>
+                                <th>Status</th>
+                                <th>Joined</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTable">
+                            <!-- Users data will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Posts Section (Hidden by default) -->
+            <section id="posts-section" class="content-section" style="display: none;">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 class="table-title">Community Posts</h3>
+                        <div class="table-actions">
+                            <button class="btn btn-secondary btn-sm">
+                                <i class="fas fa-filter btn-icon"></i> Filter
+                            </button>
+                            <button class="btn btn-primary btn-sm" id="addPostBtn">
+                                <i class="fas fa-plus btn-icon"></i> New Post
+                            </button>
+                        </div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Author</th>
+                                <th>Category</th>
+                                <th>Likes</th>
+                                <th>Comments</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="postsTable">
+                            <!-- Posts data will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Library Section (Hidden by default) -->
+            <section id="library-section" class="content-section" style="display: none;">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 class="table-title">Library Books</h3>
+                        <div class="table-actions">
+                            <button class="btn btn-secondary btn-sm">
+                                <i class="fas fa-search btn-icon"></i> Search
+                            </button>
+                            <button class="btn btn-primary btn-sm" id="addBookBtn">
+                                <i class="fas fa-plus btn-icon"></i> Add Book
+                            </button>
+                        </div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Author</th>
+                                <th>Category</th>
+                                <th>Availability</th>
+                                <th>Rating</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="booksTable">
+                            <!-- Books data will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Events Section (Hidden by default) -->
+            <section id="events-section" class="content-section" style="display: none;">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 class="table-title">Events</h3>
+                        <div class="table-actions">
+                            <button class="btn btn-secondary btn-sm">
+                                <i class="fas fa-calendar btn-icon"></i> View Calendar
+                            </button>
+                            <button class="btn btn-primary btn-sm" id="addEventBtn">
+                                <i class="fas fa-plus btn-icon"></i> Create Event
+                            </button>
+                        </div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Event Title</th>
+                                <th>Date & Time</th>
+                                <th>Location</th>
+                                <th>Attendees</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="eventsTable">
+                            <!-- Events data will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Analytics Section (Hidden by default) -->
+            <section id="analytics-section" class="content-section" style="display: none;">
+                <div class="dashboard-cards">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Active Users Today</h3>
+                            <div class="card-icon users-icon">
+                                <i class="fas fa-user-check"></i>
+                            </div>
+                        </div>
+                        <div class="card-value" id="activeUsers">42</div>
+                        <div class="card-change positive">
+                            <i class="fas fa-arrow-up"></i> <span>+12% from yesterday</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Books Borrowed</h3>
+                            <div class="card-icon books-icon">
+                                <i class="fas fa-book-reader"></i>
+                            </div>
+                        </div>
+                        <div class="card-value" id="booksBorrowed">85</div>
+                        <div class="card-change positive">
+                            <i class="fas fa-arrow-up"></i> <span>+8 today</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Page Views</h3>
+                            <div class="card-icon posts-icon">
+                                <i class="fas fa-eye"></i>
+                            </div>
+                        </div>
+                        <div class="card-value" id="pageViews">156</div>
+                        <div class="card-change positive">
+                            <i class="fas fa-arrow-up"></i> <span>+24% this week</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Revenue</h3>
+                            <div class="card-icon events-icon">
+                                <i class="fas fa-money-bill-wave"></i>
+                            </div>
+                        </div>
+                        <div class="card-value">KSh 45,200</div>
+                        <div class="card-change positive">
+                            <i class="fas fa-arrow-up"></i> <span>+15% this month</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 class="table-title">System Logs</h3>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Action</th>
+                                <th>User</th>
+                                <th>Details</th>
+                                <th>IP Address</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logsTable">
+                            <!-- Logs data will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
         </div>
     </div>
 
-    <!-- Modals -->
     <!-- User Modal -->
     <div id="userModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 id="userModalTitle">Add New User</h2>
-                <p>Manage user information and permissions</p>
-                <button class="close-modal" data-modal="userModal">&times;</button>
+                <h3 class="modal-title">Add/Edit User</h3>
+                <button class="close-modal">&times;</button>
             </div>
             <div class="modal-body">
                 <form id="userForm">
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="modalFirstName">First Name *</label>
-                            <input type="text" id="modalFirstName" required>
+                            <label class="form-label">First Name</label>
+                            <input type="text" class="form-control" id="firstName" required>
                         </div>
                         <div class="form-group">
-                            <label for="modalLastName">Last Name *</label>
-                            <input type="text" id="modalLastName" required>
+                            <label class="form-label">Last Name</label>
+                            <input type="text" class="form-control" id="lastName" required>
                         </div>
                     </div>
                     
                     <div class="form-group">
-                        <label for="modalEmail">Email Address *</label>
-                        <input type="email" id="modalEmail" required>
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" required>
                     </div>
                     
                     <div class="form-group">
-                        <label for="modalPhone">Phone Number</label>
-                        <input type="text" id="modalPhone" placeholder="2547XXXXXXXX">
+                        <label class="form-label">Phone Number</label>
+                        <input type="text" class="form-control" id="phone" placeholder="254712345678">
                     </div>
                     
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="modalMembership">Membership Tier</label>
-                            <select id="modalMembership">
+                            <label class="form-label">Membership Tier</label>
+                            <select class="form-control" id="membershipTier">
                                 <option value="explorer">Explorer</option>
-                                <option value="scholar" selected>Scholar</option>
+                                <option value="scholar">Scholar</option>
                                 <option value="visionary">Visionary</option>
                                 <option value="admin">Admin</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="modalStatus">Status</label>
-                            <select id="modalStatus">
-                                <option value="active" selected>Active</option>
+                            <label class="form-label">Status</label>
+                            <select class="form-control" id="userStatus">
+                                <option value="active">Active</option>
                                 <option value="inactive">Inactive</option>
                                 <option value="suspended">Suspended</option>
                             </select>
                         </div>
                     </div>
                     
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>
-                                <input type="checkbox" id="modalIsAdmin"> Administrator
-                            </label>
-                        </div>
-                        <div class="form-group">
-                            <label>
-                                <input type="checkbox" id="modalNotifications"> Notifications Enabled
-                            </label>
-                        </div>
-                    </div>
-                    
-                    <input type="hidden" id="modalUserId">
-                    
-                    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                        <button type="submit" class="btn btn-primary" style="flex: 1;">
-                            <i class="fas fa-save"></i> Save User
-                        </button>
-                        <button type="button" class="btn btn-secondary" data-modal="userModal" style="flex: 1;">
-                            Cancel
-                        </button>
+                    <div class="form-group">
+                        <label class="form-label">Profile Picture URL</label>
+                        <input type="text" class="form-control" id="profilePicture" placeholder="https://example.com/image.jpg">
                     </div>
                 </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary close-modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="saveUserBtn">Save User</button>
             </div>
         </div>
     </div>
@@ -1172,80 +1020,55 @@
     <div id="postModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 id="postModalTitle">Create Post</h2>
-                <p>Share with the community</p>
-                <button class="close-modal" data-modal="postModal">&times;</button>
+                <h3 class="modal-title">Add/Edit Post</h3>
+                <button class="close-modal">&times;</button>
             </div>
             <div class="modal-body">
                 <form id="postForm">
                     <div class="form-group">
-                        <label for="postTitle">Title *</label>
-                        <input type="text" id="postTitle" required>
+                        <label class="form-label">Title</label>
+                        <input type="text" class="form-control" id="postTitle" required>
                     </div>
                     
                     <div class="form-group">
-                        <label for="postContent">Content *</label>
-                        <textarea id="postContent" required></textarea>
+                        <label class="form-label">Content</label>
+                        <textarea class="form-control" id="postContent" rows="5" required></textarea>
                     </div>
                     
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="postCategory">Category</label>
-                            <select id="postCategory">
+                            <label class="form-label">Category</label>
+                            <select class="form-control" id="postCategory">
                                 <option value="announcement">Announcement</option>
                                 <option value="event">Event</option>
                                 <option value="resource">Resource</option>
-                                <option value="success">Success Story</option>
-                                <option value="general">General</option>
+                                <option value="discussion">Discussion</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="postType">Type</label>
-                            <select id="postType">
-                                <option value="welcome">Welcome</option>
-                                <option value="update">Update</option>
-                                <option value="news">News</option>
-                                <option value="tip">Tip</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="postTags">Tags (comma separated)</label>
-                        <input type="text" id="postTags" placeholder="community, welcome, growth">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="postImage">Image URL</label>
-                        <input type="text" id="postImage" placeholder="https://example.com/image.jpg">
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>
-                                <input type="checkbox" id="postPinned"> Pin this post
-                            </label>
-                        </div>
-                        <div class="form-group">
-                            <label for="postStatus">Status</label>
-                            <select id="postStatus">
-                                <option value="published" selected>Published</option>
+                            <label class="form-label">Status</label>
+                            <select class="form-control" id="postStatus">
+                                <option value="published">Published</option>
                                 <option value="draft">Draft</option>
+                                <option value="archived">Archived</option>
                             </select>
                         </div>
                     </div>
                     
-                    <input type="hidden" id="postId">
+                    <div class="form-group">
+                        <label class="form-label">Tags (comma separated)</label>
+                        <input type="text" class="form-control" id="postTags" placeholder="welcome, community, introduction">
+                    </div>
                     
-                    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                        <button type="submit" class="btn btn-primary" style="flex: 1;">
-                            <i class="fas fa-save"></i> Save Post
-                        </button>
-                        <button type="button" class="btn btn-secondary" data-modal="postModal" style="flex: 1;">
-                            Cancel
-                        </button>
+                    <div class="form-group">
+                        <label class="form-label">Image URL</label>
+                        <input type="text" class="form-control" id="postImage" placeholder="https://example.com/image.jpg">
                     </div>
                 </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary close-modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="savePostBtn">Save Post</button>
             </div>
         </div>
     </div>
@@ -1254,178 +1077,62 @@
     <div id="bookModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 id="bookModalTitle">Add Book to Library</h2>
-                <p>Add new books to the digital library</p>
-                <button class="close-modal" data-modal="bookModal">&times;</button>
+                <h3 class="modal-title">Add/Edit Book</h3>
+                <button class="close-modal">&times;</button>
             </div>
             <div class="modal-body">
                 <form id="bookForm">
                     <div class="form-group">
-                        <label for="bookTitle">Title *</label>
-                            <input type="text" id="bookTitle" required>
+                        <label class="form-label">Title</label>
+                        <input type="text" class="form-control" id="bookTitle" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Author</label>
+                        <input type="text" class="form-control" id="bookAuthor" required>
                     </div>
                     
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="bookAuthor">Author *</label>
-                            <input type="text" id="bookAuthor" required>
+                            <label class="form-label">Category</label>
+                            <input type="text" class="form-control" id="bookCategory" required>
                         </div>
                         <div class="form-group">
-                            <label for="bookCategory">Category *</label>
-                            <select id="bookCategory" required>
-                                <option value="">Select Category</option>
-                                <option value="Personal Growth">Personal Growth</option>
-                                <option value="Business">Business</option>
-                                <option value="Spirituality">Spirituality</option>
-                                <option value="African Literature">African Literature</option>
-                                <option value="Self Help">Self Help</option>
-                                <option value="Finance">Finance</option>
-                                <option value="Health">Health</option>
-                                <option value="Fiction">Fiction</option>
-                            </select>
+                            <label class="form-label">ISBN</label>
+                            <input type="text" class="form-control" id="bookIsbn">
                         </div>
                     </div>
                     
                     <div class="form-group">
-                        <label for="bookDescription">Description *</label>
-                        <textarea id="bookDescription" required></textarea>
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" id="bookDescription" rows="3" required></textarea>
                     </div>
                     
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="bookCover">Cover Image URL *</label>
-                            <input type="text" id="bookCover" required placeholder="https://example.com/cover.jpg">
+                            <label class="form-label">Total Copies</label>
+                            <input type="number" class="form-control" id="bookTotalCopies" value="1" min="1">
                         </div>
                         <div class="form-group">
-                            <label for="bookPages">Pages</label>
-                            <input type="number" id="bookPages" min="1" value="200">
-                        </div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="bookISBN">ISBN</label>
-                            <input type="text" id="bookISBN">
-                        </div>
-                        <div class="form-group">
-                            <label for="bookRating">Rating (1-5)</label>
-                            <input type="number" id="bookRating" min="1" max="5" step="0.1" value="4.5">
-                        </div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="bookTotalCopies">Total Copies</label>
-                            <input type="number" id="bookTotalCopies" min="1" value="5">
-                        </div>
-                        <div class="form-group">
-                            <label for="bookAvailableCopies">Available Copies</label>
-                            <input type="number" id="bookAvailableCopies" min="0" value="5">
+                            <label class="form-label">Available Copies</label>
+                            <input type="number" class="form-control" id="bookAvailableCopies" value="1" min="0">
                         </div>
                     </div>
                     
                     <div class="form-group">
-                        <label for="bookTags">Tags (comma separated)</label>
-                        <input type="text" id="bookTags" placeholder="self-help, productivity, finance">
+                        <label class="form-label">Cover Image URL</label>
+                        <input type="text" class="form-control" id="bookCover" placeholder="https://example.com/cover.jpg">
                     </div>
                     
                     <div class="form-group">
-                        <label>Subscription Tiers</label>
-                        <div style="display: flex; gap: 1rem; margin-top: 0.5rem;">
-                            <label><input type="checkbox" value="explorer" checked> Explorer</label>
-                            <label><input type="checkbox" value="scholar" checked> Scholar</label>
-                            <label><input type="checkbox" value="visionary" checked> Visionary</label>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>
-                            <input type="checkbox" id="bookFeatured"> Featured Book
-                        </label>
-                    </div>
-                    
-                    <input type="hidden" id="bookId">
-                    
-                    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                        <button type="submit" class="btn btn-primary" style="flex: 1;">
-                            <i class="fas fa-save"></i> Save Book
-                        </button>
-                        <button type="button" class="btn btn-secondary" data-modal="bookModal" style="flex: 1;">
-                            Cancel
-                        </button>
+                        <label class="form-label">Tags (comma separated)</label>
+                        <input type="text" class="form-control" id="bookTags" placeholder="self-help, productivity">
                     </div>
                 </form>
             </div>
-        </div>
-    </div>
-
-    <!-- Subscription Plan Modal -->
-    <div id="subscriptionModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="subscriptionModalTitle">Add Subscription Plan</h2>
-                <p>Create new subscription tiers for members</p>
-                <button class="close-modal" data-modal="subscriptionModal">&times;</button>
-            </div>
-            <div class="modal-body">
-                <form id="subscriptionForm">
-                    <div class="form-group">
-                        <label for="subscriptionName">Plan Name *</label>
-                        <input type="text" id="subscriptionName" required>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="subscriptionPrice">Price (KSh) *</label>
-                            <input type="number" id="subscriptionPrice" min="0" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="subscriptionDuration">Duration *</label>
-                            <select id="subscriptionDuration" required>
-                                <option value="1 month">1 Month</option>
-                                <option value="3 months">3 Months</option>
-                                <option value="6 months">6 Months</option>
-                                <option value="1 year">1 Year</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="subscriptionPopularity">Popularity Tag</label>
-                            <select id="subscriptionPopularity">
-                            <option value="standard">Standard</option>
-                            <option value="popular" selected>Popular</option>
-                            <option value="premium">Premium</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Features (one per line) *</label>
-                        <textarea id="subscriptionFeatures" required>Access to 500+ books
-1 book at a time
-Basic genres
-Email support</textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="subscriptionStatus">Status</label>
-                        <select id="subscriptionStatus">
-                            <option value="active" selected>Active</option>
-                            <option value="inactive">Inactive</option>
-                        </select>
-                    </div>
-                    
-                    <input type="hidden" id="subscriptionId">
-                    
-                    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                        <button type="submit" class="btn btn-primary" style="flex: 1;">
-                            <i class="fas fa-save"></i> Save Plan
-                        </button>
-                        <button type="button" class="btn btn-secondary" data-modal="subscriptionModal" style="flex: 1;">
-                            Cancel
-                        </button>
-                    </div>
-                </form>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary close-modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="saveBookBtn">Save Book</button>
             </div>
         </div>
     </div>
@@ -1434,1340 +1141,758 @@ Email support</textarea>
     <div id="eventModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 id="eventModalTitle">Create Event</h2>
-                <p>Schedule new events for members</p>
-                <button class="close-modal" data-modal="eventModal">&times;</button>
+                <h3 class="modal-title">Add/Edit Event</h3>
+                <button class="close-modal">&times;</button>
             </div>
             <div class="modal-body">
                 <form id="eventForm">
                     <div class="form-group">
-                        <label for="eventTitle">Event Title *</label>
-                        <input type="text" id="eventTitle" required>
+                        <label class="form-label">Event Title</label>
+                        <input type="text" class="form-control" id="eventTitle" required>
                     </div>
                     
                     <div class="form-group">
-                        <label for="eventDescription">Description *</label>
-                        <textarea id="eventDescription" required></textarea>
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" id="eventDescription" rows="3" required></textarea>
                     </div>
                     
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="eventDate">Date *</label>
-                            <input type="datetime-local" id="eventDate" required>
+                            <label class="form-label">Start Date & Time</label>
+                            <input type="datetime-local" class="form-control" id="eventStart" required>
                         </div>
                         <div class="form-group">
-                            <label for="eventEndDate">End Date *</label>
-                            <input type="datetime-local" id="eventEndDate" required>
-                        </div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="eventLocation">Location</label>
-                            <input type="text" id="eventLocation" placeholder="Virtual or Physical Location">
-                        </div>
-                        <div class="form-group">
-                            <label for="eventMaxAttendees">Max Attendees</label>
-                            <input type="number" id="eventMaxAttendees" min="1" value="50">
+                            <label class="form-label">End Date & Time</label>
+                            <input type="datetime-local" class="form-control" id="eventEnd" required>
                         </div>
                     </div>
                     
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="eventType">Type</label>
-                            <select id="eventType">
+                            <label class="form-label">Location</label>
+                            <input type="text" class="form-control" id="eventLocation" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Max Attendees</label>
+                            <input type="number" class="form-control" id="eventMaxAttendees" value="50" min="1">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Type</label>
+                            <select class="form-control" id="eventType">
                                 <option value="workshop">Workshop</option>
-                                <option value="seminar">Seminar</option>
-                                <option value="networking">Networking</option>
-                                <option value="community">Community Service</option>
-                                <option value="coaching">Coaching Session</option>
+                                <option value="session">Session</option>
+                                <option value="webinar">Webinar</option>
+                                <option value="meeting">Meeting</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="eventCategory">Category</label>
-                            <select id="eventCategory">
+                            <label class="form-label">Category</label>
+                            <select class="form-control" id="eventCategory">
                                 <option value="finance">Finance</option>
                                 <option value="wellness">Wellness</option>
+                                <option value="personal_growth">Personal Growth</option>
                                 <option value="business">Business</option>
-                                <option value="personal-growth">Personal Growth</option>
-                                <option value="spirituality">Spirituality</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="eventRegistrationDeadline">Registration Deadline</label>
-                            <input type="datetime-local" id="eventRegistrationDeadline">
-                        </div>
-                        <div class="form-group">
-                            <label for="eventStatus">Status</label>
-                            <select id="eventStatus">
-                                <option value="upcoming">Upcoming</option>
-                                <option value="ongoing">Ongoing</option>
-                                <option value="past">Past</option>
-                                <option value="cancelled">Cancelled</option>
                             </select>
                         </div>
                     </div>
                     
                     <div class="form-group">
-                        <label>
-                            <input type="checkbox" id="eventRegistrationOpen" checked> Registration Open
-                        </label>
-                    </div>
-                    
-                    <input type="hidden" id="eventId">
-                    
-                    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                        <button type="submit" class="btn btn-primary" style="flex: 1;">
-                            <i class="fas fa-save"></i> Save Event
-                        </button>
-                        <button type="button" class="btn btn-secondary" data-modal="eventModal" style="flex: 1;">
-                            Cancel
-                        </button>
+                        <label class="form-label">Event Image URL</label>
+                        <input type="text" class="form-control" id="eventImage" placeholder="https://example.com/event.jpg">
                     </div>
                 </form>
             </div>
-        </div>
-    </div>
-
-    <!-- Delete Confirmation Modal -->
-    <div id="deleteModal" class="modal">
-        <div class="modal-content" style="max-width: 400px;">
-            <div class="modal-header">
-                <h2>Confirm Deletion</h2>
-                <p>This action cannot be undone</p>
-                <button class="close-modal" data-modal="deleteModal">&times;</button>
-            </div>
-            <div class="modal-body">
-                <p id="deleteMessage">Are you sure you want to delete this item?</p>
-                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                    <button class="btn btn-danger" id="confirmDeleteBtn" style="flex: 1;">
-                        <i class="fas fa-trash"></i> Delete
-                    </button>
-                    <button class="btn btn-secondary" data-modal="deleteModal" style="flex: 1;">
-                        Cancel
-                    </button>
-                </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary close-modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="saveEventBtn">Save Event</button>
             </div>
         </div>
     </div>
 
     <script>
-        // Firebase Configuration - Using YOUR configuration from the original
-        const firebaseConfig = {
-            apiKey: "AIzaSyBDZicoo7dFLtSmgRPvQE_gdm-tNOyCTXA",
-            authDomain: "the-songa-77b1b.firebaseapp.com",
-            databaseURL: "https://the-songa-77b1b-default-rtdb.firebaseio.com",
-            projectId: "the-songa-77b1b",
-            storageBucket: "the-songa-77b1b.firebasestorage.app",
-            messagingSenderId: "123922889572",
-            appId: "1:123922889572:web:482b2a624930baaf92d871"
+        // Import Firebase modules (you'll need to include Firebase SDK in your project)
+        // Note: This is a mock implementation. In production, you'll need to implement actual Firebase calls
+        
+        // Mock data based on your JSON structure
+        const mockData = {
+            users: {
+                "user_001": {
+                    uid: "google_oauth_id_here",
+                    email: "member@example.com",
+                    firstName: "John",
+                    lastName: "Doe",
+                    profilePicture: "https://lh3.googleusercontent.com/a/default",
+                    phoneNumber: "254712345678",
+                    joinedDate: "2024-01-15T10:30:00Z",
+                    lastLogin: "2024-03-20T14:25:00Z",
+                    membershipStatus: "active",
+                    membershipTier: "scholar",
+                    status: "active"
+                },
+                "admin_001": {
+                    uid: "admin_google_id",
+                    email: "admin@thesongawelfare.com",
+                    firstName: "Admin",
+                    lastName: "THE SONGA",
+                    profilePicture: "https://i.postimg.cc/BbdzCkxQ/20260116_0851_Elegant_Lion_Emblem_remix_01kf2npwbtf06ttr4htekjnd47_removebg_preview_2.webp",
+                    phoneNumber: "254727211191",
+                    joinedDate: "2023-01-01T00:00:00Z",
+                    lastLogin: "2024-03-20T15:00:00Z",
+                    membershipStatus: "active",
+                    membershipTier: "admin",
+                    status: "active"
+                }
+            },
+            communityPosts: {
+                "post_001": {
+                    id: "post_001",
+                    authorName: "THE SONGA",
+                    title: "Welcome to Our Community!",
+                    category: "announcement",
+                    likes: 24,
+                    comments: 8,
+                    createdAt: "2024-03-20T09:00:00Z",
+                    status: "published"
+                },
+                "post_002": {
+                    id: "post_002",
+                    authorName: "THE SONGA",
+                    title: "Wealth Building Workshop - This Saturday!",
+                    category: "event",
+                    likes: 18,
+                    comments: 5,
+                    createdAt: "2024-03-19T14:00:00Z",
+                    status: "published"
+                }
+            },
+            libraryBooks: {
+                "book_001": {
+                    id: "book_001",
+                    title: "Atomic Habits",
+                    author: "James Clear",
+                    category: "Personal Growth",
+                    availability: "available",
+                    totalCopies: 5,
+                    availableCopies: 3,
+                    rating: 4.8
+                },
+                "book_002": {
+                    id: "book_002",
+                    title: "The Lean Startup",
+                    author: "Eric Ries",
+                    category: "Business",
+                    availability: "available",
+                    totalCopies: 3,
+                    availableCopies: 2,
+                    rating: 4.6
+                }
+            },
+            events: {
+                "event_001": {
+                    id: "event_001",
+                    title: "Wealth Building Workshop",
+                    date: "2024-03-23T14:00:00Z",
+                    location: "Virtual - Members Portal",
+                    maxAttendees: 50,
+                    currentAttendees: 24,
+                    status: "upcoming"
+                },
+                "event_002": {
+                    id: "event_002",
+                    title: "Mindfulness Meditation Session",
+                    date: "2024-02-15T18:00:00Z",
+                    location: "Nairobi, Kenya",
+                    maxAttendees: 30,
+                    currentAttendees: 30,
+                    status: "past"
+                }
+            },
+            analytics: {
+                totals: {
+                    totalUsers: 50,
+                    totalPosts: 15,
+                    totalBooks: 100,
+                    totalEvents: 10,
+                    totalBorrows: 85
+                },
+                dailyStats: {
+                    "2024-03-20": {
+                        activeUsers: 42,
+                        booksBorrowed: 8,
+                        pageViews: 156
+                    }
+                }
+            },
+            systemLogs: {
+                "log_001": {
+                    timestamp: "2024-01-15T10:30:00Z",
+                    action: "user_registration",
+                    userId: "user_001",
+                    details: "New user registered via Google OAuth",
+                    ipAddress: "197.136.1.1"
+                }
+            }
         };
 
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const database = firebase.database();
-
-        // Global variables
-        let currentUser = null;
-        let currentSection = 'dashboard';
-        let itemsToDelete = null;
-        let editingItemId = null;
-
         // DOM Elements
-        const loginPage = document.getElementById('loginPage');
-        const adminDashboard = document.getElementById('adminDashboard');
-        const loginBtn = document.getElementById('loginBtn');
-        const emailInput = document.getElementById('email');
-        const passwordInput = document.getElementById('password');
-        const loginError = document.getElementById('loginError');
-        const logoutBtn = document.getElementById('logoutBtn');
-        const pageTitle = document.getElementById('pageTitle');
         const navItems = document.querySelectorAll('.nav-item');
         const contentSections = document.querySelectorAll('.content-section');
+        const modeToggle = document.getElementById('modeToggle');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const modals = document.querySelectorAll('.modal');
+        const closeModalBtns = document.querySelectorAll('.close-modal');
+        
+        // Modal triggers
+        const addUserBtn = document.getElementById('addUserBtn');
+        const addPostBtn = document.getElementById('addPostBtn');
+        const addBookBtn = document.getElementById('addBookBtn');
+        const addEventBtn = document.getElementById('addEventBtn');
+        
+        // Save buttons
+        const saveUserBtn = document.getElementById('saveUserBtn');
+        const savePostBtn = document.getElementById('savePostBtn');
+        const saveBookBtn = document.getElementById('saveBookBtn');
+        const saveEventBtn = document.getElementById('saveEventBtn');
 
-        // Initialize when page loads
+        // Initialize the dashboard
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('Page loaded, initializing...');
+            loadDashboardData();
+            loadUsersTable();
+            loadPostsTable();
+            loadBooksTable();
+            loadEventsTable();
+            loadLogsTable();
+            loadActivityTable();
+            
+            // Set up event listeners
             setupEventListeners();
-            checkAuthState();
         });
 
         function setupEventListeners() {
-            console.log('Setting up event listeners...');
-            
-            // Login
-            loginBtn.addEventListener('click', handleLogin);
-            passwordInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') handleLogin();
-            });
-
-            // Logout
-            logoutBtn.addEventListener('click', handleLogout);
-
             // Navigation
             navItems.forEach(item => {
                 item.addEventListener('click', function(e) {
                     e.preventDefault();
-                    const section = this.getAttribute('data-section');
-                    switchSection(section);
+                    
+                    // Update active nav item
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show selected section
+                    const sectionId = this.getAttribute('data-section');
+                    contentSections.forEach(section => {
+                        section.style.display = 'none';
+                    });
+                    
+                    document.getElementById(`${sectionId}-section`).style.display = 'block';
+                    
+                    // Update page title
+                    const pageTitle = document.querySelector('.page-title');
+                    const sectionTitles = {
+                        'dashboard': 'Admin Dashboard',
+                        'users': 'User Management',
+                        'posts': 'Community Posts',
+                        'library': 'Library Management',
+                        'events': 'Event Management',
+                        'analytics': 'Analytics & Reports'
+                    };
+                    
+                    pageTitle.textContent = sectionTitles[sectionId] || 'Admin Panel';
                 });
             });
-
-            // Modal close buttons
-            document.querySelectorAll('.close-modal, .btn-secondary[data-modal]').forEach(btn => {
+            
+            // Dark mode toggle
+            modeToggle.addEventListener('click', function() {
+                document.body.classList.toggle('dark-mode');
+                const icon = this.querySelector('i');
+                if (document.body.classList.contains('dark-mode')) {
+                    icon.classList.remove('fa-moon');
+                    icon.classList.add('fa-sun');
+                } else {
+                    icon.classList.remove('fa-sun');
+                    icon.classList.add('fa-moon');
+                }
+            });
+            
+            // Logout
+            logoutBtn.addEventListener('click', function() {
+                if (confirm('Are you sure you want to logout?')) {
+                    // Implement Firebase logout here
+                    window.location.href = '/login.html';
+                }
+            });
+            
+            // Modal controls
+            closeModalBtns.forEach(btn => {
                 btn.addEventListener('click', function() {
-                    const modalId = this.getAttribute('data-modal');
-                    closeModal(modalId);
+                    modals.forEach(modal => modal.style.display = 'none');
                 });
             });
-
+            
             // Close modal when clicking outside
-            document.querySelectorAll('.modal').forEach(modal => {
-                modal.addEventListener('click', function(e) {
-                    if (e.target === this) {
-                        this.classList.remove('active');
-                    }
+            window.addEventListener('click', function(e) {
+                if (e.target.classList.contains('modal')) {
+                    e.target.style.display = 'none';
+                }
+            });
+            
+            // Open modals
+            if (addUserBtn) {
+                addUserBtn.addEventListener('click', function() {
+                    document.getElementById('userModal').style.display = 'flex';
                 });
-            });
-
-            // Add buttons
-            document.getElementById('addUserBtn')?.addEventListener('click', () => openModal('userModal'));
-            document.getElementById('addPostBtn')?.addEventListener('click', () => openModal('postModal'));
-            document.getElementById('addBookBtn')?.addEventListener('click', () => openModal('bookModal'));
-            document.getElementById('addSubscriptionBtn')?.addEventListener('click', () => openModal('subscriptionModal'));
-            document.getElementById('addEventBtn')?.addEventListener('click', () => openModal('eventModal'));
-            document.getElementById('saveSettingsBtn')?.addEventListener('click', saveSettings);
-
-            // Form submissions
-            document.getElementById('userForm')?.addEventListener('submit', handleUserSubmit);
-            document.getElementById('postForm')?.addEventListener('submit', handlePostSubmit);
-            document.getElementById('bookForm')?.addEventListener('submit', handleBookSubmit);
-            document.getElementById('subscriptionForm')?.addEventListener('submit', handleSubscriptionSubmit);
-            document.getElementById('eventForm')?.addEventListener('submit', handleEventSubmit);
-
-            // Delete confirmation
-            document.getElementById('confirmDeleteBtn')?.addEventListener('click', handleDelete);
+            }
             
-            console.log('Event listeners setup complete');
-        }
-
-        function checkAuthState() {
-            console.log('Checking auth state...');
-            auth.onAuthStateChanged(async (user) => {
-                console.log('Auth state changed:', user ? 'User logged in' : 'No user');
-                if (user) {
-                    currentUser = user;
-                    console.log('Current user:', user.email);
-                    
-                    // Check if user is admin by looking in the database
-                    try {
-                        const snapshot = await database.ref('users').once('value');
-                        const users = snapshot.val();
-                        let isAdmin = false;
-                        
-                        if (users) {
-                            for (const [userId, userData] of Object.entries(users)) {
-                                console.log('Checking user:', userData.email, 'isAdmin:', userData.isAdmin);
-                                if (userData.email === user.email && userData.isAdmin) {
-                                    isAdmin = true;
-                                    break;
-                                }
-                            }
-                        }
-                        
-                        if (isAdmin) {
-                            console.log('User is admin, showing dashboard');
-                            showAdminDashboard();
-                            loadDashboardData();
-                        } else {
-                            console.log('User is NOT admin');
-                            showError('Access denied. Admin privileges required.');
-                            await auth.signOut();
-                        }
-                    } catch (error) {
-                        console.error('Error checking admin status:', error);
-                        showError('Error checking admin privileges: ' + error.message);
-                        await auth.signOut();
-                    }
-                } else {
-                    console.log('No user, showing login page');
-                    showLoginPage();
-                }
-            }, (error) => {
-                console.error('Auth state change error:', error);
-                showLoginPage();
-            });
-        }
-
-        async function handleLogin() {
-            console.log('Login attempt...');
-            const email = emailInput.value.trim();
-            const password = passwordInput.value;
-
-            if (!email || !password) {
-                showError('Please enter both email and password');
-                return;
+            if (addPostBtn) {
+                addPostBtn.addEventListener('click', function() {
+                    document.getElementById('postModal').style.display = 'flex';
+                });
             }
-
-            try {
-                loginBtn.disabled = true;
-                loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing in...';
-                console.log('Attempting to sign in with:', email);
-                
-                const userCredential = await auth.signInWithEmailAndPassword(email, password);
-                console.log('Login successful:', userCredential.user.email);
-                clearError();
-                
-                // The auth state change listener will handle the rest
-            } catch (error) {
-                console.error('Login error:', error.code, error.message);
-                showError(getFirebaseErrorMessage(error));
-                loginBtn.disabled = false;
-                loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In';
+            
+            if (addBookBtn) {
+                addBookBtn.addEventListener('click', function() {
+                    document.getElementById('bookModal').style.display = 'flex';
+                });
+            }
+            
+            if (addEventBtn) {
+                addEventBtn.addEventListener('click', function() {
+                    document.getElementById('eventModal').style.display = 'flex';
+                });
+            }
+            
+            // Save actions
+            if (saveUserBtn) {
+                saveUserBtn.addEventListener('click', saveUser);
+            }
+            
+            if (savePostBtn) {
+                savePostBtn.addEventListener('click', savePost);
+            }
+            
+            if (saveBookBtn) {
+                saveBookBtn.addEventListener('click', saveBook);
+            }
+            
+            if (saveEventBtn) {
+                saveEventBtn.addEventListener('click', saveEvent);
             }
         }
 
-        async function handleLogout() {
-            try {
-                await auth.signOut();
-                console.log('Logged out successfully');
-            } catch (error) {
-                console.error('Logout error:', error);
-                alert('Error during logout: ' + error.message);
-            }
+        // Data loading functions
+        function loadDashboardData() {
+            document.getElementById('totalUsers').textContent = mockData.analytics.totals.totalUsers;
+            document.getElementById('totalPosts').textContent = mockData.analytics.totals.totalPosts;
+            document.getElementById('totalBooks').textContent = mockData.analytics.totals.totalBooks;
+            document.getElementById('totalEvents').textContent = mockData.analytics.totals.totalEvents;
+            
+            document.getElementById('activeUsers').textContent = mockData.analytics.dailyStats["2024-03-20"].activeUsers;
+            document.getElementById('booksBorrowed').textContent = mockData.analytics.totals.totalBorrows;
+            document.getElementById('pageViews').textContent = mockData.analytics.dailyStats["2024-03-20"].pageViews;
         }
 
-        function showLoginPage() {
-            console.log('Showing login page');
-            loginPage.style.display = 'flex';
-            adminDashboard.style.display = 'none';
-            emailInput.value = '';
-            passwordInput.value = '';
-            clearError();
-            loginBtn.disabled = false;
-            loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In';
-        }
-
-        function showAdminDashboard() {
-            console.log('Showing admin dashboard');
-            loginPage.style.display = 'none';
-            adminDashboard.style.display = 'flex';
-            document.getElementById('adminName').textContent = currentUser?.email || 'Admin User';
-        }
-
-        function showError(message) {
-            console.log('Showing error:', message);
-            loginError.textContent = message;
-            loginError.style.display = 'block';
-        }
-
-        function clearError() {
-            loginError.textContent = '';
-            loginError.style.display = 'none';
-        }
-
-        function getFirebaseErrorMessage(error) {
-            console.log('Firebase error code:', error.code);
-            switch (error.code) {
-                case 'auth/invalid-email':
-                    return 'Invalid email address';
-                case 'auth/user-disabled':
-                    return 'This account has been disabled';
-                case 'auth/user-not-found':
-                    return 'No account found with this email';
-                case 'auth/wrong-password':
-                    return 'Incorrect password';
-                case 'auth/too-many-requests':
-                    return 'Too many failed attempts. Try again later';
-                case 'auth/network-request-failed':
-                    return 'Network error. Please check your connection';
-                default:
-                    return 'Login failed: ' + error.message;
-            }
-        }
-
-        function switchSection(section) {
-            console.log('Switching to section:', section);
-            // Update active nav item
-            navItems.forEach(item => {
-                item.classList.remove('active');
-                if (item.getAttribute('data-section') === section) {
-                    item.classList.add('active');
-                }
-            });
-
-            // Update active content section
-            contentSections.forEach(sec => {
-                sec.classList.remove('active');
-                if (sec.id === `${section}Section`) {
-                    sec.classList.add('active');
-                }
-            });
-
-            // Update page title
-            pageTitle.textContent = getSectionTitle(section);
-            currentSection = section;
-
-            // Load section data
-            switch (section) {
-                case 'dashboard':
-                    loadDashboardData();
-                    break;
-                case 'users':
-                    loadUsers();
-                    break;
-                case 'posts':
-                    loadPosts();
-                    break;
-                case 'books':
-                    loadBooks();
-                    break;
-                case 'subscriptions':
-                    loadSubscriptions();
-                    break;
-                case 'events':
-                    loadEvents();
-                    break;
-                case 'analytics':
-                    loadAnalytics();
-                    break;
-                case 'settings':
-                    loadSettings();
-                    break;
-            }
-        }
-
-        function getSectionTitle(section) {
-            const titles = {
-                dashboard: 'Dashboard',
-                users: 'User Management',
-                posts: 'Community Posts',
-                books: 'Library Books',
-                subscriptions: 'Subscription Plans',
-                events: 'Events Management',
-                analytics: 'Analytics & Reports',
-                settings: 'Platform Settings'
-            };
-            return titles[section] || 'Dashboard';
-        }
-
-        async function loadDashboardData() {
-            console.log('Loading dashboard data...');
-            try {
-                // Load all data in parallel
-                const [usersSnapshot, postsSnapshot, booksSnapshot, subsSnapshot, eventsSnapshot, logsSnapshot] = await Promise.all([
-                    database.ref('users').once('value'),
-                    database.ref('communityPosts').once('value'),
-                    database.ref('libraryBooks').once('value'),
-                    database.ref('userSubscriptions').once('value'),
-                    database.ref('events').once('value'),
-                    database.ref('systemLogs').once('value')
-                ]);
-
-                // Update counts
-                const usersCount = Object.keys(usersSnapshot.val() || {}).length;
-                const postsCount = Object.keys(postsSnapshot.val() || {}).length;
-                const booksCount = Object.keys(booksSnapshot.val() || {}).length;
+        function loadUsersTable() {
+            const tableBody = document.getElementById('usersTable');
+            tableBody.innerHTML = '';
+            
+            Object.keys(mockData.users).forEach(userId => {
+                const user = mockData.users[userId];
+                const row = document.createElement('tr');
                 
-                document.getElementById('totalUsers').textContent = usersCount;
-                document.getElementById('totalPosts').textContent = postsCount;
-                document.getElementById('totalBooks').textContent = booksCount;
+                // Format date
+                const joinedDate = new Date(user.joinedDate).toLocaleDateString();
                 
-                const subs = subsSnapshot.val() || {};
-                const activeSubs = Object.values(subs).filter(sub => sub.status === 'active').length;
-                document.getElementById('activeSubscriptions').textContent = activeSubs;
-
-                // Load recent activity
-                const logs = logsSnapshot.val() || {};
-                const recentActivityTable = document.getElementById('recentActivityTable');
-                const activityRows = Object.entries(logs)
-                    .sort(([,a], [,b]) => new Date(b.timestamp) - new Date(a.timestamp))
-                    .slice(0, 10)
-                    .map(([id, activity]) => `
-                        <tr>
-                            <td>${formatDate(activity.timestamp)}</td>
-                            <td>${activity.userId || 'System'}</td>
-                            <td>${activity.action}</td>
-                            <td>${activity.details || ''}</td>
-                        </tr>
-                    `).join('');
-                
-                recentActivityTable.querySelector('tbody').innerHTML = activityRows || '<tr><td colspan="4">No recent activity</td></tr>';
-                
-                // Update last updated time
-                document.getElementById('lastUpdated').textContent = `Last updated: ${new Date().toLocaleTimeString()}`;
-                
-                console.log('Dashboard data loaded successfully');
-                
-            } catch (error) {
-                console.error('Error loading dashboard data:', error);
-            }
-        }
-
-        async function loadUsers() {
-            console.log('Loading users...');
-            try {
-                const snapshot = await database.ref('users').once('value');
-                const users = snapshot.val() || {};
-                const usersTable = document.getElementById('usersTable');
-                
-                const userRows = Object.entries(users).map(([id, user]) => `
-                    <tr>
-                        <td>
-                            <div style="display: flex; align-items: center; gap: 10px;">
-                                <img src="${user.profilePicture || 'https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp'}" 
-                                     alt="${user.firstName}" 
-                                     style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;">
-                                <div>
-                                    <div style="font-weight: 500;">${user.firstName || ''} ${user.lastName || ''}</div>
-                                    ${user.isAdmin ? '<span style="font-size: 0.8rem; color: var(--gold);">Admin</span>' : ''}
-                                </div>
+                row.innerHTML = `
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <img src="${user.profilePicture}" alt="${user.firstName}" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover;">
+                            <div>
+                                <div style="font-weight: 500;">${user.firstName} ${user.lastName}</div>
+                                <div style="font-size: 12px; color: var(--text-secondary);">${userId}</div>
                             </div>
-                        </td>
-                        <td>${user.email || ''}</td>
-                        <td>${user.membershipTier || 'Not set'}</td>
-                        <td>${formatDate(user.joinedDate)}</td>
-                        <td>
-                            <span class="status-badge ${user.status === 'active' ? 'status-active' : 'status-inactive'}">
-                                ${user.status || 'inactive'}
-                            </span>
-                        </td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="action-btn edit" onclick="window.editUser('${id}')">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="action-btn delete" onclick="window.confirmDelete('users', '${id}')">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                `).join('');
+                        </div>
+                    </td>
+                    <td>${user.email}</td>
+                    <td>
+                        <span class="status-badge ${user.membershipTier === 'admin' ? 'status-active' : 'status-pending'}">
+                            ${user.membershipTier}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="status-badge ${user.status === 'active' ? 'status-active' : 'status-inactive'}">
+                            ${user.status}
+                        </span>
+                    </td>
+                    <td>${joinedDate}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-edit btn-sm" onclick="editUser('${userId}')">
+                                <i class="fas fa-edit btn-icon"></i>
+                            </button>
+                            <button class="btn btn-delete btn-sm" onclick="deleteUser('${userId}')">
+                                <i class="fas fa-trash btn-icon"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
                 
-                usersTable.querySelector('tbody').innerHTML = userRows || '<tr><td colspan="6">No users found</td></tr>';
-                console.log('Users loaded:', Object.keys(users).length);
-                
-            } catch (error) {
-                console.error('Error loading users:', error);
-                usersTable.querySelector('tbody').innerHTML = '<tr><td colspan="6">Error loading users</td></tr>';
-            }
-        }
-
-        async function loadPosts() {
-            console.log('Loading posts...');
-            try {
-                const snapshot = await database.ref('communityPosts').once('value');
-                const posts = snapshot.val() || {};
-                const postsTable = document.getElementById('postsTable');
-                
-                const postRows = Object.entries(posts).map(([id, post]) => `
-                    <tr>
-                        <td>
-                            <div style="font-weight: 500; margin-bottom: 4px;">${post.title || ''}</div>
-                            ${post.isPinned ? '<span style="font-size: 0.8rem; color: var(--gold);"><i class="fas fa-thumbtack"></i> Pinned</span>' : ''}
-                        </td>
-                        <td>${post.authorName || 'Unknown'}</td>
-                        <td>${post.category || 'General'}</td>
-                        <td>${post.likes || 0}</td>
-                        <td>${formatDate(post.createdAt)}</td>
-                        <td>
-                            <span class="status-badge ${post.status === 'published' ? 'status-active' : 'status-pending'}">
-                                ${post.status || 'draft'}
-                            </span>
-                        </td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="action-btn edit" onclick="window.editPost('${id}')">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="action-btn delete" onclick="window.confirmDelete('communityPosts', '${id}')">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                `).join('');
-                
-                postsTable.querySelector('tbody').innerHTML = postRows || '<tr><td colspan="7">No posts found</td></tr>';
-                console.log('Posts loaded:', Object.keys(posts).length);
-                
-            } catch (error) {
-                console.error('Error loading posts:', error);
-                postsTable.querySelector('tbody').innerHTML = '<tr><td colspan="7">Error loading posts</td></tr>';
-            }
-        }
-
-        async function loadBooks() {
-            console.log('Loading books...');
-            try {
-                const snapshot = await database.ref('libraryBooks').once('value');
-                const books = snapshot.val() || {};
-                const booksTable = document.getElementById('booksTable');
-                
-                const bookRows = Object.entries(books).map(([id, book]) => `
-                    <tr>
-                        <td>
-                            <div style="display: flex; align-items: center; gap: 10px;">
-                                <img src="${book.coverImage || ''}" 
-                                     alt="${book.title}" 
-                                     style="width: 40px; height: 50px; object-fit: cover; border-radius: 4px;">
-                                <div>
-                                    <div style="font-weight: 500;">${book.title || ''}</div>
-                                    ${book.featured ? '<span style="font-size: 0.8rem; color: var(--gold);">Featured</span>' : ''}
-                                </div>
-                            </div>
-                        </td>
-                        <td>${book.author || ''}</td>
-                        <td>${book.category || ''}</td>
-                        <td>${book.availableCopies || 0} / ${book.totalCopies || 0}</td>
-                        <td>${book.borrowCount || 0}</td>
-                        <td>
-                            <div style="display: flex; align-items: center; gap: 4px;">
-                                <i class="fas fa-star" style="color: var(--gold);"></i>
-                                <span>${book.rating || 'N/A'}</span>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="action-btn edit" onclick="window.editBook('${id}')">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="action-btn delete" onclick="window.confirmDelete('libraryBooks', '${id}')">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                `).join('');
-                
-                booksTable.querySelector('tbody').innerHTML = bookRows || '<tr><td colspan="7">No books found</td></tr>';
-                console.log('Books loaded:', Object.keys(books).length);
-                
-            } catch (error) {
-                console.error('Error loading books:', error);
-                booksTable.querySelector('tbody').innerHTML = '<tr><td colspan="7">Error loading books</td></tr>';
-            }
-        }
-
-        async function loadSubscriptions() {
-            console.log('Loading subscriptions...');
-            try {
-                const snapshot = await database.ref('subscriptionPlans').once('value');
-                const plans = snapshot.val() || {};
-                const subscriptionsTable = document.getElementById('subscriptionsTable');
-                
-                const planRows = Object.entries(plans).map(([id, plan]) => `
-                    <tr>
-                        <td>
-                            <div style="font-weight: 500;">${plan.name || ''}</div>
-                            ${plan.popularity === 'popular' ? '<span style="font-size: 0.8rem; color: var(--gold);">Most Popular</span>' : ''}
-                        </td>
-                        <td>KSh ${plan.price || 0}</td>
-                        <td>${plan.duration || ''}</td>
-                        <td>
-                            <div style="max-height: 100px; overflow-y: auto;">
-                                ${Array.isArray(plan.features) ? plan.features.map(f => `<div style="margin-bottom: 4px;">• ${f}</div>`).join('') : ''}
-                            </div>
-                        </td>
-                        <td>
-                            <span class="status-badge ${plan.popularity === 'popular' ? 'status-active' : 'status-standard'}">
-                                ${plan.popularity || 'standard'}
-                            </span>
-                        </td>
-                        <td>
-                            <span class="status-badge ${plan.active ? 'status-active' : 'status-inactive'}">
-                                ${plan.active ? 'Active' : 'Inactive'}
-                            </span>
-                        </td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="action-btn edit" onclick="window.editSubscription('${id}')">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="action-btn delete" onclick="window.confirmDelete('subscriptionPlans', '${id}')">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                `).join('');
-                
-                subscriptionsTable.querySelector('tbody').innerHTML = planRows || '<tr><td colspan="7">No subscription plans found</td></tr>';
-                console.log('Subscriptions loaded:', Object.keys(plans).length);
-                
-            } catch (error) {
-                console.error('Error loading subscriptions:', error);
-                subscriptionsTable.querySelector('tbody').innerHTML = '<tr><td colspan="7">Error loading subscription plans</td></tr>';
-            }
-        }
-
-        async function loadEvents() {
-            console.log('Loading events...');
-            try {
-                const snapshot = await database.ref('events').once('value');
-                const events = snapshot.val() || {};
-                const eventsTable = document.getElementById('eventsTable');
-                
-                const eventRows = Object.entries(events).map(([id, event]) => `
-                    <tr>
-                        <td>
-                            <div style="font-weight: 500;">${event.title || ''}</div>
-                            <div style="font-size: 0.8rem; color: var(--dark-gray);">${event.type || 'Event'}</div>
-                        </td>
-                        <td>${formatDate(event.date)}</td>
-                        <td>${event.location || 'TBD'}</td>
-                        <td>${event.currentAttendees || 0} / ${event.maxAttendees || '∞'}</td>
-                        <td>
-                            <span class="status-badge ${getEventStatusClass(event.status)}">
-                                ${event.status || 'upcoming'}
-                            </span>
-                        </td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="action-btn edit" onclick="window.editEvent('${id}')">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="action-btn delete" onclick="window.confirmDelete('events', '${id}')">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                `).join('');
-                
-                eventsTable.querySelector('tbody').innerHTML = eventRows || '<tr><td colspan="6">No events found</td></tr>';
-                console.log('Events loaded:', Object.keys(events).length);
-                
-            } catch (error) {
-                console.error('Error loading events:', error);
-                eventsTable.querySelector('tbody').innerHTML = '<tr><td colspan="6">Error loading events</td></tr>';
-            }
-        }
-
-        function getEventStatusClass(status) {
-            switch (status) {
-                case 'upcoming': return 'status-active';
-                case 'ongoing': return 'status-success';
-                case 'past': return 'status-secondary';
-                case 'cancelled': return 'status-danger';
-                default: return 'status-pending';
-            }
-        }
-
-        async function loadAnalytics() {
-            console.log('Loading analytics...');
-            // For now, just show a placeholder
-            document.getElementById('activityChart').innerHTML = `
-                <div style="text-align: center; padding: 2rem;">
-                    <i class="fas fa-chart-line" style="font-size: 3rem; color: var(--gold); margin-bottom: 1rem;"></i>
-                    <p>Analytics charts will be implemented with a charting library</p>
-                </div>
-            `;
-        }
-
-        async function loadSettings() {
-            console.log('Loading settings...');
-            try {
-                const snapshot = await database.ref('appSettings').once('value');
-                const settings = snapshot.val() || {};
-                
-                document.getElementById('platformName').value = settings.siteTitle || 'THE SONGA';
-                document.getElementById('whatsappNumber').value = settings.contactInfo?.whatsappNumber || '254727211191';
-                document.getElementById('contactEmail').value = settings.contactInfo?.email || 'office.songawelfare@gmail.com';
-                document.getElementById('libraryEmail').value = settings.contactInfo?.libraryEmail || 'library@thesongawelfare.com';
-                document.getElementById('maintenanceMode').checked = settings.maintenanceMode || false;
-                
-                console.log('Settings loaded successfully');
-                
-            } catch (error) {
-                console.error('Error loading settings:', error);
-            }
-        }
-
-        async function saveSettings() {
-            console.log('Saving settings...');
-            try {
-                const settingsData = {
-                    siteTitle: document.getElementById('platformName').value,
-                    contactInfo: {
-                        whatsappNumber: document.getElementById('whatsappNumber').value,
-                        email: document.getElementById('contactEmail').value,
-                        libraryEmail: document.getElementById('libraryEmail').value
-                    },
-                    maintenanceMode: document.getElementById('maintenanceMode').checked
-                };
-                
-                await database.ref('appSettings').set(settingsData);
-                alert('Settings saved successfully!');
-                console.log('Settings saved successfully');
-                
-            } catch (error) {
-                console.error('Error saving settings:', error);
-                alert('Error saving settings: ' + error.message);
-            }
-        }
-
-        // Modal functions
-        function openModal(modalId) {
-            console.log('Opening modal:', modalId);
-            editingItemId = null;
-            const modal = document.getElementById(modalId);
-            const title = modal.querySelector('h2');
-            
-            switch (modalId) {
-                case 'userModal':
-                    title.textContent = 'Add New User';
-                    document.getElementById('userForm').reset();
-                    document.getElementById('modalIsAdmin').checked = false;
-                    document.getElementById('modalNotifications').checked = true;
-                    break;
-                case 'postModal':
-                    title.textContent = 'Create Post';
-                    document.getElementById('postForm').reset();
-                    document.getElementById('postCategory').value = 'announcement';
-                    document.getElementById('postType').value = 'update';
-                    document.getElementById('postStatus').value = 'published';
-                    break;
-                case 'bookModal':
-                    title.textContent = 'Add Book to Library';
-                    document.getElementById('bookForm').reset();
-                    document.getElementById('bookCategory').value = 'Personal Growth';
-                    document.getElementById('bookPages').value = 200;
-                    document.getElementById('bookRating').value = 4.5;
-                    document.getElementById('bookTotalCopies').value = 5;
-                    document.getElementById('bookAvailableCopies').value = 5;
-                    // Check all subscription tier checkboxes by default
-                    document.querySelectorAll('#bookForm input[type="checkbox"]').forEach(cb => cb.checked = true);
-                    break;
-                case 'subscriptionModal':
-                    title.textContent = 'Add Subscription Plan';
-                    document.getElementById('subscriptionForm').reset();
-                    document.getElementById('subscriptionDuration').value = '1 month';
-                    document.getElementById('subscriptionPopularity').value = 'popular';
-                    document.getElementById('subscriptionStatus').value = 'active';
-                    break;
-                case 'eventModal':
-                    title.textContent = 'Create Event';
-                    document.getElementById('eventForm').reset();
-                    
-                    // Set default dates
-                    const now = new Date();
-                    const tomorrow = new Date(now);
-                    tomorrow.setDate(tomorrow.getDate() + 1);
-                    
-                    document.getElementById('eventDate').value = formatDateTimeLocal(tomorrow);
-                    document.getElementById('eventEndDate').value = formatDateTimeLocal(new Date(tomorrow.getTime() + 2 * 60 * 60 * 1000));
-                    document.getElementById('eventRegistrationDeadline').value = formatDateTimeLocal(now);
-                    document.getElementById('eventType').value = 'workshop';
-                    document.getElementById('eventCategory').value = 'finance';
-                    document.getElementById('eventStatus').value = 'upcoming';
-                    document.getElementById('eventRegistrationOpen').checked = true;
-                    break;
-            }
-            
-            modal.classList.add('active');
-        }
-
-        function closeModal(modalId) {
-            console.log('Closing modal:', modalId);
-            document.getElementById(modalId)?.classList.remove('active');
-            editingItemId = null;
-        }
-
-        function formatDateTimeLocal(date) {
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            const hours = String(date.getHours()).padStart(2, '0');
-            const minutes = String(date.getMinutes()).padStart(2, '0');
-            return `${year}-${month}-${day}T${hours}:${minutes}`;
-        }
-
-        async function handleUserSubmit(e) {
-            e.preventDefault();
-            console.log('Handling user submit...');
-            
-            const userData = {
-                firstName: document.getElementById('modalFirstName').value,
-                lastName: document.getElementById('modalLastName').value,
-                email: document.getElementById('modalEmail').value,
-                phoneNumber: document.getElementById('modalPhone').value || '',
-                membershipTier: document.getElementById('modalMembership').value,
-                status: document.getElementById('modalStatus').value,
-                isAdmin: document.getElementById('modalIsAdmin').checked,
-                isModerator: document.getElementById('modalIsAdmin').checked,
-                notificationsEnabled: document.getElementById('modalNotifications').checked,
-                joinedDate: new Date().toISOString(),
-                lastLogin: new Date().toISOString(),
-                profilePicture: 'https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp'
-            };
-            
-            try {
-                if (editingItemId) {
-                    // Update existing user
-                    await database.ref(`users/${editingItemId}`).update(userData);
-                    alert('User updated successfully!');
-                } else {
-                    // Create new user with a new ID
-                    const newUserRef = database.ref('users').push();
-                    await newUserRef.set({ 
-                        ...userData,
-                        uid: newUserRef.key
-                    });
-                    alert('User created successfully!');
-                }
-                
-                closeModal('userModal');
-                loadUsers();
-                
-            } catch (error) {
-                console.error('Error saving user:', error);
-                alert('Error saving user: ' + error.message);
-            }
-        }
-
-        async function handlePostSubmit(e) {
-            e.preventDefault();
-            console.log('Handling post submit...');
-            
-            const tags = document.getElementById('postTags').value
-                .split(',')
-                .map(t => t.trim())
-                .filter(t => t);
-            
-            const postData = {
-                title: document.getElementById('postTitle').value,
-                content: document.getElementById('postContent').value,
-                category: document.getElementById('postCategory').value,
-                type: document.getElementById('postType').value,
-                tags: tags,
-                imageUrl: document.getElementById('postImage').value || '',
-                isPinned: document.getElementById('postPinned').checked,
-                status: document.getElementById('postStatus').value,
-                authorId: currentUser.uid || 'admin_001',
-                authorName: 'THE SONGA',
-                authorAvatar: 'https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp',
-                likes: 0,
-                likedBy: [],
-                comments: 0,
-                shares: 0,
-                bookmarks: 0,
-                updatedAt: new Date().toISOString()
-            };
-            
-            if (!editingItemId) {
-                postData.createdAt = new Date().toISOString();
-            }
-            
-            try {
-                if (editingItemId) {
-                    // Update existing post
-                    await database.ref(`communityPosts/${editingItemId}`).update(postData);
-                    alert('Post updated successfully!');
-                } else {
-                    // Create new post with a new ID
-                    const newPostRef = database.ref('communityPosts').push();
-                    await newPostRef.set({ 
-                        ...postData,
-                        id: newPostRef.key
-                    });
-                    alert('Post created successfully!');
-                }
-                
-                closeModal('postModal');
-                loadPosts();
-                
-            } catch (error) {
-                console.error('Error saving post:', error);
-                alert('Error saving post: ' + error.message);
-            }
-        }
-
-        async function handleBookSubmit(e) {
-            e.preventDefault();
-            console.log('Handling book submit...');
-            
-            const tags = document.getElementById('bookTags').value
-                .split(',')
-                .map(t => t.trim())
-                .filter(t => t);
-            
-            const tierCheckboxes = document.querySelectorAll('#bookForm input[type="checkbox"]');
-            const subscriptionTiers = Array.from(tierCheckboxes)
-                .filter(cb => cb.checked)
-                .map(cb => cb.value);
-            
-            const bookData = {
-                title: document.getElementById('bookTitle').value,
-                author: document.getElementById('bookAuthor').value,
-                category: document.getElementById('bookCategory').value,
-                description: document.getElementById('bookDescription').value,
-                coverImage: document.getElementById('bookCover').value,
-                pages: parseInt(document.getElementById('bookPages').value) || 200,
-                isbn: document.getElementById('bookISBN').value || '',
-                rating: parseFloat(document.getElementById('bookRating').value) || 4.5,
-                totalRatings: 0,
-                totalCopies: parseInt(document.getElementById('bookTotalCopies').value) || 5,
-                availableCopies: parseInt(document.getElementById('bookAvailableCopies').value) || 5,
-                genre: [],
-                tags: tags,
-                featured: document.getElementById('bookFeatured').checked,
-                availability: 'available',
-                borrowCount: 0,
-                subscriptionTiers: subscriptionTiers
-            };
-            
-            if (!editingItemId) {
-                bookData.addedDate = new Date().toISOString();
-            }
-            
-            try {
-                if (editingItemId) {
-                    // Update existing book
-                    await database.ref(`libraryBooks/${editingItemId}`).update(bookData);
-                    alert('Book updated successfully!');
-                } else {
-                    // Create new book with a new ID
-                    const newBookRef = database.ref('libraryBooks').push();
-                    await newBookRef.set({ 
-                        ...bookData,
-                        id: newBookRef.key
-                    });
-                    alert('Book added successfully!');
-                }
-                
-                closeModal('bookModal');
-                loadBooks();
-                
-            } catch (error) {
-                console.error('Error saving book:', error);
-                alert('Error saving book: ' + error.message);
-            }
-        }
-
-        async function handleSubscriptionSubmit(e) {
-            e.preventDefault();
-            console.log('Handling subscription submit...');
-            
-            const features = document.getElementById('subscriptionFeatures').value
-                .split('\n')
-                .map(f => f.trim())
-                .filter(f => f);
-            
-            const subscriptionData = {
-                name: document.getElementById('subscriptionName').value,
-                price: parseInt(document.getElementById('subscriptionPrice').value),
-                currency: 'KSh',
-                duration: document.getElementById('subscriptionDuration').value,
-                popularity: document.getElementById('subscriptionPopularity').value,
-                features: features,
-                active: document.getElementById('subscriptionStatus').value === 'active'
-            };
-            
-            if (!editingItemId) {
-                subscriptionData.createdAt = new Date().toISOString();
-            }
-            
-            try {
-                if (editingItemId) {
-                    // Update existing plan
-                    await database.ref(`subscriptionPlans/${editingItemId}`).update(subscriptionData);
-                    alert('Subscription plan updated successfully!');
-                } else {
-                    // Create new plan with a new ID
-                    const newSubRef = database.ref('subscriptionPlans').push();
-                    await newSubRef.set({ 
-                        ...subscriptionData,
-                        id: newSubRef.key
-                    });
-                    alert('Subscription plan created successfully!');
-                }
-                
-                closeModal('subscriptionModal');
-                loadSubscriptions();
-                
-            } catch (error) {
-                console.error('Error saving subscription:', error);
-                alert('Error saving subscription: ' + error.message);
-            }
-        }
-
-        async function handleEventSubmit(e) {
-            e.preventDefault();
-            console.log('Handling event submit...');
-            
-            const registrationDeadline = document.getElementById('eventRegistrationDeadline').value;
-            
-            const eventData = {
-                title: document.getElementById('eventTitle').value,
-                description: document.getElementById('eventDescription').value,
-                date: new Date(document.getElementById('eventDate').value).toISOString(),
-                endDate: new Date(document.getElementById('eventEndDate').value).toISOString(),
-                location: document.getElementById('eventLocation').value,
-                maxAttendees: parseInt(document.getElementById('eventMaxAttendees').value) || 50,
-                type: document.getElementById('eventType').value,
-                category: document.getElementById('eventCategory').value,
-                registrationDeadline: registrationDeadline ? 
-                    new Date(registrationDeadline).toISOString() : null,
-                status: document.getElementById('eventStatus').value,
-                registrationOpen: document.getElementById('eventRegistrationOpen').checked,
-                host: 'THE SONGA',
-                hostAvatar: 'https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp',
-                currentAttendees: 0,
-                attendeeIds: [],
-                updatedAt: new Date().toISOString()
-            };
-            
-            if (!editingItemId) {
-                eventData.createdAt = new Date().toISOString();
-            }
-            
-            try {
-                if (editingItemId) {
-                    // Update existing event
-                    await database.ref(`events/${editingItemId}`).update(eventData);
-                    alert('Event updated successfully!');
-                } else {
-                    // Create new event with a new ID
-                    const newEventRef = database.ref('events').push();
-                    await newEventRef.set({ 
-                        ...eventData,
-                        id: newEventRef.key
-                    });
-                    alert('Event created successfully!');
-                }
-                
-                closeModal('eventModal');
-                loadEvents();
-                
-            } catch (error) {
-                console.error('Error saving event:', error);
-                alert('Error saving event: ' + error.message);
-            }
-        }
-
-        async function editUser(userId) {
-            console.log('Editing user:', userId);
-            try {
-                const snapshot = await database.ref(`users/${userId}`).once('value');
-                const user = snapshot.val();
-                
-                if (user) {
-                    editingItemId = userId;
-                    
-                    document.getElementById('modalFirstName').value = user.firstName || '';
-                    document.getElementById('modalLastName').value = user.lastName || '';
-                    document.getElementById('modalEmail').value = user.email || '';
-                    document.getElementById('modalPhone').value = user.phoneNumber || '';
-                    document.getElementById('modalMembership').value = user.membershipTier || 'scholar';
-                    document.getElementById('modalStatus').value = user.status || 'active';
-                    document.getElementById('modalIsAdmin').checked = user.isAdmin || false;
-                    document.getElementById('modalNotifications').checked = user.notificationsEnabled || false;
-                    document.getElementById('modalUserId').value = userId;
-                    
-                    document.getElementById('userModalTitle').textContent = 'Edit User';
-                    document.getElementById('userModal').classList.add('active');
-                }
-            } catch (error) {
-                console.error('Error loading user:', error);
-                alert('Error loading user: ' + error.message);
-            }
-        }
-
-        async function editPost(postId) {
-            console.log('Editing post:', postId);
-            try {
-                const snapshot = await database.ref(`communityPosts/${postId}`).once('value');
-                const post = snapshot.val();
-                
-                if (post) {
-                    editingItemId = postId;
-                    
-                    document.getElementById('postTitle').value = post.title || '';
-                    document.getElementById('postContent').value = post.content || '';
-                    document.getElementById('postCategory').value = post.category || 'announcement';
-                    document.getElementById('postType').value = post.type || 'update';
-                    document.getElementById('postTags').value = Array.isArray(post.tags) ? post.tags.join(', ') : '';
-                    document.getElementById('postImage').value = post.imageUrl || '';
-                    document.getElementById('postPinned').checked = post.isPinned || false;
-                    document.getElementById('postStatus').value = post.status || 'published';
-                    document.getElementById('postId').value = postId;
-                    
-                    document.getElementById('postModalTitle').textContent = 'Edit Post';
-                    document.getElementById('postModal').classList.add('active');
-                }
-            } catch (error) {
-                console.error('Error loading post:', error);
-                alert('Error loading post: ' + error.message);
-            }
-        }
-
-        async function editBook(bookId) {
-            console.log('Editing book:', bookId);
-            try {
-                const snapshot = await database.ref(`libraryBooks/${bookId}`).once('value');
-                const book = snapshot.val();
-                
-                if (book) {
-                    editingItemId = bookId;
-                    
-                    document.getElementById('bookTitle').value = book.title || '';
-                    document.getElementById('bookAuthor').value = book.author || '';
-                    document.getElementById('bookCategory').value = book.category || 'Personal Growth';
-                    document.getElementById('bookDescription').value = book.description || '';
-                    document.getElementById('bookCover').value = book.coverImage || '';
-                    document.getElementById('bookPages').value = book.pages || 200;
-                    document.getElementById('bookISBN').value = book.isbn || '';
-                    document.getElementById('bookRating').value = book.rating || 4.5;
-                    document.getElementById('bookTotalCopies').value = book.totalCopies || 5;
-                    document.getElementById('bookAvailableCopies').value = book.availableCopies || 5;
-                    document.getElementById('bookTags').value = Array.isArray(book.tags) ? book.tags.join(', ') : '';
-                    document.getElementById('bookFeatured').checked = book.featured || false;
-                    document.getElementById('bookId').value = bookId;
-                    
-                    // Set subscription tiers
-                    const tiers = book.subscriptionTiers || ['explorer', 'scholar', 'visionary'];
-                    document.querySelectorAll('#bookForm input[type="checkbox"]').forEach(cb => {
-                        cb.checked = tiers.includes(cb.value);
-                    });
-                    
-                    document.getElementById('bookModalTitle').textContent = 'Edit Book';
-                    document.getElementById('bookModal').classList.add('active');
-                }
-            } catch (error) {
-                console.error('Error loading book:', error);
-                alert('Error loading book: ' + error.message);
-            }
-        }
-
-        async function editSubscription(subId) {
-            console.log('Editing subscription:', subId);
-            try {
-                const snapshot = await database.ref(`subscriptionPlans/${subId}`).once('value');
-                const plan = snapshot.val();
-                
-                if (plan) {
-                    editingItemId = subId;
-                    
-                    document.getElementById('subscriptionName').value = plan.name || '';
-                    document.getElementById('subscriptionPrice').value = plan.price || 0;
-                    document.getElementById('subscriptionDuration').value = plan.duration || '1 month';
-                    document.getElementById('subscriptionPopularity').value = plan.popularity || 'standard';
-                    document.getElementById('subscriptionFeatures').value = Array.isArray(plan.features) ? plan.features.join('\n') : '';
-                    document.getElementById('subscriptionStatus').value = plan.active ? 'active' : 'inactive';
-                    document.getElementById('subscriptionId').value = subId;
-                    
-                    document.getElementById('subscriptionModalTitle').textContent = 'Edit Subscription Plan';
-                    document.getElementById('subscriptionModal').classList.add('active');
-                }
-            } catch (error) {
-                console.error('Error loading subscription:', error);
-                alert('Error loading subscription: ' + error.message);
-            }
-        }
-
-        async function editEvent(eventId) {
-            console.log('Editing event:', eventId);
-            try {
-                const snapshot = await database.ref(`events/${eventId}`).once('value');
-                const event = snapshot.val();
-                
-                if (event) {
-                    editingItemId = eventId;
-                    
-                    document.getElementById('eventTitle').value = event.title || '';
-                    document.getElementById('eventDescription').value = event.description || '';
-                    document.getElementById('eventDate').value = formatDateTimeLocal(new Date(event.date));
-                    document.getElementById('eventEndDate').value = formatDateTimeLocal(new Date(event.endDate));
-                    document.getElementById('eventLocation').value = event.location || '';
-                    document.getElementById('eventMaxAttendees').value = event.maxAttendees || 50;
-                    document.getElementById('eventType').value = event.type || 'workshop';
-                    document.getElementById('eventCategory').value = event.category || 'finance';
-                    document.getElementById('eventRegistrationDeadline').value = event.registrationDeadline ? 
-                        formatDateTimeLocal(new Date(event.registrationDeadline)) : '';
-                    document.getElementById('eventStatus').value = event.status || 'upcoming';
-                    document.getElementById('eventRegistrationOpen').checked = event.registrationOpen || false;
-                    document.getElementById('eventId').value = eventId;
-                    
-                    document.getElementById('eventModalTitle').textContent = 'Edit Event';
-                    document.getElementById('eventModal').classList.add('active');
-                }
-            } catch (error) {
-                console.error('Error loading event:', error);
-                alert('Error loading event: ' + error.message);
-            }
-        }
-
-        function confirmDelete(collection, id) {
-            console.log('Confirming delete:', collection, id);
-            itemsToDelete = { collection, id };
-            const messages = {
-                users: 'Are you sure you want to delete this user? This will remove all their data.',
-                communityPosts: 'Are you sure you want to delete this post? This cannot be undone.',
-                libraryBooks: 'Are you sure you want to delete this book? This will remove it from the library.',
-                subscriptionPlans: 'Are you sure you want to delete this subscription plan? Existing subscribers will be affected.',
-                events: 'Are you sure you want to delete this event? All registrations will be removed.'
-            };
-            
-            document.getElementById('deleteMessage').textContent = messages[collection] || 'Are you sure you want to delete this item?';
-            document.getElementById('deleteModal').classList.add('active');
-        }
-
-        async function handleDelete() {
-            if (!itemsToDelete) return;
-            
-            const { collection, id } = itemsToDelete;
-            console.log('Deleting:', collection, id);
-            
-            try {
-                await database.ref(`${collection}/${id}`).remove();
-                alert('Item deleted successfully!');
-                
-                // Reload current section
-                switch (currentSection) {
-                    case 'users': loadUsers(); break;
-                    case 'posts': loadPosts(); break;
-                    case 'books': loadBooks(); break;
-                    case 'subscriptions': loadSubscriptions(); break;
-                    case 'events': loadEvents(); break;
-                }
-                
-                closeModal('deleteModal');
-                itemsToDelete = null;
-                
-            } catch (error) {
-                console.error('Error deleting item:', error);
-                alert('Error deleting item: ' + error.message);
-            }
-        }
-
-        // Utility functions
-        function formatDate(dateString) {
-            if (!dateString) return 'N/A';
-            const date = new Date(dateString);
-            return date.toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
+                tableBody.appendChild(row);
             });
         }
 
-        // Make functions available globally for onclick handlers
-        window.editUser = editUser;
-        window.editPost = editPost;
-        window.editBook = editBook;
-        window.editSubscription = editSubscription;
-        window.editEvent = editEvent;
-        window.confirmDelete = confirmDelete;
-        
-        console.log('Admin panel initialized successfully');
+        function loadPostsTable() {
+            const tableBody = document.getElementById('postsTable');
+            tableBody.innerHTML = '';
+            
+            Object.keys(mockData.communityPosts).forEach(postId => {
+                const post = mockData.communityPosts[postId];
+                const row = document.createElement('tr');
+                
+                // Format date
+                const postDate = new Date(post.createdAt).toLocaleDateString();
+                
+                row.innerHTML = `
+                    <td>
+                        <div style="font-weight: 500;">${post.title}</div>
+                        <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">${postId}</div>
+                    </td>
+                    <td>${post.authorName}</td>
+                    <td>
+                        <span class="status-badge ${post.category === 'announcement' ? 'status-active' : 'status-pending'}">
+                            ${post.category}
+                        </span>
+                    </td>
+                    <td>${post.likes}</td>
+                    <td>${post.comments}</td>
+                    <td>${postDate}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-edit btn-sm" onclick="editPost('${postId}')">
+                                <i class="fas fa-edit btn-icon"></i>
+                            </button>
+                            <button class="btn btn-delete btn-sm" onclick="deletePost('${postId}')">
+                                <i class="fas fa-trash btn-icon"></i>
+                            </button>
+                            <button class="btn btn-secondary btn-sm" onclick="pinPost('${postId}')">
+                                <i class="fas fa-thumbtack btn-icon"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+
+        function loadBooksTable() {
+            const tableBody = document.getElementById('booksTable');
+            tableBody.innerHTML = '';
+            
+            Object.keys(mockData.libraryBooks).forEach(bookId => {
+                const book = mockData.libraryBooks[bookId];
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>
+                        <div style="font-weight: 500;">${book.title}</div>
+                        <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">${bookId}</div>
+                    </td>
+                    <td>${book.author}</td>
+                    <td>${book.category}</td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span class="status-badge ${book.availableCopies > 0 ? 'status-active' : 'status-inactive'}">
+                                ${book.availableCopies > 0 ? 'Available' : 'Out of Stock'}
+                            </span>
+                            <span style="font-size: 12px; color: var(--text-secondary);">
+                                (${book.availableCopies}/${book.totalCopies})
+                            </span>
+                        </div>
+                    </td>
+                    <td>${book.rating}/5.0</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-edit btn-sm" onclick="editBook('${bookId}')">
+                                <i class="fas fa-edit btn-icon"></i>
+                            </button>
+                            <button class="btn btn-delete btn-sm" onclick="deleteBook('${bookId}')">
+                                <i class="fas fa-trash btn-icon"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+
+        function loadEventsTable() {
+            const tableBody = document.getElementById('eventsTable');
+            tableBody.innerHTML = '';
+            
+            Object.keys(mockData.events).forEach(eventId => {
+                const event = mockData.events[eventId];
+                const row = document.createElement('tr');
+                
+                // Format date
+                const eventDate = new Date(event.date).toLocaleString();
+                
+                row.innerHTML = `
+                    <td>
+                        <div style="font-weight: 500;">${event.title}</div>
+                        <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">${eventId}</div>
+                    </td>
+                    <td>${eventDate}</td>
+                    <td>${event.location}</td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span>${event.currentAttendees}/${event.maxAttendees}</span>
+                            <div style="width: 60px; height: 6px; background-color: rgba(0,0,0,0.1); border-radius: 3px;">
+                                <div style="width: ${(event.currentAttendees/event.maxAttendees)*100}%; height: 100%; background-color: var(--success-color); border-radius: 3px;"></div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="status-badge ${event.status === 'upcoming' ? 'status-active' : 'status-inactive'}">
+                            ${event.status}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-edit btn-sm" onclick="editEvent('${eventId}')">
+                                <i class="fas fa-edit btn-icon"></i>
+                            </button>
+                            <button class="btn btn-delete btn-sm" onclick="deleteEvent('${eventId}')">
+                                <i class="fas fa-trash btn-icon"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+
+        function loadLogsTable() {
+            const tableBody = document.getElementById('logsTable');
+            tableBody.innerHTML = '';
+            
+            Object.keys(mockData.systemLogs).forEach(logId => {
+                const log = mockData.systemLogs[logId];
+                const row = document.createElement('tr');
+                
+                // Format timestamp
+                const logTime = new Date(log.timestamp).toLocaleString();
+                
+                row.innerHTML = `
+                    <td>${logTime}</td>
+                    <td>${log.action}</td>
+                    <td>${log.userId}</td>
+                    <td>${log.details}</td>
+                    <td>${log.ipAddress}</td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+
+        function loadActivityTable() {
+            const tableBody = document.getElementById('activityTable');
+            tableBody.innerHTML = '';
+            
+            // Sample activity data
+            const activities = [
+                { user: "John Doe", action: "Registered", details: "New member joined", time: "10:30 AM", status: "success" },
+                { user: "Jane Smith", action: "Borrowed Book", details: "Atomic Habits", time: "11:15 AM", status: "success" },
+                { user: "Admin", action: "Created Event", details: "Wealth Building Workshop", time: "Yesterday", status: "success" },
+                { user: "Mike Johnson", action: "Subscription Renewal", details: "Scholar Plan", time: "Mar 19", status: "pending" },
+                { user: "Sarah Williams", action: "Post Created", details: "Community Introduction", time: "Mar 18", status: "success" }
+            ];
+            
+            activities.forEach(activity => {
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>
+                        <div style="font-weight: 500;">${activity.user}</div>
+                    </td>
+                    <td>${activity.action}</td>
+                    <td>${activity.details}</td>
+                    <td>${activity.time}</td>
+                    <td>
+                        <span class="status-badge ${activity.status === 'success' ? 'status-active' : 'status-pending'}">
+                            ${activity.status}
+                        </span>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+
+        // CRUD Functions
+        function saveUser() {
+            // Get form values
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const membershipTier = document.getElementById('membershipTier').value;
+            const userStatus = document.getElementById('userStatus').value;
+            const profilePicture = document.getElementById('profilePicture').value;
+            
+            // Here you would implement Firebase write operation
+            // For now, just show a success message
+            alert(`User ${firstName} ${lastName} saved successfully!`);
+            
+            // Close modal
+            document.getElementById('userModal').style.display = 'none';
+            
+            // Refresh user table
+            loadUsersTable();
+            
+            // Reset form
+            document.getElementById('userForm').reset();
+        }
+
+        function savePost() {
+            const title = document.getElementById('postTitle').value;
+            const content = document.getElementById('postContent').value;
+            const category = document.getElementById('postCategory').value;
+            const status = document.getElementById('postStatus').value;
+            const tags = document.getElementById('postTags').value;
+            const image = document.getElementById('postImage').value;
+            
+            alert(`Post "${title}" saved successfully!`);
+            document.getElementById('postModal').style.display = 'none';
+            loadPostsTable();
+            document.getElementById('postForm').reset();
+        }
+
+        function saveBook() {
+            const title = document.getElementById('bookTitle').value;
+            const author = document.getElementById('bookAuthor').value;
+            const category = document.getElementById('bookCategory').value;
+            const isbn = document.getElementById('bookIsbn').value;
+            const description = document.getElementById('bookDescription').value;
+            const totalCopies = document.getElementById('bookTotalCopies').value;
+            const availableCopies = document.getElementById('bookAvailableCopies').value;
+            const cover = document.getElementById('bookCover').value;
+            const tags = document.getElementById('bookTags').value;
+            
+            alert(`Book "${title}" saved successfully!`);
+            document.getElementById('bookModal').style.display = 'none';
+            loadBooksTable();
+            document.getElementById('bookForm').reset();
+        }
+
+        function saveEvent() {
+            const title = document.getElementById('eventTitle').value;
+            const description = document.getElementById('eventDescription').value;
+            const start = document.getElementById('eventStart').value;
+            const end = document.getElementById('eventEnd').value;
+            const location = document.getElementById('eventLocation').value;
+            const maxAttendees = document.getElementById('eventMaxAttendees').value;
+            const type = document.getElementById('eventType').value;
+            const category = document.getElementById('eventCategory').value;
+            const image = document.getElementById('eventImage').value;
+            
+            alert(`Event "${title}" saved successfully!`);
+            document.getElementById('eventModal').style.display = 'none';
+            loadEventsTable();
+            document.getElementById('eventForm').reset();
+        }
+
+        // Edit functions
+        function editUser(userId) {
+            const user = mockData.users[userId];
+            
+            // Populate form
+            document.getElementById('firstName').value = user.firstName;
+            document.getElementById('lastName').value = user.lastName;
+            document.getElementById('email').value = user.email;
+            document.getElementById('phone').value = user.phoneNumber;
+            document.getElementById('membershipTier').value = user.membershipTier;
+            document.getElementById('userStatus').value = user.status;
+            document.getElementById('profilePicture').value = user.profilePicture;
+            
+            // Show modal
+            document.getElementById('userModal').style.display = 'flex';
+            
+            // Change save button text
+            document.getElementById('saveUserBtn').textContent = 'Update User';
+        }
+
+        function editPost(postId) {
+            const post = mockData.communityPosts[postId];
+            
+            document.getElementById('postTitle').value = post.title;
+            document.getElementById('postCategory').value = post.category;
+            document.getElementById('postStatus').value = post.status;
+            
+            document.getElementById('postModal').style.display = 'flex';
+            document.getElementById('savePostBtn').textContent = 'Update Post';
+        }
+
+        function editBook(bookId) {
+            const book = mockData.libraryBooks[bookId];
+            
+            document.getElementById('bookTitle').value = book.title;
+            document.getElementById('bookAuthor').value = book.author;
+            document.getElementById('bookCategory').value = book.category;
+            document.getElementById('bookTotalCopies').value = book.totalCopies;
+            document.getElementById('bookAvailableCopies').value = book.availableCopies;
+            
+            document.getElementById('bookModal').style.display = 'flex';
+            document.getElementById('saveBookBtn').textContent = 'Update Book';
+        }
+
+        function editEvent(eventId) {
+            const event = mockData.events[eventId];
+            
+            document.getElementById('eventTitle').value = event.title;
+            document.getElementById('eventLocation').value = event.location;
+            document.getElementById('eventMaxAttendees').value = event.maxAttendees;
+            
+            document.getElementById('eventModal').style.display = 'flex';
+            document.getElementById('saveEventBtn').textContent = 'Update Event';
+        }
+
+        // Delete functions
+        function deleteUser(userId) {
+            if (confirm(`Are you sure you want to delete user ${userId}?`)) {
+                alert(`User ${userId} deleted successfully!`);
+                loadUsersTable();
+            }
+        }
+
+        function deletePost(postId) {
+            if (confirm(`Are you sure you want to delete post ${postId}?`)) {
+                alert(`Post ${postId} deleted successfully!`);
+                loadPostsTable();
+            }
+        }
+
+        function deleteBook(bookId) {
+            if (confirm(`Are you sure you want to delete book ${bookId}?`)) {
+                alert(`Book ${bookId} deleted successfully!`);
+                loadBooksTable();
+            }
+        }
+
+        function deleteEvent(eventId) {
+            if (confirm(`Are you sure you want to delete event ${eventId}?`)) {
+                alert(`Event ${eventId} deleted successfully!`);
+                loadEventsTable();
+            }
+        }
+
+        function pinPost(postId) {
+            alert(`Post ${postId} pinned to top!`);
+        }
     </script>
 </body>
 </html>
