@@ -12,19 +12,11 @@
     
     <!-- Preload critical resources -->
     <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js">
     
     <link rel="icon" type="image/x-icon" href="https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Google Sign-In API -->
-    <script src="https://accounts.google.com/gsi/client" async></script>
-    
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-    
+    <!-- Inline critical CSS -->
     <style>
         * {
             margin: 0;
@@ -65,195 +57,7 @@
             overflow: hidden;
         }
 
-        /* Header Styles */
-        header {
-            background-color: var(--white);
-            color: var(--black);
-            padding: 0.5rem 1rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            border-bottom: 1px solid var(--light-gray);
-            height: 60px;
-            backdrop-filter: blur(10px);
-        }
-
-        .header-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 100%;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-        }
-
-        .logo img {
-            height: 40px;
-            width: auto;
-        }
-
-        .brand-info {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .brand-name {
-            font-weight: bold;
-            font-size: 1.2rem;
-            color: var(--gold-dark);
-        }
-
-        .brand-subtitle {
-            font-size: 0.7rem;
-            color: var(--dark-gray);
-            font-style: italic;
-        }
-
-        /* Search Bar */
-        .search-container {
-            flex: 1;
-            max-width: 400px;
-            margin: 0 20px;
-        }
-
-        .search-box {
-            display: flex;
-            align-items: center;
-            background: var(--gray);
-            border-radius: 20px;
-            padding: 8px 15px;
-            border: 1px solid var(--light-gray);
-        }
-
-        .search-box i {
-            color: var(--dark-gray);
-            margin-right: 10px;
-        }
-
-        .search-box input {
-            border: none;
-            background: transparent;
-            outline: none;
-            width: 100%;
-            font-size: 0.9rem;
-        }
-
-        /* User Profile */
-        .auth-section {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            position: relative;
-        }
-
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 5px 10px;
-            border-radius: 20px;
-            background: var(--gold-light);
-            cursor: pointer;
-            position: relative;
-            transition: all 0.3s ease;
-        }
-
-        .user-profile:hover {
-            background: var(--gold);
-        }
-
-        .user-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            overflow: hidden;
-        }
-
-        .user-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .user-name {
-            font-weight: 600;
-            font-size: 0.9rem;
-            color: var(--black);
-        }
-
-        .user-dropdown {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 20px var(--shadow);
-            min-width: 200px;
-            z-index: 1000;
-            display: none;
-            margin-top: 5px;
-            overflow: hidden;
-            border: 1px solid var(--light-gray);
-        }
-
-        .user-dropdown.active {
-            display: block;
-            animation: slideDown 0.2s ease-out;
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .dropdown-item {
-            padding: 12px 16px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            border-bottom: 1px solid var(--light-gray);
-        }
-
-        .dropdown-item:last-child {
-            border-bottom: none;
-        }
-
-        .dropdown-item:hover {
-            background-color: var(--gold-light);
-        }
-
-        .dropdown-item i {
-            width: 20px;
-            text-align: center;
-            color: var(--gold-dark);
-        }
-
-        /* Membership Badge */
-        .membership-badge {
-            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-            color: var(--black);
-            padding: 3px 10px;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            margin-left: 5px;
-        }
-
-        /* Sign In Modal */
+        /* SIGNIN MODAL */
         .signin-modal {
             display: none;
             position: fixed;
@@ -367,7 +171,7 @@
             line-height: 1.4;
         }
 
-        /* Create/Edit Post Modal */
+        /* MODALS */
         .modal {
             display: none;
             position: fixed;
@@ -445,6 +249,184 @@
             overflow-y: auto;
         }
 
+        /* HEADER */
+        header {
+            background-color: var(--white);
+            color: var(--black);
+            padding: 0.5rem 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid var(--light-gray);
+            height: 60px;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .logo img {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-name {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: var(--gold-dark);
+        }
+
+        .brand-subtitle {
+            font-size: 0.7rem;
+            color: var(--dark-gray);
+            font-style: italic;
+        }
+
+        /* SEARCH BAR */
+        .search-container {
+            flex: 1;
+            max-width: 400px;
+            margin: 0 20px;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: var(--gray);
+            border-radius: 20px;
+            padding: 8px 15px;
+            border: 1px solid var(--light-gray);
+        }
+
+        .search-box i {
+            color: var(--dark-gray);
+            margin-right: 10px;
+        }
+
+        .search-box input {
+            border: none;
+            background: transparent;
+            outline: none;
+            width: 100%;
+            font-size: 0.9rem;
+        }
+
+        /* USER PROFILE */
+        .auth-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 5px 10px;
+            border-radius: 20px;
+            background: var(--gold-light);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .user-profile:hover {
+            background: var(--gold);
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--black);
+        }
+
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px var(--shadow);
+            min-width: 200px;
+            z-index: 1000;
+            display: none;
+            margin-top: 5px;
+            overflow: hidden;
+            border: 1px solid var(--light-gray);
+        }
+
+        .user-dropdown.active {
+            display: block;
+            animation: slideDown 0.2s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dropdown-item {
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--gold-light);
+        }
+
+        .dropdown-item i {
+            width: 20px;
+            text-align: center;
+            color: var(--gold-dark);
+        }
+
+        /* POST FORM */
         .post-form {
             display: flex;
             flex-direction: column;
@@ -540,7 +522,7 @@
             margin-top: 5px;
         }
 
-        /* Media Upload Section */
+        /* MEDIA UPLOAD */
         .media-upload {
             border: 2px dashed var(--light-gray);
             border-radius: 10px;
@@ -700,7 +682,7 @@
             color: var(--dark-gray);
         }
 
-        /* Delete Confirmation Modal */
+        /* DELETE CONFIRMATION MODAL */
         .delete-confirm-modal {
             display: none;
             position: fixed;
@@ -801,7 +783,7 @@
             transform: translateY(-2px);
         }
 
-        /* Image Modal */
+        /* IMAGE MODAL */
         .image-modal {
             display: none;
             position: fixed;
@@ -859,14 +841,14 @@
             transform: rotate(90deg);
         }
 
-        /* Main Content */
+        /* MAIN CONTENT */
         .container {
             max-width: 600px;
             margin: 0 auto;
             padding: 1rem;
         }
 
-        /* Create Post Button */
+        /* CREATE POST BUTTON */
         .create-post-btn {
             position: fixed;
             bottom: 80px;
@@ -895,7 +877,7 @@
             font-size: 1.6rem;
         }
 
-        /* Community Posts */
+        /* COMMUNITY POSTS */
         .community-posts {
             margin: 1rem 0;
         }
@@ -933,7 +915,7 @@
             50% { transform: scale(1.05); }
         }
 
-        /* Post Card */
+        /* POST CARD */
         .post-card {
             background: var(--white);
             border: 1px solid var(--light-gray);
@@ -1241,7 +1223,7 @@
             border-left: 4px solid #9b59b6;
         }
 
-        /* Comments Section */
+        /* COMMENTS SECTION */
         .comments-section {
             margin-top: 1.2rem;
             padding-top: 1.2rem;
@@ -1387,7 +1369,7 @@
             font-weight: 600;
         }
 
-        /* Reply Section */
+        /* REPLY SECTION */
         .replies-section {
             margin-top: 12px;
             margin-left: 48px;
@@ -1489,7 +1471,7 @@
             transform: scale(1.1);
         }
 
-        /* Loading and Empty States */
+        /* LOADING AND EMPTY STATES */
         .loading {
             text-align: center;
             padding: 4rem;
@@ -1529,7 +1511,7 @@
             color: var(--gold-dark);
         }
 
-        /* Bottom Navigation */
+        /* BOTTOM NAVIGATION */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -1574,7 +1556,7 @@
             transform: translateY(-3px);
         }
 
-        /* Notification */
+        /* NOTIFICATION */
         .notification {
             position: fixed;
             top: 80px;
@@ -1610,7 +1592,7 @@
             background: #3498db;
         }
 
-        /* Responsive Design */
+        /* RESPONSIVE DESIGN */
         @media (max-width: 768px) {
             .search-container {
                 display: none;
@@ -1707,7 +1689,7 @@
             }
         }
 
-        /* Scrollbar Styling */
+        /* SCROLLBAR STYLING */
         ::-webkit-scrollbar {
             width: 10px;
         }
@@ -1938,6 +1920,12 @@
         </a>
     </nav>
 
+    <!-- Firebase and Google Sign-In SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async></script>
+
     <script>
         // Firebase configuration
         const firebaseConfig = {
@@ -1951,8 +1939,21 @@
         };
 
         // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
+        let database;
+        try {
+            firebase.initializeApp(firebaseConfig);
+            database = firebase.database();
+            console.log("Firebase initialized successfully");
+        } catch (error) {
+            console.error("Firebase initialization error:", error);
+            document.getElementById('postsContainer').innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>Connection Error</h3>
+                    <p>Unable to connect to database. Please refresh the page.</p>
+                </div>
+            `;
+        }
 
         // Global variables
         let currentUser = null;
@@ -2007,27 +2008,42 @@
         const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
         const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
 
-        // Check authentication status
-        function checkAuthStatus() {
-            const storedUser = localStorage.getItem('the_songa_welfare_user');
-            if (storedUser) {
-                currentUser = JSON.parse(storedUser);
-                updateUIForMember();
-                signinModal.classList.remove('active');
-                fetchUserData(currentUser.uid);
-                setupRealtimePosts();
-            } else {
-                signinModal.classList.add('active');
-            }
-        }
-
         // Show notification
         function showNotification(message, type = 'success', duration = 4000) {
+            const notification = document.getElementById('notification');
             notification.textContent = message;
             notification.className = `notification show ${type}`;
             setTimeout(() => {
                 notification.classList.remove('show');
             }, duration);
+        }
+
+        // Check authentication status
+        function checkAuthStatus() {
+            postsContainer.innerHTML = `
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>Loading community posts...</p>
+                </div>
+            `;
+
+            const storedUser = localStorage.getItem('the_songa_welfare_user');
+            if (storedUser) {
+                try {
+                    currentUser = JSON.parse(storedUser);
+                    updateUIForMember();
+                    signinModal.classList.remove('active');
+                    fetchUserData(currentUser.uid);
+                    setupRealtimePosts();
+                } catch (error) {
+                    console.error("Error parsing stored user:", error);
+                    localStorage.removeItem('the_songa_welfare_user');
+                    signinModal.classList.add('active');
+                }
+            } else {
+                signinModal.classList.add('active');
+                setupRealtimePosts();
+            }
         }
 
         // Parse JWT token
@@ -2060,15 +2076,12 @@
                     emailVerified: userData.email_verified
                 };
                 
-                // Save to localStorage
                 localStorage.setItem('the_songa_welfare_user', JSON.stringify(currentUser));
                 
-                // Check if user exists in Firebase
                 const userRef = database.ref(`users/${currentUser.uid}`);
                 const snapshot = await userRef.once('value');
                 
                 if (!snapshot.exists()) {
-                    // Create new user
                     const newUser = {
                         uid: currentUser.uid,
                         email: currentUser.email,
@@ -2105,8 +2118,8 @@
 
         // Update UI for signed-in members
         function updateUIForMember() {
-            userProfile.style.display = 'flex';
-            if (currentUser) {
+            if (userProfile && currentUser) {
+                userProfile.style.display = 'flex';
                 userAvatar.src = currentUser.picture;
                 userDisplayName.textContent = currentUser.firstName;
             }
@@ -2123,6 +2136,115 @@
             } catch (error) {
                 console.error('Error fetching user data:', error);
             }
+        }
+
+        // Setup real-time posts listener
+        function setupRealtimePosts() {
+            if (realtimeListener && database) {
+                database.ref('communityPosts').off('value', realtimeListener);
+            }
+            
+            if (!database) {
+                console.error("Database not initialized");
+                showNotification("Database connection error", "error");
+                return;
+            }
+            
+            realtimeListener = database.ref('communityPosts').on('value', async (snapshot) => {
+                if (snapshot.exists()) {
+                    const postsData = snapshot.val();
+                    posts = Object.keys(postsData).map(key => ({
+                        id: key,
+                        ...postsData[key]
+                    }));
+                    
+                    const publishedPosts = posts.filter(post => post.status === 'published');
+                    
+                    publishedPosts.sort((a, b) => {
+                        if (a.isPinned && !b.isPinned) return -1;
+                        if (!a.isPinned && b.isPinned) return 1;
+                        return new Date(b.createdAt) - new Date(a.createdAt);
+                    });
+                    
+                    if (lastFetchTime) {
+                        const newestPostTime = publishedPosts[0]?.createdAt;
+                        if (newestPostTime && new Date(newestPostTime) > lastFetchTime) {
+                            newPostsAvailable = true;
+                            if (newPostsIndicator) {
+                                newPostsIndicator.style.display = 'block';
+                            }
+                        }
+                    }
+                    
+                    lastFetchTime = new Date();
+                    renderPosts(publishedPosts);
+                    
+                    publishedPosts.forEach(post => {
+                        setupRealtimeComments(post.id);
+                    });
+                } else {
+                    renderPosts([]);
+                }
+            }, (error) => {
+                console.error("Firebase real-time listener error:", error);
+                showNotification("Error loading posts", "error");
+            });
+        }
+
+        // Setup real-time comments for a post
+        function setupRealtimeComments(postId) {
+            if (!database) return;
+            
+            if (commentListeners[postId]) {
+                database.ref(`comments/${postId}`).off('value', commentListeners[postId]);
+            }
+            
+            commentListeners[postId] = database.ref(`comments/${postId}`).on('value', (snapshot) => {
+                if (snapshot.exists()) {
+                    const comments = Object.keys(snapshot.val()).map(key => ({
+                        id: key,
+                        ...snapshot.val()[key]
+                    }));
+                    
+                    const postElement = document.querySelector(`.post-card[data-post-id="${postId}"]`);
+                    if (postElement) {
+                        const commentBtn = postElement.querySelector('[data-action="comment"] span');
+                        if (commentBtn) {
+                            commentBtn.textContent = comments.length;
+                        }
+                    }
+                    
+                    const commentsSection = document.getElementById(`commentsSection-${postId}`);
+                    if (commentsSection) {
+                        renderComments(postId, comments);
+                    }
+                }
+            });
+        }
+
+        // Setup real-time replies for a comment
+        function setupRealtimeReplies(postId, commentId) {
+            if (!database) return;
+            
+            const replyKey = `${postId}_${commentId}`;
+            
+            if (replyListeners[replyKey]) {
+                database.ref(`replies/${postId}/${commentId}`).off('value', replyListeners[replyKey]);
+            }
+            
+            replyListeners[replyKey] = database.ref(`replies/${postId}/${commentId}`).on('value', (snapshot) => {
+                if (snapshot.exists()) {
+                    const replies = Object.keys(snapshot.val()).map(key => ({
+                        id: key,
+                        ...snapshot.val()[key]
+                    }));
+                    
+                    const repliesSection = document.getElementById(`repliesSection-${commentId}`);
+                    if (repliesSection) {
+                        renderReplies(commentId, replies);
+                    }
+                }
+            });
         }
 
         // Format timestamp
@@ -2182,122 +2304,21 @@
             return comment.likedBy.includes(currentUser.uid);
         }
 
-        // Setup real-time posts listener
-        function setupRealtimePosts() {
-            if (realtimeListener) {
-                database.ref('communityPosts').off('value', realtimeListener);
-            }
-            
-            realtimeListener = database.ref('communityPosts').on('value', async (snapshot) => {
-                if (snapshot.exists()) {
-                    const postsData = snapshot.val();
-                    posts = Object.keys(postsData).map(key => ({
-                        id: key,
-                        ...postsData[key]
-                    }));
-                    
-                    // Filter only published posts
-                    const publishedPosts = posts.filter(post => post.status === 'published');
-                    
-                    // Sort: pinned first, then by timestamp
-                    publishedPosts.sort((a, b) => {
-                        if (a.isPinned && !b.isPinned) return -1;
-                        if (!a.isPinned && b.isPinned) return 1;
-                        return new Date(b.createdAt) - new Date(a.createdAt);
-                    });
-                    
-                    // Check for new posts
-                    if (lastFetchTime) {
-                        const newestPostTime = publishedPosts[0]?.createdAt;
-                        if (newestPostTime && new Date(newestPostTime) > lastFetchTime) {
-                            newPostsAvailable = true;
-                            newPostsIndicator.style.display = 'block';
-                        }
-                    }
-                    
-                    lastFetchTime = new Date();
-                    renderPosts(publishedPosts);
-                    
-                    // Setup real-time comments for each post
-                    publishedPosts.forEach(post => {
-                        setupRealtimeComments(post.id);
-                    });
-                } else {
-                    // No posts, show empty state
-                    postsContainer.innerHTML = `
-                        <div class="empty-state">
-                            <i class="fas fa-newspaper"></i>
-                            <h3>No posts yet</h3>
-                            <p>Be the first to share something with the community!</p>
-                        </div>
-                    `;
-                }
-            });
-        }
-
-        // Setup real-time comments for a post
-        function setupRealtimeComments(postId) {
-            if (commentListeners[postId]) {
-                database.ref(`comments/${postId}`).off('value', commentListeners[postId]);
-            }
-            
-            commentListeners[postId] = database.ref(`comments/${postId}`).on('value', (snapshot) => {
-                if (snapshot.exists()) {
-                    const comments = Object.keys(snapshot.val()).map(key => ({
-                        id: key,
-                        ...snapshot.val()[key]
-                    }));
-                    
-                    // Update comments count in post actions
-                    const postElement = document.querySelector(`.post-card[data-post-id="${postId}"]`);
-                    if (postElement) {
-                        const commentBtn = postElement.querySelector('[data-action="comment"] span');
-                        if (commentBtn) {
-                            commentBtn.textContent = comments.length;
-                        }
-                    }
-                    
-                    // Update comments section if open
-                    const commentsSection = document.getElementById(`commentsSection-${postId}`);
-                    if (commentsSection) {
-                        renderComments(postId, comments);
-                    }
-                }
-            });
-        }
-
-        // Setup real-time replies for a comment
-        function setupRealtimeReplies(postId, commentId) {
-            const replyKey = `${postId}_${commentId}`;
-            
-            if (replyListeners[replyKey]) {
-                database.ref(`replies/${postId}/${commentId}`).off('value', replyListeners[replyKey]);
-            }
-            
-            replyListeners[replyKey] = database.ref(`replies/${postId}/${commentId}`).on('value', (snapshot) => {
-                if (snapshot.exists()) {
-                    const replies = Object.keys(snapshot.val()).map(key => ({
-                        id: key,
-                        ...snapshot.val()[key]
-                    }));
-                    
-                    // Update replies section if exists
-                    const repliesSection = document.getElementById(`repliesSection-${commentId}`);
-                    if (repliesSection) {
-                        renderReplies(commentId, replies);
-                    }
-                }
-            });
-        }
-
         // Render posts
         function renderPosts(postsArray) {
+            if (!postsContainer) return;
+            
             if (!postsArray || postsArray.length === 0) {
                 postsContainer.innerHTML = `
                     <div class="empty-state">
                         <i class="fas fa-newspaper"></i>
                         <h3>No posts yet</h3>
                         <p>Be the first to share something with the community!</p>
+                        ${currentUser ? `
+                            <button class="post-submit-btn" onclick="openCreatePostModal()" style="margin-top: 1rem;">
+                                Create First Post
+                            </button>
+                        ` : ''}
                     </div>
                 `;
                 return;
@@ -2321,7 +2342,6 @@
                     </div>
                 ` : '';
                 
-                // Check if post has media
                 let mediaHtml = '';
                 if (post.mediaDataUrl) {
                     if (post.mediaType === 'image') {
@@ -2342,7 +2362,6 @@
                     }
                 }
                 
-                // Options dropdown for post owner
                 const optionsHtml = isPostOwner ? `
                     <div class="post-options">
                         <button class="post-options-btn" onclick="togglePostOptions('${post.id}', event)">
@@ -2408,7 +2427,6 @@
                             </button>
                         </div>
                         
-                        <!-- Comments Section -->
                         <div class="comments-section" id="commentsSection-${post.id}">
                             <div class="comments-header">
                                 <h4 class="comments-title">Comments</h4>
@@ -2454,10 +2472,8 @@
                 return;
             }
             
-            // Sort comments by timestamp (newest first)
             commentsArray.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
             
-            // Load replies for each comment
             const commentsWithReplies = await Promise.all(commentsArray.map(async comment => {
                 const repliesSnapshot = await database.ref(`replies/${postId}/${comment.id}`).once('value');
                 const replies = repliesSnapshot.exists() ? 
@@ -2495,7 +2511,6 @@
                             </button>
                         </div>
                         
-                        <!-- Replies Section -->
                         <div class="replies-section" id="repliesSection-${comment.id}">
                             ${comment.replies && comment.replies.length > 0 ? comment.replies.map(reply => `
                                 <div class="reply-item" data-reply-id="${reply.id}">
@@ -2511,7 +2526,6 @@
                             `).join('') : ''}
                         </div>
                         
-                        <!-- Reply Form (hidden by default) -->
                         <div class="reply-form" id="replyForm-${comment.id}" style="display: none;">
                             <input type="text" class="reply-input" id="replyInput-${comment.id}" placeholder="Write a reply..." onkeypress="handleReplyKeypress(event, '${postId}', '${comment.id}')">
                             <button class="reply-submit" onclick="submitReply('${postId}', '${comment.id}')">
@@ -2522,7 +2536,6 @@
                 `;
             }).join('');
             
-            // Setup real-time listeners for replies
             commentsWithReplies.forEach(comment => {
                 setupRealtimeReplies(postId, comment.id);
             });
@@ -2538,7 +2551,6 @@
                 return;
             }
             
-            // Sort replies by timestamp (oldest first for conversation flow)
             repliesArray.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
             
             repliesSection.innerHTML = repliesArray.map(reply => `
@@ -2565,7 +2577,6 @@
                 commentBtn.classList.remove('active');
                 replyingToCommentId = null;
             } else {
-                // Close all other comment sections
                 document.querySelectorAll('.comments-section.active').forEach(section => {
                     section.classList.remove('active');
                 });
@@ -2576,7 +2587,6 @@
                 commentsSection.classList.add('active');
                 commentBtn.classList.add('active');
                 
-                // Load comments if not already loaded
                 loadComments(postId);
             }
         }
@@ -2603,12 +2613,10 @@
 
         // Start reply to a comment
         function startReply(postId, commentId, authorName) {
-            // Hide all other reply forms
             document.querySelectorAll('.reply-form').forEach(form => {
                 form.style.display = 'none';
             });
             
-            // Show this reply form
             const replyForm = document.getElementById(`replyForm-${commentId}`);
             const replyInput = document.getElementById(`replyInput-${commentId}`);
             
@@ -2650,7 +2658,6 @@
                 
                 await commentRef.set(newComment);
                 
-                // Update post comments count
                 const postRef = database.ref(`communityPosts/${postId}`);
                 postRef.transaction(post => {
                     if (post) {
@@ -2726,12 +2733,10 @@
                 let likes = comment.likes || 0;
                 
                 if (likedBy.includes(currentUser.uid)) {
-                    // Unlike
                     likedBy = likedBy.filter(id => id !== currentUser.uid);
                     likes--;
                     showNotification('Comment unliked', 'success', 2000);
                 } else {
-                    // Like
                     likedBy.push(currentUser.uid);
                     likes++;
                     showNotification('Comment liked!', 'success', 2000);
@@ -2780,12 +2785,10 @@
                     let likes = post.likes || 0;
                     
                     if (likedBy.includes(currentUser.uid)) {
-                        // Unlike
                         likedBy = likedBy.filter(id => id !== currentUser.uid);
                         likes--;
                         showNotification('Post unliked', 'success', 2000);
                     } else {
-                        // Like
                         likedBy.push(currentUser.uid);
                         likes++;
                         showNotification('Post liked!', 'success', 2000);
@@ -2811,7 +2814,6 @@
                         return post;
                     });
                     
-                    // Copy post URL
                     const postUrl = `${window.location.origin}?post=${postId}`;
                     navigator.clipboard.writeText(postUrl).then(() => {
                         showNotification('Post link copied to clipboard!', 'success');
@@ -2825,11 +2827,9 @@
                     let bookmarkedPosts = userData.bookmarkedPosts || [];
                     
                     if (bookmarkedPosts.includes(postId)) {
-                        // Remove bookmark
                         bookmarkedPosts = bookmarkedPosts.filter(id => id !== postId);
                         showNotification('Post removed from bookmarks', 'success');
                     } else {
-                        // Add bookmark
                         bookmarkedPosts.push(postId);
                         showNotification('Post bookmarked!', 'success');
                     }
@@ -2839,7 +2839,6 @@
                         lastLogin: new Date().toISOString()
                     });
                     
-                    // Update post bookmarks count
                     postRef.transaction(post => {
                         if (post) {
                             post.bookmarks = bookmarkedPosts.includes(postId) ? 
@@ -2850,7 +2849,6 @@
                         return post;
                     });
                     
-                    // Update user data
                     await fetchUserData(currentUser.uid);
                     break;
             }
@@ -2860,7 +2858,6 @@
         function togglePostOptions(postId, event) {
             event.stopPropagation();
             
-            // Close all other dropdowns
             document.querySelectorAll('.post-options-dropdown.active').forEach(dropdown => {
                 dropdown.classList.remove('active');
             });
@@ -2884,18 +2881,15 @@
             postToEdit = postId;
             isEditing = true;
             
-            // Set modal title
             modalTitle.textContent = 'Edit Post';
             modalSubtitle.textContent = 'Update your post content';
             submitPostBtn.textContent = 'Update Post';
             uploadText.textContent = 'Click or drag to change media';
             
-            // Fill form with existing data
             postTitleInput.value = post.title || '';
             postContentInput.value = post.content || '';
             postTagsInput.value = post.tags ? post.tags.join(', ') : '';
             
-            // Set category
             document.querySelectorAll('.category-option').forEach(option => {
                 option.classList.remove('selected');
                 if (option.dataset.category === post.category) {
@@ -2904,7 +2898,6 @@
                 }
             });
             
-            // Handle existing media
             if (post.mediaDataUrl) {
                 selectedMedia = {
                     type: post.mediaType,
@@ -2929,10 +2922,8 @@
                 removeSelectedMedia();
             }
             
-            // Update character counts
             updateCharCounts();
             
-            // Open modal
             postModal.classList.add('active');
             document.body.classList.add('modal-open');
             postTitleInput.focus();
@@ -2962,24 +2953,19 @@
                     return;
                 }
                 
-                // Check if user is authorized to delete
                 if (post.authorId !== currentUser.uid) {
                     showNotification('You are not authorized to delete this post', 'error');
                     return;
                 }
                 
-                // Delete post
                 await postRef.remove();
                 
-                // Delete associated comments
                 const commentsRef = database.ref(`comments/${postToDelete}`);
                 await commentsRef.remove();
                 
-                // Delete associated replies
                 const repliesRef = database.ref(`replies/${postToDelete}`);
                 await repliesRef.remove();
                 
-                // Remove from bookmarked posts of all users
                 const usersRef = database.ref('users');
                 const usersSnapshot = await usersRef.once('value');
                 const users = usersSnapshot.val();
@@ -2999,7 +2985,6 @@
                 
                 await Promise.all(updatePromises);
                 
-                // Close modal
                 deleteConfirmModal.classList.remove('active');
                 document.body.classList.remove('modal-open');
                 
@@ -3018,14 +3003,12 @@
             const file = event.target.files[0];
             if (!file) return;
             
-            // Check file size (10MB limit)
-            const maxSize = 10 * 1024 * 1024; // 10MB in bytes
+            const maxSize = 10 * 1024 * 1024;
             if (file.size > maxSize) {
                 showNotification('File size must be less than 10MB', 'error');
                 return;
             }
             
-            // Check file type
             const validImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
             const validVideoTypes = ['video/mp4', 'video/quicktime', 'video/x-msvideo', 'video/x-matroska'];
             
@@ -3034,7 +3017,6 @@
                 return;
             }
             
-            // Read file as data URL
             const reader = new FileReader();
             reader.onload = function(e) {
                 selectedMedia = {
@@ -3045,7 +3027,6 @@
                     mimeType: file.type
                 };
                 
-                // Show preview
                 if (selectedMedia.type === 'image') {
                     previewImage.src = selectedMedia.dataUrl;
                     previewImage.style.display = 'block';
@@ -3078,7 +3059,7 @@
             mediaFileInput.value = '';
         }
 
-        // Create or update post
+        // Save post (create or update)
         async function savePost() {
             if (!currentUser) {
                 showNotification('Please sign in to create posts', 'error');
@@ -3109,7 +3090,6 @@
                 let postData;
                 
                 if (isEditing && postToEdit) {
-                    // Update existing post
                     postRef = database.ref(`communityPosts/${postToEdit}`);
                     const snapshot = await postRef.once('value');
                     const existingPost = snapshot.val();
@@ -3133,7 +3113,6 @@
                         updatedAt: new Date().toISOString()
                     };
                     
-                    // Update media data if new media selected
                     if (selectedMedia.dataUrl) {
                         postData.mediaDataUrl = selectedMedia.dataUrl;
                         postData.mediaType = selectedMedia.type;
@@ -3141,7 +3120,6 @@
                         postData.mediaName = selectedMedia.name;
                         postData.mediaSize = selectedMedia.size;
                     } else if (existingPost.mediaDataUrl && selectedMedia.dataUrl === null) {
-                        // Remove media if user cleared it
                         delete postData.mediaDataUrl;
                         delete postData.mediaType;
                         delete postData.mediaMimeType;
@@ -3153,7 +3131,6 @@
                     showNotification('Post updated successfully!', 'success');
                     
                 } else {
-                    // Create new post
                     postRef = database.ref('communityPosts').push();
                     postData = {
                         id: postRef.key,
@@ -3175,7 +3152,6 @@
                         status: "published"
                     };
                     
-                    // Add media data if selected
                     if (selectedMedia.dataUrl) {
                         postData.mediaDataUrl = selectedMedia.dataUrl;
                         postData.mediaType = selectedMedia.type;
@@ -3188,14 +3164,11 @@
                     showNotification('Post published successfully!', 'success');
                 }
                 
-                // Reset form
                 resetPostForm();
                 
-                // Close modal
                 postModal.classList.remove('active');
                 document.body.classList.remove('modal-open');
                 
-                // Scroll to top to see new/updated post
                 window.scrollTo({ top: 0, behavior: 'smooth' });
                 
             } catch (error) {
@@ -3211,52 +3184,36 @@
             postTagsInput.value = '';
             removeSelectedMedia();
             
-            // Reset category selection
             document.querySelectorAll('.category-option').forEach(option => {
                 option.classList.remove('selected');
             });
             document.querySelector('.category-option[data-category="announcement"]').classList.add('selected');
             selectedCategory = 'announcement';
             
-            // Reset modal titles
             modalTitle.textContent = 'Create New Post';
             modalSubtitle.textContent = 'Share your thoughts with the community';
             submitPostBtn.textContent = 'Publish Post';
             uploadText.textContent = 'Click or drag to upload media';
             
-            // Reset editing state
             isEditing = false;
             postToEdit = null;
             
-            // Reset character counts
             updateCharCounts();
         }
 
         // Update character counts
         function updateCharCounts() {
+            if (!postTitleInput || !postContentInput) return;
+            
             const titleLength = postTitleInput.value.length;
             const contentLength = postContentInput.value.length;
             
-            titleCharCount.textContent = `${titleLength}/100 characters`;
-            contentCharCount.textContent = `${contentLength}/5000 characters`;
+            if (titleCharCount) titleCharCount.textContent = `${titleLength}/100 characters`;
+            if (contentCharCount) contentCharCount.textContent = `${contentLength}/5000 characters`;
             
-            // Update submit button state
             const title = postTitleInput.value.trim();
             const content = postContentInput.value.trim();
-            submitPostBtn.disabled = !(title && content);
-            
-            // Style character counts based on limits
-            if (titleLength > 100) {
-                titleCharCount.style.color = '#e74c3c';
-            } else {
-                titleCharCount.style.color = 'var(--dark-gray)';
-            }
-            
-            if (contentLength > 5000) {
-                contentCharCount.style.color = '#e74c3c';
-            } else {
-                contentCharCount.style.color = 'var(--dark-gray)';
-            }
+            if (submitPostBtn) submitPostBtn.disabled = !(title && content);
         }
 
         // Open create post modal
@@ -3300,25 +3257,40 @@
             postToDelete = null;
         }
 
+        // Toggle dropdown
+        function toggleDropdown() {
+            dropdownOpen = !dropdownOpen;
+            const dropdown = document.getElementById('userDropdown');
+            if (dropdownOpen) {
+                dropdown.classList.add('active');
+            } else {
+                dropdown.classList.remove('active');
+            }
+        }
+
+        // Close dropdown
+        function closeDropdown() {
+            dropdownOpen = false;
+            const dropdown = document.getElementById('userDropdown');
+            if (dropdown) dropdown.classList.remove('active');
+        }
+
         // Sign out user
         function signOut() {
             currentUser = null;
             currentUserData = null;
             localStorage.removeItem('the_songa_welfare_user');
             
-            // Remove real-time listeners
-            if (realtimeListener) {
+            if (realtimeListener && database) {
                 database.ref('communityPosts').off('value', realtimeListener);
                 realtimeListener = null;
             }
             
-            // Remove comment listeners
             Object.keys(commentListeners).forEach(postId => {
                 database.ref(`comments/${postId}`).off('value', commentListeners[postId]);
             });
             commentListeners = {};
             
-            // Remove reply listeners
             Object.keys(replyListeners).forEach(key => {
                 const [postId, commentId] = key.split('_');
                 database.ref(`replies/${postId}/${commentId}`).off('value', replyListeners[key]);
@@ -3340,24 +3312,6 @@
             `;
         }
 
-        // Toggle dropdown
-        function toggleDropdown() {
-            dropdownOpen = !dropdownOpen;
-            const dropdown = document.getElementById('userDropdown');
-            if (dropdownOpen) {
-                dropdown.classList.add('active');
-            } else {
-                dropdown.classList.remove('active');
-            }
-        }
-
-        // Close dropdown
-        function closeDropdown() {
-            dropdownOpen = false;
-            const dropdown = document.getElementById('userDropdown');
-            dropdown.classList.remove('active');
-        }
-
         // Search by tag
         function searchByTag(tag) {
             const searchInput = document.getElementById('searchInput');
@@ -3365,52 +3319,123 @@
             showNotification(`Searching for posts tagged #${tag}`, 'success');
         }
 
-        // Load new posts when indicator is clicked
-        newPostsIndicator.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            newPostsAvailable = false;
-            newPostsIndicator.style.display = 'none';
-            showNotification('Showing latest posts', 'success', 2000);
-        });
-
-        // Event Listeners
-        document.addEventListener('DOMContentLoaded', function() {
+        // Initialize the page
+        function initializePage() {
             checkAuthStatus();
             
-            // User profile dropdown
-            userProfile.addEventListener('click', function(e) {
-                e.stopPropagation();
-                toggleDropdown();
-            });
+            // Load sample posts if empty
+            if (database) {
+                database.ref('communityPosts').once('value').then(snapshot => {
+                    if (!snapshot.exists()) {
+                        loadSamplePosts();
+                    }
+                });
+            }
             
+            setupEventListeners();
+        }
+
+        // Load sample posts
+        async function loadSamplePosts() {
+            if (!database) return;
+            
+            try {
+                const postsRef = database.ref('communityPosts');
+                const snapshot = await postsRef.once('value');
+                
+                if (!snapshot.exists()) {
+                    const samplePosts = {
+                        post_001: {
+                            id: "post_001",
+                            authorId: "admin_001",
+                            authorName: "THE SONGA",
+                            authorAvatar: "https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp",
+                            title: "Welcome to Our Community!",
+                            content: "We're thrilled to have you as part of THE SONGA family. This is your space to connect, learn, and grow with like-minded individuals.\n\nWhat to expect in our community:\n📚 Exclusive educational content\n🎯 Practical financial strategies\n🤝 Networking with ambitious members\n💡 Regular updates and announcements\n🌟 Member success stories\n\nWelcome aboard!\n- The SONGA Team",
+                            category: "announcement",
+                            tags: ["welcome", "community", "introduction"],
+                            likes: 24,
+                            likedBy: [],
+                            comments: 8,
+                            shares: 3,
+                            bookmarks: 15,
+                            createdAt: new Date().toISOString(),
+                            isPinned: true,
+                            status: "published"
+                        },
+                        post_002: {
+                            id: "post_002",
+                            authorId: "admin_001",
+                            authorName: "THE SONGA",
+                            authorAvatar: "https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp",
+                            title: "Wealth Building Workshop - This Saturday!",
+                            content: "Join us for an exclusive members-only workshop where we'll dive deep into practical wealth creation strategies.\n\nWorkshop Highlights:\n• Investment strategies for beginners\n• Passive income opportunities\n• Wealth preservation techniques\n\nDate: This Saturday, 2:00 PM\nLocation: Virtual - Members Portal",
+                            category: "event",
+                            tags: ["workshop", "finance", "wealth"],
+                            likes: 18,
+                            likedBy: [],
+                            comments: 5,
+                            shares: 2,
+                            bookmarks: 8,
+                            createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+                            isPinned: false,
+                            status: "published"
+                        }
+                    };
+                    
+                    await postsRef.set(samplePosts);
+                    console.log("Sample posts loaded");
+                }
+            } catch (error) {
+                console.error('Error loading sample posts:', error);
+            }
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // User profile dropdown
+            if (userProfile) {
+                userProfile.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    toggleDropdown();
+                });
+            }
+            
+            // Close dropdowns when clicking outside
             document.addEventListener('click', function() {
                 closeDropdown();
                 closePostOptions();
             });
             
             // Post actions delegation
-            postsContainer.addEventListener('click', function(e) {
-                const actionBtn = e.target.closest('.post-action');
-                if (actionBtn) {
-                    const postId = actionBtn.dataset.postId;
-                    const action = actionBtn.dataset.action;
-                    handlePostAction(postId, action);
-                }
-            });
+            if (postsContainer) {
+                postsContainer.addEventListener('click', function(e) {
+                    const actionBtn = e.target.closest('.post-action');
+                    if (actionBtn) {
+                        const postId = actionBtn.dataset.postId;
+                        const action = actionBtn.dataset.action;
+                        handlePostAction(postId, action);
+                    }
+                });
+            }
             
             // Create post button
-            createPostBtn.addEventListener('click', openCreatePostModal);
+            if (createPostBtn) {
+                createPostBtn.addEventListener('click', openCreatePostModal);
+            }
             
             // Submit post button
-            submitPostBtn.addEventListener('click', savePost);
+            if (submitPostBtn) {
+                submitPostBtn.addEventListener('click', savePost);
+            }
             
             // Delete confirmation buttons
-            confirmDeleteBtn.addEventListener('click', deletePost);
-            cancelDeleteBtn.addEventListener('click', closeDeleteConfirmModal);
+            if (confirmDeleteBtn) confirmDeleteBtn.addEventListener('click', deletePost);
+            if (cancelDeleteBtn) cancelDeleteBtn.addEventListener('click', closeDeleteConfirmModal);
             
-            // Form validation for post creation
-            postTitleInput.addEventListener('input', updateCharCounts);
-            postContentInput.addEventListener('input', updateCharCounts);
+            // Form validation
+            if (postTitleInput) postTitleInput.addEventListener('input', updateCharCounts);
+            if (postContentInput) postContentInput.addEventListener('input', updateCharCounts);
             
             // Category selection
             document.querySelectorAll('.category-option').forEach(option => {
@@ -3424,77 +3449,96 @@
             });
             
             // Media upload handling
-            mediaFileInput.addEventListener('change', handleMediaFileSelect);
-            mediaUpload.addEventListener('click', () => mediaFileInput.click());
-            removeMediaBtn.addEventListener('click', removeSelectedMedia);
+            if (mediaFileInput) mediaFileInput.addEventListener('change', handleMediaFileSelect);
+            if (mediaUpload) mediaUpload.addEventListener('click', () => mediaFileInput.click());
+            if (removeMediaBtn) removeMediaBtn.addEventListener('click', removeSelectedMedia);
             
             // Drag and drop for media upload
-            mediaUpload.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                mediaUpload.classList.add('dragover');
-            });
-            
-            mediaUpload.addEventListener('dragleave', () => {
-                mediaUpload.classList.remove('dragover');
-            });
-            
-            mediaUpload.addEventListener('drop', (e) => {
-                e.preventDefault();
-                mediaUpload.classList.remove('dragover');
+            if (mediaUpload) {
+                mediaUpload.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    mediaUpload.classList.add('dragover');
+                });
                 
-                if (e.dataTransfer.files.length) {
-                    mediaFileInput.files = e.dataTransfer.files;
-                    handleMediaFileSelect({ target: mediaFileInput });
-                }
-            });
+                mediaUpload.addEventListener('dragleave', () => {
+                    mediaUpload.classList.remove('dragover');
+                });
+                
+                mediaUpload.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    mediaUpload.classList.remove('dragover');
+                    
+                    if (e.dataTransfer.files.length) {
+                        mediaFileInput.files = e.dataTransfer.files;
+                        handleMediaFileSelect({ target: mediaFileInput });
+                    }
+                });
+            }
             
             // Close modals
-            document.getElementById('closeSigninModal').addEventListener('click', function() {
-                signinModal.classList.remove('active');
-            });
+            const closeSigninModal = document.getElementById('closeSigninModal');
+            if (closeSigninModal) {
+                closeSigninModal.addEventListener('click', function() {
+                    signinModal.classList.remove('active');
+                });
+            }
             
-            document.getElementById('closePostModal').addEventListener('click', closePostModal);
+            const closePostModalBtn = document.getElementById('closePostModal');
+            if (closePostModalBtn) {
+                closePostModalBtn.addEventListener('click', closePostModal);
+            }
             
-            document.getElementById('closeImageModal').addEventListener('click', closeImageModal);
+            const closeImageModalBtn = document.getElementById('closeImageModal');
+            if (closeImageModalBtn) {
+                closeImageModalBtn.addEventListener('click', closeImageModal);
+            }
             
             // Close modals when clicking outside
-            signinModal.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    signinModal.classList.remove('active');
-                }
-            });
+            if (signinModal) {
+                signinModal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        signinModal.classList.remove('active');
+                    }
+                });
+            }
             
-            postModal.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    closePostModal();
-                }
-            });
+            if (postModal) {
+                postModal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        closePostModal();
+                    }
+                });
+            }
             
-            deleteConfirmModal.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    closeDeleteConfirmModal();
-                }
-            });
+            if (deleteConfirmModal) {
+                deleteConfirmModal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        closeDeleteConfirmModal();
+                    }
+                });
+            }
             
-            imageModal.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    closeImageModal();
-                }
-            });
+            if (imageModal) {
+                imageModal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        closeImageModal();
+                    }
+                });
+            }
             
             // Escape key to close modals
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape') {
-                    if (postModal.classList.contains('active')) {
+                    if (postModal && postModal.classList.contains('active')) {
                         closePostModal();
                     }
-                    if (deleteConfirmModal.classList.contains('active')) {
+                    if (deleteConfirmModal && deleteConfirmModal.classList.contains('active')) {
                         closeDeleteConfirmModal();
                     }
-                    if (imageModal.classList.contains('active')) {
+                    if (imageModal && imageModal.classList.contains('active')) {
                         closeImageModal();
                     }
-                    if (signinModal.classList.contains('active')) {
+                    if (signinModal && signinModal.classList.contains('active')) {
                         signinModal.classList.remove('active');
                     }
                 }
@@ -3502,25 +3546,43 @@
             
             // Search input
             const searchInput = document.getElementById('searchInput');
-            let searchTimeout;
-            searchInput.addEventListener('input', function() {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(() => {
-                    if (searchInput.value.trim()) {
-                        showNotification(`Searching for: ${searchInput.value}`, 'success', 2000);
-                    }
-                }, 500);
-            });
+            if (searchInput) {
+                let searchTimeout;
+                searchInput.addEventListener('input', function() {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(() => {
+                        if (searchInput.value.trim()) {
+                            showNotification(`Searching for: ${searchInput.value}`, 'success', 2000);
+                        }
+                    }, 500);
+                });
+            }
             
             // Dropdown options
-            document.getElementById('signOutOption').addEventListener('click', function() {
-                signOut();
-                closeDropdown();
-            });
+            const signOutOption = document.getElementById('signOutOption');
+            if (signOutOption) {
+                signOutOption.addEventListener('click', function() {
+                    signOut();
+                    closeDropdown();
+                });
+            }
+            
+            // New posts indicator
+            if (newPostsIndicator) {
+                newPostsIndicator.addEventListener('click', () => {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    newPostsAvailable = false;
+                    newPostsIndicator.style.display = 'none';
+                    showNotification('Showing latest posts', 'success', 2000);
+                });
+            }
             
             // Initialize character counts
             updateCharCounts();
-        });
+        }
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', initializePage);
 
         // Global function for Google Sign-In callback
         window.handleGoogleSignIn = handleGoogleSignIn;
