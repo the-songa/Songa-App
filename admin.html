@@ -8,52 +8,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Firebase SDK -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, get, set, update, remove, onValue, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
-
-        // Your web app's Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyBDZicoo7dFLtSmgRPvQE_gdm-tNOyCTXA",
-            authDomain: "the-songa-77b1b.firebaseapp.com",
-            projectId: "the-songa-77b1b",
-            storageBucket: "the-songa-77b1b.firebasestorage.app",
-            messagingSenderId: "123922889572",
-            appId: "1:123922889572:web:482b2a624930baaf92d871",
-            databaseURL: "https://the-songa-77b1b-default-rtdb.firebaseio.com/"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
-        const auth = getAuth(app);
-        const storage = getStorage(app);
-
-        // Make Firebase objects available globally
-        window.firebase = {
-            database,
-            auth,
-            storage,
-            ref,
-            get,
-            set,
-            update,
-            remove,
-            onValue,
-            push,
-            storageRef,
-            uploadBytes,
-            getDownloadURL,
-            signInWithEmailAndPassword,
-            signOut,
-            onAuthStateChanged
-        };
-    </script>
+    <!-- Firebase SDK (Version 8.10.1) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     
     <style>
+        /* All CSS styles remain exactly the same as before */
         * {
             margin: 0;
             padding: 0;
@@ -1301,7 +1262,7 @@
                 <form id="bookForm">
                     <div class="form-group">
                         <label for="bookTitle">Title *</label>
-                        <input type="text" id="bookTitle" required>
+                            <input type="text" id="bookTitle" required>
                     </div>
                     
                     <div class="form-row">
@@ -1431,7 +1392,7 @@
                     
                     <div class="form-group">
                         <label for="subscriptionPopularity">Popularity Tag</label>
-                        <select id="subscriptionPopularity">
+                            <select id="subscriptionPopularity">
                             <option value="standard">Standard</option>
                             <option value="popular" selected>Popular</option>
                             <option value="premium">Premium</option>
@@ -1593,1225 +1554,1220 @@ Email support</textarea>
         </div>
     </div>
 
-    // Replace the entire script section with this fixed version:
-
     <script>
-        // Wait for Firebase to load
-        document.addEventListener('DOMContentLoaded', async function() {
-            // Wait for Firebase SDK to be available
-            while (!window.firebase) {
-                await new Promise(resolve => setTimeout(resolve, 100));
-            }
+        // Firebase Configuration - Using YOUR configuration from the original
+        const firebaseConfig = {
+            apiKey: "AIzaSyBDZicoo7dFLtSmgRPvQE_gdm-tNOyCTXA",
+            authDomain: "the-songa-77b1b.firebaseapp.com",
+            databaseURL: "https://the-songa-77b1b-default-rtdb.firebaseio.com",
+            projectId: "the-songa-77b1b",
+            storageBucket: "the-songa-77b1b.firebasestorage.app",
+            messagingSenderId: "123922889572",
+            appId: "1:123922889572:web:482b2a624930baaf92d871"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+
+        // Global variables
+        let currentUser = null;
+        let currentSection = 'dashboard';
+        let itemsToDelete = null;
+        let editingItemId = null;
+
+        // DOM Elements
+        const loginPage = document.getElementById('loginPage');
+        const adminDashboard = document.getElementById('adminDashboard');
+        const loginBtn = document.getElementById('loginBtn');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const loginError = document.getElementById('loginError');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const pageTitle = document.getElementById('pageTitle');
+        const navItems = document.querySelectorAll('.nav-item');
+        const contentSections = document.querySelectorAll('.content-section');
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Page loaded, initializing...');
+            setupEventListeners();
+            checkAuthState();
+        });
+
+        function setupEventListeners() {
+            console.log('Setting up event listeners...');
             
-            const { 
-                database, auth, storage, ref, get, set, update, remove, onValue, push,
-                storageRef, uploadBytes, getDownloadURL, signInWithEmailAndPassword,
-                signOut, onAuthStateChanged 
-            } = window.firebase;
-    
-            // Global state
-            let currentUser = null;
-            let currentSection = 'dashboard';
-            let itemsToDelete = null;
-            let editingItemId = null;
-            let realtimeListeners = [];
-    
-            // DOM Elements
-            const loginPage = document.getElementById('loginPage');
-            const adminDashboard = document.getElementById('adminDashboard');
-            const loginBtn = document.getElementById('loginBtn');
-            const emailInput = document.getElementById('email');
-            const passwordInput = document.getElementById('password');
-            const loginError = document.getElementById('loginError');
-            const logoutBtn = document.getElementById('logoutBtn');
-            const pageTitle = document.getElementById('pageTitle');
-            const navItems = document.querySelectorAll('.nav-item');
-            const contentSections = document.querySelectorAll('.content-section');
-            
-            // Stats elements
-            const totalUsersEl = document.getElementById('totalUsers');
-            const totalPostsEl = document.getElementById('totalPosts');
-            const totalBooksEl = document.getElementById('totalBooks');
-            const activeSubscriptionsEl = document.getElementById('activeSubscriptions');
-            
-            // Initialize
-            init();
-    
-            async function init() {
-                setupEventListeners();
-                checkAuthState();
-            }
-    
-            function setupEventListeners() {
-                // Login
-                loginBtn.addEventListener('click', handleLogin);
-                passwordInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') handleLogin();
+            // Login
+            loginBtn.addEventListener('click', handleLogin);
+            passwordInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') handleLogin();
+            });
+
+            // Logout
+            logoutBtn.addEventListener('click', handleLogout);
+
+            // Navigation
+            navItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const section = this.getAttribute('data-section');
+                    switchSection(section);
                 });
-    
-                // Logout
-                logoutBtn.addEventListener('click', handleLogout);
-    
-                // Navigation
-                navItems.forEach(item => {
-                    item.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        const section = this.getAttribute('data-section');
-                        switchSection(section);
-                    });
+            });
+
+            // Modal close buttons
+            document.querySelectorAll('.close-modal, .btn-secondary[data-modal]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const modalId = this.getAttribute('data-modal');
+                    closeModal(modalId);
                 });
-    
-                // Modal close buttons
-                document.querySelectorAll('.close-modal, .btn-secondary[data-modal]').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const modalId = this.getAttribute('data-modal');
-                        closeModal(modalId);
-                    });
-                });
-    
-                // Close modal when clicking outside
-                document.querySelectorAll('.modal').forEach(modal => {
-                    modal.addEventListener('click', function(e) {
-                        if (e.target === this) {
-                            this.classList.remove('active');
-                        }
-                    });
-                });
-    
-                // Add buttons
-                document.getElementById('addUserBtn')?.addEventListener('click', () => openModal('userModal'));
-                document.getElementById('addPostBtn')?.addEventListener('click', () => openModal('postModal'));
-                document.getElementById('addBookBtn')?.addEventListener('click', () => openModal('bookModal'));
-                document.getElementById('addSubscriptionBtn')?.addEventListener('click', () => openModal('subscriptionModal'));
-                document.getElementById('addEventBtn')?.addEventListener('click', () => openModal('eventModal'));
-                document.getElementById('saveSettingsBtn')?.addEventListener('click', saveSettings);
-    
-                // Form submissions
-                document.getElementById('userForm')?.addEventListener('submit', handleUserSubmit);
-                document.getElementById('postForm')?.addEventListener('submit', handlePostSubmit);
-                document.getElementById('bookForm')?.addEventListener('submit', handleBookSubmit);
-                document.getElementById('subscriptionForm')?.addEventListener('submit', handleSubscriptionSubmit);
-                document.getElementById('eventForm')?.addEventListener('submit', handleEventSubmit);
-    
-                // Delete confirmation
-                document.getElementById('confirmDeleteBtn')?.addEventListener('click', handleDelete);
-            }
-    
-            function checkAuthState() {
-                onAuthStateChanged(auth, async (user) => {
-                    if (user) {
-                        currentUser = user;
-                        showAdminDashboard();
-                        loadDashboardData();
-                        setupRealtimeListeners();
-                    } else {
-                        showLoginPage();
+            });
+
+            // Close modal when clicking outside
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        this.classList.remove('active');
                     }
                 });
-            }
-    
-            async function handleLogin() {
-                const email = emailInput.value.trim();
-                const password = passwordInput.value;
-    
-                if (!email || !password) {
-                    showError('Please enter both email and password');
-                    return;
-                }
-    
-                try {
-                    loginBtn.disabled = true;
-                    loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing in...';
+            });
+
+            // Add buttons
+            document.getElementById('addUserBtn')?.addEventListener('click', () => openModal('userModal'));
+            document.getElementById('addPostBtn')?.addEventListener('click', () => openModal('postModal'));
+            document.getElementById('addBookBtn')?.addEventListener('click', () => openModal('bookModal'));
+            document.getElementById('addSubscriptionBtn')?.addEventListener('click', () => openModal('subscriptionModal'));
+            document.getElementById('addEventBtn')?.addEventListener('click', () => openModal('eventModal'));
+            document.getElementById('saveSettingsBtn')?.addEventListener('click', saveSettings);
+
+            // Form submissions
+            document.getElementById('userForm')?.addEventListener('submit', handleUserSubmit);
+            document.getElementById('postForm')?.addEventListener('submit', handlePostSubmit);
+            document.getElementById('bookForm')?.addEventListener('submit', handleBookSubmit);
+            document.getElementById('subscriptionForm')?.addEventListener('submit', handleSubscriptionSubmit);
+            document.getElementById('eventForm')?.addEventListener('submit', handleEventSubmit);
+
+            // Delete confirmation
+            document.getElementById('confirmDeleteBtn')?.addEventListener('click', handleDelete);
+            
+            console.log('Event listeners setup complete');
+        }
+
+        function checkAuthState() {
+            console.log('Checking auth state...');
+            auth.onAuthStateChanged(async (user) => {
+                console.log('Auth state changed:', user ? 'User logged in' : 'No user');
+                if (user) {
+                    currentUser = user;
+                    console.log('Current user:', user.email);
                     
-                    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                    const user = userCredential.user;
-                    
-                    // Check if user is admin by checking the users collection
-                    const usersRef = ref(database, 'users');
-                    const snapshot = await get(usersRef);
-                    
-                    if (snapshot.exists()) {
+                    // Check if user is admin by looking in the database
+                    try {
+                        const snapshot = await database.ref('users').once('value');
                         const users = snapshot.val();
                         let isAdmin = false;
                         
-                        // Find user by email in users collection
-                        for (const [userId, userData] of Object.entries(users)) {
-                            if (userData.email === email && userData.isAdmin) {
-                                isAdmin = true;
-                                break;
+                        if (users) {
+                            for (const [userId, userData] of Object.entries(users)) {
+                                console.log('Checking user:', userData.email, 'isAdmin:', userData.isAdmin);
+                                if (userData.email === user.email && userData.isAdmin) {
+                                    isAdmin = true;
+                                    break;
+                                }
                             }
                         }
                         
-                        if (!isAdmin) {
-                            await signOut(auth);
+                        if (isAdmin) {
+                            console.log('User is admin, showing dashboard');
+                            showAdminDashboard();
+                            loadDashboardData();
+                        } else {
+                            console.log('User is NOT admin');
                             showError('Access denied. Admin privileges required.');
-                            return;
+                            await auth.signOut();
                         }
-                    } else {
-                        await signOut(auth);
-                        showError('Admin user not found in database');
-                        return;
+                    } catch (error) {
+                        console.error('Error checking admin status:', error);
+                        showError('Error checking admin privileges: ' + error.message);
+                        await auth.signOut();
                     }
-                    
-                    clearError();
-                } catch (error) {
-                    console.error('Login error:', error);
-                    showError(getFirebaseErrorMessage(error));
-                } finally {
-                    loginBtn.disabled = false;
-                    loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In';
+                } else {
+                    console.log('No user, showing login page');
+                    showLoginPage();
                 }
+            }, (error) => {
+                console.error('Auth state change error:', error);
+                showLoginPage();
+            });
+        }
+
+        async function handleLogin() {
+            console.log('Login attempt...');
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+
+            if (!email || !password) {
+                showError('Please enter both email and password');
+                return;
             }
-    
-            async function handleLogout() {
-                try {
-                    await signOut(auth);
-                    // Remove all realtime listeners
-                    realtimeListeners.forEach(unsubscribe => unsubscribe());
-                    realtimeListeners = [];
-                } catch (error) {
-                    console.error('Logout error:', error);
-                    alert('Error during logout: ' + error.message);
-                }
-            }
-    
-            function showLoginPage() {
-                loginPage.style.display = 'flex';
-                adminDashboard.style.display = 'none';
-                emailInput.value = '';
-                passwordInput.value = '';
+
+            try {
+                loginBtn.disabled = true;
+                loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing in...';
+                console.log('Attempting to sign in with:', email);
+                
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                console.log('Login successful:', userCredential.user.email);
                 clearError();
-            }
-    
-            function showAdminDashboard() {
-                loginPage.style.display = 'none';
-                adminDashboard.style.display = 'flex';
-                document.getElementById('adminName').textContent = currentUser?.email || 'Admin User';
-            }
-    
-            function showError(message) {
-                loginError.textContent = message;
-                loginError.style.display = 'block';
-            }
-    
-            function clearError() {
-                loginError.textContent = '';
-                loginError.style.display = 'none';
-            }
-    
-            function getFirebaseErrorMessage(error) {
-                switch (error.code) {
-                    case 'auth/invalid-email':
-                        return 'Invalid email address';
-                    case 'auth/user-disabled':
-                        return 'This account has been disabled';
-                    case 'auth/user-not-found':
-                        return 'No account found with this email';
-                    case 'auth/wrong-password':
-                        return 'Incorrect password';
-                    case 'auth/too-many-requests':
-                        return 'Too many failed attempts. Try again later';
-                    default:
-                        return 'Login failed. Please try again.';
-                }
-            }
-    
-            function switchSection(section) {
-                // Update active nav item
-                navItems.forEach(item => {
-                    item.classList.remove('active');
-                    if (item.getAttribute('data-section') === section) {
-                        item.classList.add('active');
-                    }
-                });
-    
-                // Update active content section
-                contentSections.forEach(sec => {
-                    sec.classList.remove('active');
-                    if (sec.id === `${section}Section`) {
-                        sec.classList.add('active');
-                    }
-                });
-    
-                // Update page title
-                pageTitle.textContent = getSectionTitle(section);
-                currentSection = section;
-    
-                // Load section data
-                switch (section) {
-                    case 'dashboard':
-                        loadDashboardData();
-                        break;
-                    case 'users':
-                        loadUsers();
-                        break;
-                    case 'posts':
-                        loadPosts();
-                        break;
-                    case 'books':
-                        loadBooks();
-                        break;
-                    case 'subscriptions':
-                        loadSubscriptions();
-                        break;
-                    case 'events':
-                        loadEvents();
-                        break;
-                    case 'analytics':
-                        loadAnalytics();
-                        break;
-                    case 'settings':
-                        loadSettings();
-                        break;
-                }
-            }
-    
-            function getSectionTitle(section) {
-                const titles = {
-                    dashboard: 'Dashboard',
-                    users: 'User Management',
-                    posts: 'Community Posts',
-                    books: 'Library Books',
-                    subscriptions: 'Subscription Plans',
-                    events: 'Events Management',
-                    analytics: 'Analytics & Reports',
-                    settings: 'Platform Settings'
-                };
-                return titles[section] || 'Dashboard';
-            }
-    
-            function setupRealtimeListeners() {
-                // Listen for user count
-                const usersRef = ref(database, 'users');
-                const usersListener = onValue(usersRef, (snapshot) => {
-                    const users = snapshot.val() || {};
-                    const count = Object.keys(users).length;
-                    totalUsersEl.textContent = count;
-                });
-                realtimeListeners.push(usersListener);
-    
-                // Listen for post count
-                const postsRef = ref(database, 'communityPosts');
-                const postsListener = onValue(postsRef, (snapshot) => {
-                    const posts = snapshot.val() || {};
-                    const count = Object.keys(posts).length;
-                    totalPostsEl.textContent = count;
-                });
-                realtimeListeners.push(postsListener);
-    
-                // Listen for book count
-                const booksRef = ref(database, 'libraryBooks');
-                const booksListener = onValue(booksRef, (snapshot) => {
-                    const books = snapshot.val() || {};
-                    const count = Object.keys(books).length;
-                    totalBooksEl.textContent = count;
-                });
-                realtimeListeners.push(booksListener);
-    
-                // Listen for active subscriptions
-                const subsRef = ref(database, 'userSubscriptions');
-                const subsListener = onValue(subsRef, (snapshot) => {
-                    const subs = snapshot.val() || {};
-                    const activeCount = Object.values(subs).filter(sub => sub.status === 'active').length;
-                    activeSubscriptionsEl.textContent = activeCount;
-                });
-                realtimeListeners.push(subsListener);
-            }
-    
-            async function loadDashboardData() {
-                try {
-                    // Load recent activity
-                    const activityRef = ref(database, 'systemLogs');
-                    const snapshot = await get(activityRef);
-                    const activities = snapshot.val() || {};
-                    
-                    const recentActivityTable = document.getElementById('recentActivityTable');
-                    const activityRows = Object.entries(activities)
-                        .sort(([,a], [,b]) => new Date(b.timestamp) - new Date(a.timestamp))
-                        .slice(0, 10)
-                        .map(([id, activity]) => `
-                            <tr>
-                                <td>${formatDate(activity.timestamp)}</td>
-                                <td>${activity.userId || 'System'}</td>
-                                <td>${activity.action}</td>
-                                <td>${activity.details || ''}</td>
-                            </tr>
-                        `).join('');
-                    
-                    recentActivityTable.querySelector('tbody').innerHTML = activityRows || '<tr><td colspan="4">No recent activity</td></tr>';
-                    
-                    // Update last updated time
-                    document.getElementById('lastUpdated').textContent = `Last updated: ${new Date().toLocaleTimeString()}`;
-                    
-                } catch (error) {
-                    console.error('Error loading dashboard data:', error);
-                }
-            }
-    
-            async function loadUsers() {
-                try {
-                    const usersRef = ref(database, 'users');
-                    const snapshot = await get(usersRef);
-                    const users = snapshot.val() || {};
-                    
-                    const usersTable = document.getElementById('usersTable');
-                    const userRows = Object.entries(users).map(([id, user]) => `
-                        <tr>
-                            <td>
-                                <div style="display: flex; align-items: center; gap: 10px;">
-                                    <img src="${user.profilePicture || 'https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp'}" 
-                                         alt="${user.firstName}" 
-                                         style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;">
-                                    <div>
-                                        <div style="font-weight: 500;">${user.firstName || ''} ${user.lastName || ''}</div>
-                                        ${user.isAdmin ? '<span style="font-size: 0.8rem; color: var(--gold);">Admin</span>' : ''}
-                                    </div>
-                                </div>
-                            </td>
-                            <td>${user.email || ''}</td>
-                            <td>${user.membershipTier || 'Not set'}</td>
-                            <td>${formatDate(user.joinedDate)}</td>
-                            <td>
-                                <span class="status-badge ${user.status === 'active' ? 'status-active' : 'status-inactive'}">
-                                    ${user.status || 'inactive'}
-                                </span>
-                            </td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="action-btn edit" onclick="admin.editUser('${id}')">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="action-btn delete" onclick="admin.confirmDelete('users', '${id}')">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    `).join('');
-                    
-                    usersTable.querySelector('tbody').innerHTML = userRows || '<tr><td colspan="6">No users found</td></tr>';
-                    
-                } catch (error) {
-                    console.error('Error loading users:', error);
-                    usersTable.querySelector('tbody').innerHTML = '<tr><td colspan="6">Error loading users</td></tr>';
-                }
-            }
-    
-            async function loadPosts() {
-                try {
-                    const postsRef = ref(database, 'communityPosts');
-                    const snapshot = await get(postsRef);
-                    const posts = snapshot.val() || {};
-                    
-                    const postsTable = document.getElementById('postsTable');
-                    const postRows = Object.entries(posts).map(([id, post]) => `
-                        <tr>
-                            <td>
-                                <div style="font-weight: 500; margin-bottom: 4px;">${post.title || ''}</div>
-                                ${post.isPinned ? '<span style="font-size: 0.8rem; color: var(--gold);"><i class="fas fa-thumbtack"></i> Pinned</span>' : ''}
-                            </td>
-                            <td>${post.authorName || 'Unknown'}</td>
-                            <td>${post.category || 'General'}</td>
-                            <td>${post.likes || 0}</td>
-                            <td>${formatDate(post.createdAt)}</td>
-                            <td>
-                                <span class="status-badge ${post.status === 'published' ? 'status-active' : 'status-pending'}">
-                                    ${post.status || 'draft'}
-                                </span>
-                            </td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="action-btn edit" onclick="admin.editPost('${id}')">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="action-btn delete" onclick="admin.confirmDelete('communityPosts', '${id}')">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    `).join('');
-                    
-                    postsTable.querySelector('tbody').innerHTML = postRows || '<tr><td colspan="7">No posts found</td></tr>';
-                    
-                } catch (error) {
-                    console.error('Error loading posts:', error);
-                    postsTable.querySelector('tbody').innerHTML = '<tr><td colspan="7">Error loading posts</td></tr>';
-                }
-            }
-    
-            async function loadBooks() {
-                try {
-                    const booksRef = ref(database, 'libraryBooks');
-                    const snapshot = await get(booksRef);
-                    const books = snapshot.val() || {};
-                    
-                    const booksTable = document.getElementById('booksTable');
-                    const bookRows = Object.entries(books).map(([id, book]) => `
-                        <tr>
-                            <td>
-                                <div style="display: flex; align-items: center; gap: 10px;">
-                                    <img src="${book.coverImage || ''}" 
-                                         alt="${book.title}" 
-                                         style="width: 40px; height: 50px; object-fit: cover; border-radius: 4px;">
-                                    <div>
-                                        <div style="font-weight: 500;">${book.title || ''}</div>
-                                        ${book.featured ? '<span style="font-size: 0.8rem; color: var(--gold);">Featured</span>' : ''}
-                                    </div>
-                                </div>
-                            </td>
-                            <td>${book.author || ''}</td>
-                            <td>${book.category || ''}</td>
-                            <td>${book.availableCopies || 0} / ${book.totalCopies || 0}</td>
-                            <td>${book.borrowCount || 0}</td>
-                            <td>
-                                <div style="display: flex; align-items: center; gap: 4px;">
-                                    <i class="fas fa-star" style="color: var(--gold);"></i>
-                                    <span>${book.rating || 'N/A'}</span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="action-btn edit" onclick="admin.editBook('${id}')">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="action-btn delete" onclick="admin.confirmDelete('libraryBooks', '${id}')">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    `).join('');
-                    
-                    booksTable.querySelector('tbody').innerHTML = bookRows || '<tr><td colspan="7">No books found</td></tr>';
-                    
-                } catch (error) {
-                    console.error('Error loading books:', error);
-                    booksTable.querySelector('tbody').innerHTML = '<tr><td colspan="7">Error loading books</td></tr>';
-                }
-            }
-    
-            async function loadSubscriptions() {
-                try {
-                    const subsRef = ref(database, 'subscriptionPlans');
-                    const snapshot = await get(subsRef);
-                    const plans = snapshot.val() || {};
-                    
-                    const subscriptionsTable = document.getElementById('subscriptionsTable');
-                    const planRows = Object.entries(plans).map(([id, plan]) => `
-                        <tr>
-                            <td>
-                                <div style="font-weight: 500;">${plan.name || ''}</div>
-                                ${plan.popularity === 'popular' ? '<span style="font-size: 0.8rem; color: var(--gold);">Most Popular</span>' : ''}
-                            </td>
-                            <td>KSh ${plan.price || 0}</td>
-                            <td>${plan.duration || ''}</td>
-                            <td>
-                                <div style="max-height: 100px; overflow-y: auto;">
-                                    ${Array.isArray(plan.features) ? plan.features.map(f => `<div style="margin-bottom: 4px;">• ${f}</div>`).join('') : ''}
-                                </div>
-                            </td>
-                            <td>
-                                <span class="status-badge ${plan.popularity === 'popular' ? 'status-active' : 'status-standard'}">
-                                    ${plan.popularity || 'standard'}
-                                </span>
-                            </td>
-                            <td>
-                                <span class="status-badge ${plan.active ? 'status-active' : 'status-inactive'}">
-                                    ${plan.active ? 'Active' : 'Inactive'}
-                                </span>
-                            </td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="action-btn edit" onclick="admin.editSubscription('${id}')">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="action-btn delete" onclick="admin.confirmDelete('subscriptionPlans', '${id}')">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    `).join('');
-                    
-                    subscriptionsTable.querySelector('tbody').innerHTML = planRows || '<tr><td colspan="7">No subscription plans found</td></tr>';
-                    
-                } catch (error) {
-                    console.error('Error loading subscriptions:', error);
-                    subscriptionsTable.querySelector('tbody').innerHTML = '<tr><td colspan="7">Error loading subscription plans</td></tr>';
-                }
-            }
-    
-            async function loadEvents() {
-                try {
-                    const eventsRef = ref(database, 'events');
-                    const snapshot = await get(eventsRef);
-                    const events = snapshot.val() || {};
-                    
-                    const eventsTable = document.getElementById('eventsTable');
-                    const eventRows = Object.entries(events).map(([id, event]) => `
-                        <tr>
-                            <td>
-                                <div style="font-weight: 500;">${event.title || ''}</div>
-                                <div style="font-size: 0.8rem; color: var(--dark-gray);">${event.type || 'Event'}</div>
-                            </td>
-                            <td>${formatDate(event.date)}</td>
-                            <td>${event.location || 'TBD'}</td>
-                            <td>${event.currentAttendees || 0} / ${event.maxAttendees || '∞'}</td>
-                            <td>
-                                <span class="status-badge ${getEventStatusClass(event.status)}">
-                                    ${event.status || 'upcoming'}
-                                </span>
-                            </td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="action-btn edit" onclick="admin.editEvent('${id}')">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="action-btn delete" onclick="admin.confirmDelete('events', '${id}')">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    `).join('');
-                    
-                    eventsTable.querySelector('tbody').innerHTML = eventRows || '<tr><td colspan="6">No events found</td></tr>';
-                    
-                } catch (error) {
-                    console.error('Error loading events:', error);
-                    eventsTable.querySelector('tbody').innerHTML = '<tr><td colspan="6">Error loading events</td></tr>';
-                }
-            }
-    
-            function getEventStatusClass(status) {
-                switch (status) {
-                    case 'upcoming': return 'status-active';
-                    case 'ongoing': return 'status-success';
-                    case 'past': return 'status-secondary';
-                    case 'cancelled': return 'status-danger';
-                    default: return 'status-pending';
-                }
-            }
-    
-            async function loadAnalytics() {
-                // Implement analytics loading
-                document.getElementById('activityChart').innerHTML = `
-                    <div style="text-align: center; padding: 2rem;">
-                        <i class="fas fa-chart-line" style="font-size: 3rem; color: var(--gold); margin-bottom: 1rem;"></i>
-                        <p>Analytics charts will be implemented with a charting library</p>
-                    </div>
-                `;
-            }
-    
-            async function loadSettings() {
-                try {
-                    const settingsRef = ref(database, 'appSettings');
-                    const snapshot = await get(settingsRef);
-                    const settings = snapshot.val() || {};
-                    
-                    document.getElementById('platformName').value = settings.siteTitle || 'THE SONGA';
-                    document.getElementById('whatsappNumber').value = settings.contactInfo?.whatsappNumber || '254727211191';
-                    document.getElementById('contactEmail').value = settings.contactInfo?.email || 'office.songawelfare@gmail.com';
-                    document.getElementById('libraryEmail').value = settings.contactInfo?.libraryEmail || 'library@thesongawelfare.com';
-                    document.getElementById('maintenanceMode').checked = settings.maintenanceMode || false;
-                    
-                } catch (error) {
-                    console.error('Error loading settings:', error);
-                }
-            }
-    
-            async function saveSettings() {
-                try {
-                    const settingsRef = ref(database, 'appSettings');
-                    const currentSettings = await get(settingsRef).then(s => s.val() || {});
-                    
-                    const updatedSettings = {
-                        ...currentSettings,
-                        siteTitle: document.getElementById('platformName').value,
-                        contactInfo: {
-                            ...currentSettings.contactInfo,
-                            whatsappNumber: document.getElementById('whatsappNumber').value,
-                            email: document.getElementById('contactEmail').value,
-                            libraryEmail: document.getElementById('libraryEmail').value
-                        },
-                        maintenanceMode: document.getElementById('maintenanceMode').checked
-                    };
-                    
-                    await set(settingsRef, updatedSettings);
-                    
-                    alert('Settings saved successfully!');
-                    
-                } catch (error) {
-                    console.error('Error saving settings:', error);
-                    alert('Error saving settings: ' + error.message);
-                }
-            }
-    
-            // Modal functions
-            function openModal(modalId) {
-                editingItemId = null;
-                const modal = document.getElementById(modalId);
-                const title = modal.querySelector('h2');
                 
-                switch (modalId) {
-                    case 'userModal':
-                        title.textContent = 'Add New User';
-                        document.getElementById('userForm').reset();
-                        document.getElementById('modalIsAdmin').checked = false;
-                        document.getElementById('modalNotifications').checked = true;
-                        break;
-                    case 'postModal':
-                        title.textContent = 'Create Post';
-                        document.getElementById('postForm').reset();
-                        document.getElementById('postCategory').value = 'announcement';
-                        document.getElementById('postType').value = 'update';
-                        document.getElementById('postStatus').value = 'published';
-                        break;
-                    case 'bookModal':
-                        title.textContent = 'Add Book to Library';
-                        document.getElementById('bookForm').reset();
-                        document.getElementById('bookCategory').value = 'Personal Growth';
-                        document.getElementById('bookPages').value = 200;
-                        document.getElementById('bookRating').value = 4.5;
-                        document.getElementById('bookTotalCopies').value = 5;
-                        document.getElementById('bookAvailableCopies').value = 5;
-                        // Check all subscription tier checkboxes by default
-                        document.querySelectorAll('#bookForm input[type="checkbox"]').forEach(cb => cb.checked = true);
-                        break;
-                    case 'subscriptionModal':
-                        title.textContent = 'Add Subscription Plan';
-                        document.getElementById('subscriptionForm').reset();
-                        document.getElementById('subscriptionDuration').value = '1 month';
-                        document.getElementById('subscriptionPopularity').value = 'popular';
-                        document.getElementById('subscriptionStatus').value = 'active';
-                        break;
-                    case 'eventModal':
-                        title.textContent = 'Create Event';
-                        document.getElementById('eventForm').reset();
-                        
-                        // Set default dates
-                        const now = new Date();
-                        const tomorrow = new Date(now);
-                        tomorrow.setDate(tomorrow.getDate() + 1);
-                        
-                        document.getElementById('eventDate').value = formatDateTimeLocal(tomorrow);
-                        document.getElementById('eventEndDate').value = formatDateTimeLocal(new Date(tomorrow.getTime() + 2 * 60 * 60 * 1000));
-                        document.getElementById('eventRegistrationDeadline').value = formatDateTimeLocal(now);
-                        document.getElementById('eventType').value = 'workshop';
-                        document.getElementById('eventCategory').value = 'finance';
-                        document.getElementById('eventStatus').value = 'upcoming';
-                        document.getElementById('eventRegistrationOpen').checked = true;
-                        break;
+                // The auth state change listener will handle the rest
+            } catch (error) {
+                console.error('Login error:', error.code, error.message);
+                showError(getFirebaseErrorMessage(error));
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In';
+            }
+        }
+
+        async function handleLogout() {
+            try {
+                await auth.signOut();
+                console.log('Logged out successfully');
+            } catch (error) {
+                console.error('Logout error:', error);
+                alert('Error during logout: ' + error.message);
+            }
+        }
+
+        function showLoginPage() {
+            console.log('Showing login page');
+            loginPage.style.display = 'flex';
+            adminDashboard.style.display = 'none';
+            emailInput.value = '';
+            passwordInput.value = '';
+            clearError();
+            loginBtn.disabled = false;
+            loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In';
+        }
+
+        function showAdminDashboard() {
+            console.log('Showing admin dashboard');
+            loginPage.style.display = 'none';
+            adminDashboard.style.display = 'flex';
+            document.getElementById('adminName').textContent = currentUser?.email || 'Admin User';
+        }
+
+        function showError(message) {
+            console.log('Showing error:', message);
+            loginError.textContent = message;
+            loginError.style.display = 'block';
+        }
+
+        function clearError() {
+            loginError.textContent = '';
+            loginError.style.display = 'none';
+        }
+
+        function getFirebaseErrorMessage(error) {
+            console.log('Firebase error code:', error.code);
+            switch (error.code) {
+                case 'auth/invalid-email':
+                    return 'Invalid email address';
+                case 'auth/user-disabled':
+                    return 'This account has been disabled';
+                case 'auth/user-not-found':
+                    return 'No account found with this email';
+                case 'auth/wrong-password':
+                    return 'Incorrect password';
+                case 'auth/too-many-requests':
+                    return 'Too many failed attempts. Try again later';
+                case 'auth/network-request-failed':
+                    return 'Network error. Please check your connection';
+                default:
+                    return 'Login failed: ' + error.message;
+            }
+        }
+
+        function switchSection(section) {
+            console.log('Switching to section:', section);
+            // Update active nav item
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('data-section') === section) {
+                    item.classList.add('active');
                 }
-                
-                modal.classList.add('active');
-            }
-    
-            function closeModal(modalId) {
-                document.getElementById(modalId)?.classList.remove('active');
-                editingItemId = null;
-            }
-    
-            function formatDateTimeLocal(date) {
-                const year = date.getFullYear();
-                const month = String(date.getMonth() + 1).padStart(2, '0');
-                const day = String(date.getDate()).padStart(2, '0');
-                const hours = String(date.getHours()).padStart(2, '0');
-                const minutes = String(date.getMinutes()).padStart(2, '0');
-                return `${year}-${month}-${day}T${hours}:${minutes}`;
-            }
-    
-            async function handleUserSubmit(e) {
-                e.preventDefault();
-                
-                const userData = {
-                    firstName: document.getElementById('modalFirstName').value,
-                    lastName: document.getElementById('modalLastName').value,
-                    email: document.getElementById('modalEmail').value,
-                    phoneNumber: document.getElementById('modalPhone').value || '',
-                    membershipTier: document.getElementById('modalMembership').value,
-                    status: document.getElementById('modalStatus').value,
-                    isAdmin: document.getElementById('modalIsAdmin').checked,
-                    isModerator: document.getElementById('modalIsAdmin').checked, // Make moderator if admin
-                    notificationsEnabled: document.getElementById('modalNotifications').checked,
-                    joinedDate: new Date().toISOString(),
-                    lastLogin: new Date().toISOString(),
-                    profilePicture: 'https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp'
-                };
-                
-                try {
-                    if (editingItemId) {
-                        // Update existing user
-                        const userRef = ref(database, `users/${editingItemId}`);
-                        await update(userRef, userData);
-                    } else {
-                        // Create new user with a new ID
-                        const newUserRef = push(ref(database, 'users'));
-                        await set(newUserRef, { 
-                            ...userData,
-                            uid: newUserRef.key
-                        });
-                    }
-                    
-                    closeModal('userModal');
+            });
+
+            // Update active content section
+            contentSections.forEach(sec => {
+                sec.classList.remove('active');
+                if (sec.id === `${section}Section`) {
+                    sec.classList.add('active');
+                }
+            });
+
+            // Update page title
+            pageTitle.textContent = getSectionTitle(section);
+            currentSection = section;
+
+            // Load section data
+            switch (section) {
+                case 'dashboard':
+                    loadDashboardData();
+                    break;
+                case 'users':
                     loadUsers();
-                    alert('User saved successfully!');
-                    
-                } catch (error) {
-                    console.error('Error saving user:', error);
-                    alert('Error saving user: ' + error.message);
-                }
-            }
-    
-            async function handlePostSubmit(e) {
-                e.preventDefault();
-                
-                const tags = document.getElementById('postTags').value
-                    .split(',')
-                    .map(t => t.trim())
-                    .filter(t => t);
-                
-                const postData = {
-                    title: document.getElementById('postTitle').value,
-                    content: document.getElementById('postContent').value,
-                    category: document.getElementById('postCategory').value,
-                    type: document.getElementById('postType').value,
-                    tags: tags,
-                    imageUrl: document.getElementById('postImage').value || '',
-                    isPinned: document.getElementById('postPinned').checked,
-                    status: document.getElementById('postStatus').value,
-                    authorId: currentUser.uid || 'admin_001',
-                    authorName: 'THE SONGA',
-                    authorAvatar: 'https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp',
-                    likes: 0,
-                    likedBy: [],
-                    comments: 0,
-                    shares: 0,
-                    bookmarks: 0,
-                    createdAt: editingItemId ? undefined : new Date().toISOString(),
-                    updatedAt: new Date().toISOString()
-                };
-                
-                // Remove undefined fields
-                Object.keys(postData).forEach(key => {
-                    if (postData[key] === undefined) {
-                        delete postData[key];
-                    }
-                });
-                
-                try {
-                    if (editingItemId) {
-                        // Update existing post
-                        const postRef = ref(database, `communityPosts/${editingItemId}`);
-                        await update(postRef, postData);
-                    } else {
-                        // Create new post with a new ID
-                        const newPostRef = push(ref(database, 'communityPosts'));
-                        await set(newPostRef, { 
-                            ...postData,
-                            id: newPostRef.key
-                        });
-                    }
-                    
-                    closeModal('postModal');
+                    break;
+                case 'posts':
                     loadPosts();
-                    alert('Post saved successfully!');
-                    
-                } catch (error) {
-                    console.error('Error saving post:', error);
-                    alert('Error saving post: ' + error.message);
-                }
-            }
-    
-            async function handleBookSubmit(e) {
-                e.preventDefault();
-                
-                const tags = document.getElementById('bookTags').value
-                    .split(',')
-                    .map(t => t.trim())
-                    .filter(t => t);
-                
-                const tierCheckboxes = document.querySelectorAll('#bookForm input[type="checkbox"]');
-                const subscriptionTiers = Array.from(tierCheckboxes)
-                    .filter(cb => cb.checked)
-                    .map(cb => cb.value);
-                
-                const bookData = {
-                    title: document.getElementById('bookTitle').value,
-                    author: document.getElementById('bookAuthor').value,
-                    category: document.getElementById('bookCategory').value,
-                    description: document.getElementById('bookDescription').value,
-                    coverImage: document.getElementById('bookCover').value,
-                    pages: parseInt(document.getElementById('bookPages').value) || 200,
-                    isbn: document.getElementById('bookISBN').value || '',
-                    rating: parseFloat(document.getElementById('bookRating').value) || 4.5,
-                    totalRatings: 0,
-                    totalCopies: parseInt(document.getElementById('bookTotalCopies').value) || 5,
-                    availableCopies: parseInt(document.getElementById('bookAvailableCopies').value) || 5,
-                    genre: [],
-                    tags: tags,
-                    featured: document.getElementById('bookFeatured').checked,
-                    availability: 'available',
-                    borrowCount: 0,
-                    subscriptionTiers: subscriptionTiers,
-                    addedDate: editingItemId ? undefined : new Date().toISOString()
-                };
-                
-                // Remove undefined fields
-                Object.keys(bookData).forEach(key => {
-                    if (bookData[key] === undefined) {
-                        delete bookData[key];
-                    }
-                });
-                
-                try {
-                    if (editingItemId) {
-                        // Update existing book
-                        const bookRef = ref(database, `libraryBooks/${editingItemId}`);
-                        await update(bookRef, bookData);
-                    } else {
-                        // Create new book with a new ID
-                        const newBookRef = push(ref(database, 'libraryBooks'));
-                        await set(newBookRef, { 
-                            ...bookData,
-                            id: newBookRef.key
-                        });
-                    }
-                    
-                    closeModal('bookModal');
+                    break;
+                case 'books':
                     loadBooks();
-                    alert('Book saved successfully!');
-                    
-                } catch (error) {
-                    console.error('Error saving book:', error);
-                    alert('Error saving book: ' + error.message);
-                }
-            }
-    
-            async function handleSubscriptionSubmit(e) {
-                e.preventDefault();
-                
-                const features = document.getElementById('subscriptionFeatures').value
-                    .split('\n')
-                    .map(f => f.trim())
-                    .filter(f => f);
-                
-                const subscriptionData = {
-                    name: document.getElementById('subscriptionName').value,
-                    price: parseInt(document.getElementById('subscriptionPrice').value),
-                    currency: 'KSh',
-                    duration: document.getElementById('subscriptionDuration').value,
-                    popularity: document.getElementById('subscriptionPopularity').value,
-                    features: features,
-                    active: document.getElementById('subscriptionStatus').value === 'active',
-                    createdAt: editingItemId ? undefined : new Date().toISOString()
-                };
-                
-                // Remove undefined fields
-                Object.keys(subscriptionData).forEach(key => {
-                    if (subscriptionData[key] === undefined) {
-                        delete subscriptionData[key];
-                    }
-                });
-                
-                try {
-                    if (editingItemId) {
-                        // Update existing plan
-                        const subRef = ref(database, `subscriptionPlans/${editingItemId}`);
-                        await update(subRef, subscriptionData);
-                    } else {
-                        // Create new plan with a new ID
-                        const newSubRef = push(ref(database, 'subscriptionPlans'));
-                        await set(newSubRef, { 
-                            ...subscriptionData,
-                            id: newSubRef.key
-                        });
-                    }
-                    
-                    closeModal('subscriptionModal');
+                    break;
+                case 'subscriptions':
                     loadSubscriptions();
-                    alert('Subscription plan saved successfully!');
-                    
-                } catch (error) {
-                    console.error('Error saving subscription:', error);
-                    alert('Error saving subscription: ' + error.message);
-                }
-            }
-    
-            async function handleEventSubmit(e) {
-                e.preventDefault();
-                
-                const registrationDeadline = document.getElementById('eventRegistrationDeadline').value;
-                
-                const eventData = {
-                    title: document.getElementById('eventTitle').value,
-                    description: document.getElementById('eventDescription').value,
-                    date: new Date(document.getElementById('eventDate').value).toISOString(),
-                    endDate: new Date(document.getElementById('eventEndDate').value).toISOString(),
-                    location: document.getElementById('eventLocation').value,
-                    maxAttendees: parseInt(document.getElementById('eventMaxAttendees').value) || 50,
-                    type: document.getElementById('eventType').value,
-                    category: document.getElementById('eventCategory').value,
-                    registrationDeadline: registrationDeadline ? 
-                        new Date(registrationDeadline).toISOString() : null,
-                    status: document.getElementById('eventStatus').value,
-                    registrationOpen: document.getElementById('eventRegistrationOpen').checked,
-                    host: 'THE SONGA',
-                    hostAvatar: 'https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp',
-                    currentAttendees: 0,
-                    attendeeIds: [],
-                    createdAt: editingItemId ? undefined : new Date().toISOString(),
-                    updatedAt: new Date().toISOString()
-                };
-                
-                // Remove undefined fields
-                Object.keys(eventData).forEach(key => {
-                    if (eventData[key] === undefined) {
-                        delete eventData[key];
-                    }
-                });
-                
-                try {
-                    if (editingItemId) {
-                        // Update existing event
-                        const eventRef = ref(database, `events/${editingItemId}`);
-                        await update(eventRef, eventData);
-                    } else {
-                        // Create new event with a new ID
-                        const newEventRef = push(ref(database, 'events'));
-                        await set(newEventRef, { 
-                            ...eventData,
-                            id: newEventRef.key
-                        });
-                    }
-                    
-                    closeModal('eventModal');
+                    break;
+                case 'events':
                     loadEvents();
-                    alert('Event saved successfully!');
-                    
-                } catch (error) {
-                    console.error('Error saving event:', error);
-                    alert('Error saving event: ' + error.message);
-                }
+                    break;
+                case 'analytics':
+                    loadAnalytics();
+                    break;
+                case 'settings':
+                    loadSettings();
+                    break;
             }
-    
-            async function editUser(userId) {
-                try {
-                    const userRef = ref(database, `users/${userId}`);
-                    const snapshot = await get(userRef);
-                    
-                    if (snapshot.exists()) {
-                        const user = snapshot.val();
-                        editingItemId = userId;
-                        
-                        document.getElementById('modalFirstName').value = user.firstName || '';
-                        document.getElementById('modalLastName').value = user.lastName || '';
-                        document.getElementById('modalEmail').value = user.email || '';
-                        document.getElementById('modalPhone').value = user.phoneNumber || '';
-                        document.getElementById('modalMembership').value = user.membershipTier || 'scholar';
-                        document.getElementById('modalStatus').value = user.status || 'active';
-                        document.getElementById('modalIsAdmin').checked = user.isAdmin || false;
-                        document.getElementById('modalNotifications').checked = user.notificationsEnabled || false;
-                        document.getElementById('modalUserId').value = userId;
-                        
-                        document.getElementById('userModalTitle').textContent = 'Edit User';
-                        document.getElementById('userModal').classList.add('active');
-                    }
-                } catch (error) {
-                    console.error('Error loading user:', error);
-                    alert('Error loading user: ' + error.message);
-                }
+        }
+
+        function getSectionTitle(section) {
+            const titles = {
+                dashboard: 'Dashboard',
+                users: 'User Management',
+                posts: 'Community Posts',
+                books: 'Library Books',
+                subscriptions: 'Subscription Plans',
+                events: 'Events Management',
+                analytics: 'Analytics & Reports',
+                settings: 'Platform Settings'
+            };
+            return titles[section] || 'Dashboard';
+        }
+
+        async function loadDashboardData() {
+            console.log('Loading dashboard data...');
+            try {
+                // Load all data in parallel
+                const [usersSnapshot, postsSnapshot, booksSnapshot, subsSnapshot, eventsSnapshot, logsSnapshot] = await Promise.all([
+                    database.ref('users').once('value'),
+                    database.ref('communityPosts').once('value'),
+                    database.ref('libraryBooks').once('value'),
+                    database.ref('userSubscriptions').once('value'),
+                    database.ref('events').once('value'),
+                    database.ref('systemLogs').once('value')
+                ]);
+
+                // Update counts
+                const usersCount = Object.keys(usersSnapshot.val() || {}).length;
+                const postsCount = Object.keys(postsSnapshot.val() || {}).length;
+                const booksCount = Object.keys(booksSnapshot.val() || {}).length;
+                
+                document.getElementById('totalUsers').textContent = usersCount;
+                document.getElementById('totalPosts').textContent = postsCount;
+                document.getElementById('totalBooks').textContent = booksCount;
+                
+                const subs = subsSnapshot.val() || {};
+                const activeSubs = Object.values(subs).filter(sub => sub.status === 'active').length;
+                document.getElementById('activeSubscriptions').textContent = activeSubs;
+
+                // Load recent activity
+                const logs = logsSnapshot.val() || {};
+                const recentActivityTable = document.getElementById('recentActivityTable');
+                const activityRows = Object.entries(logs)
+                    .sort(([,a], [,b]) => new Date(b.timestamp) - new Date(a.timestamp))
+                    .slice(0, 10)
+                    .map(([id, activity]) => `
+                        <tr>
+                            <td>${formatDate(activity.timestamp)}</td>
+                            <td>${activity.userId || 'System'}</td>
+                            <td>${activity.action}</td>
+                            <td>${activity.details || ''}</td>
+                        </tr>
+                    `).join('');
+                
+                recentActivityTable.querySelector('tbody').innerHTML = activityRows || '<tr><td colspan="4">No recent activity</td></tr>';
+                
+                // Update last updated time
+                document.getElementById('lastUpdated').textContent = `Last updated: ${new Date().toLocaleTimeString()}`;
+                
+                console.log('Dashboard data loaded successfully');
+                
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
             }
-    
-            async function editPost(postId) {
-                try {
-                    const postRef = ref(database, `communityPosts/${postId}`);
-                    const snapshot = await get(postRef);
-                    
-                    if (snapshot.exists()) {
-                        const post = snapshot.val();
-                        editingItemId = postId;
-                        
-                        document.getElementById('postTitle').value = post.title || '';
-                        document.getElementById('postContent').value = post.content || '';
-                        document.getElementById('postCategory').value = post.category || 'announcement';
-                        document.getElementById('postType').value = post.type || 'update';
-                        document.getElementById('postTags').value = Array.isArray(post.tags) ? post.tags.join(', ') : '';
-                        document.getElementById('postImage').value = post.imageUrl || '';
-                        document.getElementById('postPinned').checked = post.isPinned || false;
-                        document.getElementById('postStatus').value = post.status || 'published';
-                        document.getElementById('postId').value = postId;
-                        
-                        document.getElementById('postModalTitle').textContent = 'Edit Post';
-                        document.getElementById('postModal').classList.add('active');
-                    }
-                } catch (error) {
-                    console.error('Error loading post:', error);
-                    alert('Error loading post: ' + error.message);
-                }
+        }
+
+        async function loadUsers() {
+            console.log('Loading users...');
+            try {
+                const snapshot = await database.ref('users').once('value');
+                const users = snapshot.val() || {};
+                const usersTable = document.getElementById('usersTable');
+                
+                const userRows = Object.entries(users).map(([id, user]) => `
+                    <tr>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <img src="${user.profilePicture || 'https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp'}" 
+                                     alt="${user.firstName}" 
+                                     style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;">
+                                <div>
+                                    <div style="font-weight: 500;">${user.firstName || ''} ${user.lastName || ''}</div>
+                                    ${user.isAdmin ? '<span style="font-size: 0.8rem; color: var(--gold);">Admin</span>' : ''}
+                                </div>
+                            </div>
+                        </td>
+                        <td>${user.email || ''}</td>
+                        <td>${user.membershipTier || 'Not set'}</td>
+                        <td>${formatDate(user.joinedDate)}</td>
+                        <td>
+                            <span class="status-badge ${user.status === 'active' ? 'status-active' : 'status-inactive'}">
+                                ${user.status || 'inactive'}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="action-btn edit" onclick="window.editUser('${id}')">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="action-btn delete" onclick="window.confirmDelete('users', '${id}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
+                
+                usersTable.querySelector('tbody').innerHTML = userRows || '<tr><td colspan="6">No users found</td></tr>';
+                console.log('Users loaded:', Object.keys(users).length);
+                
+            } catch (error) {
+                console.error('Error loading users:', error);
+                usersTable.querySelector('tbody').innerHTML = '<tr><td colspan="6">Error loading users</td></tr>';
             }
-    
-            async function editBook(bookId) {
-                try {
-                    const bookRef = ref(database, `libraryBooks/${bookId}`);
-                    const snapshot = await get(bookRef);
-                    
-                    if (snapshot.exists()) {
-                        const book = snapshot.val();
-                        editingItemId = bookId;
-                        
-                        document.getElementById('bookTitle').value = book.title || '';
-                        document.getElementById('bookAuthor').value = book.author || '';
-                        document.getElementById('bookCategory').value = book.category || 'Personal Growth';
-                        document.getElementById('bookDescription').value = book.description || '';
-                        document.getElementById('bookCover').value = book.coverImage || '';
-                        document.getElementById('bookPages').value = book.pages || 200;
-                        document.getElementById('bookISBN').value = book.isbn || '';
-                        document.getElementById('bookRating').value = book.rating || 4.5;
-                        document.getElementById('bookTotalCopies').value = book.totalCopies || 5;
-                        document.getElementById('bookAvailableCopies').value = book.availableCopies || 5;
-                        document.getElementById('bookTags').value = Array.isArray(book.tags) ? book.tags.join(', ') : '';
-                        document.getElementById('bookFeatured').checked = book.featured || false;
-                        document.getElementById('bookId').value = bookId;
-                        
-                        // Set subscription tiers
-                        const tiers = book.subscriptionTiers || ['explorer', 'scholar', 'visionary'];
-                        document.querySelectorAll('#bookForm input[type="checkbox"]').forEach(cb => {
-                            cb.checked = tiers.includes(cb.value);
-                        });
-                        
-                        document.getElementById('bookModalTitle').textContent = 'Edit Book';
-                        document.getElementById('bookModal').classList.add('active');
-                    }
-                } catch (error) {
-                    console.error('Error loading book:', error);
-                    alert('Error loading book: ' + error.message);
-                }
+        }
+
+        async function loadPosts() {
+            console.log('Loading posts...');
+            try {
+                const snapshot = await database.ref('communityPosts').once('value');
+                const posts = snapshot.val() || {};
+                const postsTable = document.getElementById('postsTable');
+                
+                const postRows = Object.entries(posts).map(([id, post]) => `
+                    <tr>
+                        <td>
+                            <div style="font-weight: 500; margin-bottom: 4px;">${post.title || ''}</div>
+                            ${post.isPinned ? '<span style="font-size: 0.8rem; color: var(--gold);"><i class="fas fa-thumbtack"></i> Pinned</span>' : ''}
+                        </td>
+                        <td>${post.authorName || 'Unknown'}</td>
+                        <td>${post.category || 'General'}</td>
+                        <td>${post.likes || 0}</td>
+                        <td>${formatDate(post.createdAt)}</td>
+                        <td>
+                            <span class="status-badge ${post.status === 'published' ? 'status-active' : 'status-pending'}">
+                                ${post.status || 'draft'}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="action-btn edit" onclick="window.editPost('${id}')">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="action-btn delete" onclick="window.confirmDelete('communityPosts', '${id}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
+                
+                postsTable.querySelector('tbody').innerHTML = postRows || '<tr><td colspan="7">No posts found</td></tr>';
+                console.log('Posts loaded:', Object.keys(posts).length);
+                
+            } catch (error) {
+                console.error('Error loading posts:', error);
+                postsTable.querySelector('tbody').innerHTML = '<tr><td colspan="7">Error loading posts</td></tr>';
             }
-    
-            async function editSubscription(subId) {
-                try {
-                    const subRef = ref(database, `subscriptionPlans/${subId}`);
-                    const snapshot = await get(subRef);
-                    
-                    if (snapshot.exists()) {
-                        const plan = snapshot.val();
-                        editingItemId = subId;
-                        
-                        document.getElementById('subscriptionName').value = plan.name || '';
-                        document.getElementById('subscriptionPrice').value = plan.price || 0;
-                        document.getElementById('subscriptionDuration').value = plan.duration || '1 month';
-                        document.getElementById('subscriptionPopularity').value = plan.popularity || 'standard';
-                        document.getElementById('subscriptionFeatures').value = Array.isArray(plan.features) ? plan.features.join('\n') : '';
-                        document.getElementById('subscriptionStatus').value = plan.active ? 'active' : 'inactive';
-                        document.getElementById('subscriptionId').value = subId;
-                        
-                        document.getElementById('subscriptionModalTitle').textContent = 'Edit Subscription Plan';
-                        document.getElementById('subscriptionModal').classList.add('active');
-                    }
-                } catch (error) {
-                    console.error('Error loading subscription:', error);
-                    alert('Error loading subscription: ' + error.message);
-                }
+        }
+
+        async function loadBooks() {
+            console.log('Loading books...');
+            try {
+                const snapshot = await database.ref('libraryBooks').once('value');
+                const books = snapshot.val() || {};
+                const booksTable = document.getElementById('booksTable');
+                
+                const bookRows = Object.entries(books).map(([id, book]) => `
+                    <tr>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <img src="${book.coverImage || ''}" 
+                                     alt="${book.title}" 
+                                     style="width: 40px; height: 50px; object-fit: cover; border-radius: 4px;">
+                                <div>
+                                    <div style="font-weight: 500;">${book.title || ''}</div>
+                                    ${book.featured ? '<span style="font-size: 0.8rem; color: var(--gold);">Featured</span>' : ''}
+                                </div>
+                            </div>
+                        </td>
+                        <td>${book.author || ''}</td>
+                        <td>${book.category || ''}</td>
+                        <td>${book.availableCopies || 0} / ${book.totalCopies || 0}</td>
+                        <td>${book.borrowCount || 0}</td>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 4px;">
+                                <i class="fas fa-star" style="color: var(--gold);"></i>
+                                <span>${book.rating || 'N/A'}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="action-btn edit" onclick="window.editBook('${id}')">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="action-btn delete" onclick="window.confirmDelete('libraryBooks', '${id}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
+                
+                booksTable.querySelector('tbody').innerHTML = bookRows || '<tr><td colspan="7">No books found</td></tr>';
+                console.log('Books loaded:', Object.keys(books).length);
+                
+            } catch (error) {
+                console.error('Error loading books:', error);
+                booksTable.querySelector('tbody').innerHTML = '<tr><td colspan="7">Error loading books</td></tr>';
             }
-    
-            async function editEvent(eventId) {
-                try {
-                    const eventRef = ref(database, `events/${eventId}`);
-                    const snapshot = await get(eventRef);
-                    
-                    if (snapshot.exists()) {
-                        const event = snapshot.val();
-                        editingItemId = eventId;
-                        
-                        document.getElementById('eventTitle').value = event.title || '';
-                        document.getElementById('eventDescription').value = event.description || '';
-                        document.getElementById('eventDate').value = formatDateTimeLocal(new Date(event.date));
-                        document.getElementById('eventEndDate').value = formatDateTimeLocal(new Date(event.endDate));
-                        document.getElementById('eventLocation').value = event.location || '';
-                        document.getElementById('eventMaxAttendees').value = event.maxAttendees || 50;
-                        document.getElementById('eventType').value = event.type || 'workshop';
-                        document.getElementById('eventCategory').value = event.category || 'finance';
-                        document.getElementById('eventRegistrationDeadline').value = event.registrationDeadline ? 
-                            formatDateTimeLocal(new Date(event.registrationDeadline)) : '';
-                        document.getElementById('eventStatus').value = event.status || 'upcoming';
-                        document.getElementById('eventRegistrationOpen').checked = event.registrationOpen || false;
-                        document.getElementById('eventId').value = eventId;
-                        
-                        document.getElementById('eventModalTitle').textContent = 'Edit Event';
-                        document.getElementById('eventModal').classList.add('active');
-                    }
-                } catch (error) {
-                    console.error('Error loading event:', error);
-                    alert('Error loading event: ' + error.message);
-                }
+        }
+
+        async function loadSubscriptions() {
+            console.log('Loading subscriptions...');
+            try {
+                const snapshot = await database.ref('subscriptionPlans').once('value');
+                const plans = snapshot.val() || {};
+                const subscriptionsTable = document.getElementById('subscriptionsTable');
+                
+                const planRows = Object.entries(plans).map(([id, plan]) => `
+                    <tr>
+                        <td>
+                            <div style="font-weight: 500;">${plan.name || ''}</div>
+                            ${plan.popularity === 'popular' ? '<span style="font-size: 0.8rem; color: var(--gold);">Most Popular</span>' : ''}
+                        </td>
+                        <td>KSh ${plan.price || 0}</td>
+                        <td>${plan.duration || ''}</td>
+                        <td>
+                            <div style="max-height: 100px; overflow-y: auto;">
+                                ${Array.isArray(plan.features) ? plan.features.map(f => `<div style="margin-bottom: 4px;">• ${f}</div>`).join('') : ''}
+                            </div>
+                        </td>
+                        <td>
+                            <span class="status-badge ${plan.popularity === 'popular' ? 'status-active' : 'status-standard'}">
+                                ${plan.popularity || 'standard'}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="status-badge ${plan.active ? 'status-active' : 'status-inactive'}">
+                                ${plan.active ? 'Active' : 'Inactive'}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="action-btn edit" onclick="window.editSubscription('${id}')">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="action-btn delete" onclick="window.confirmDelete('subscriptionPlans', '${id}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
+                
+                subscriptionsTable.querySelector('tbody').innerHTML = planRows || '<tr><td colspan="7">No subscription plans found</td></tr>';
+                console.log('Subscriptions loaded:', Object.keys(plans).length);
+                
+            } catch (error) {
+                console.error('Error loading subscriptions:', error);
+                subscriptionsTable.querySelector('tbody').innerHTML = '<tr><td colspan="7">Error loading subscription plans</td></tr>';
             }
-    
-            function confirmDelete(collection, id) {
-                itemsToDelete = { collection, id };
-                const messages = {
-                    users: 'Are you sure you want to delete this user? This will remove all their data.',
-                    communityPosts: 'Are you sure you want to delete this post? This cannot be undone.',
-                    libraryBooks: 'Are you sure you want to delete this book? This will remove it from the library.',
-                    subscriptionPlans: 'Are you sure you want to delete this subscription plan? Existing subscribers will be affected.',
-                    events: 'Are you sure you want to delete this event? All registrations will be removed.'
+        }
+
+        async function loadEvents() {
+            console.log('Loading events...');
+            try {
+                const snapshot = await database.ref('events').once('value');
+                const events = snapshot.val() || {};
+                const eventsTable = document.getElementById('eventsTable');
+                
+                const eventRows = Object.entries(events).map(([id, event]) => `
+                    <tr>
+                        <td>
+                            <div style="font-weight: 500;">${event.title || ''}</div>
+                            <div style="font-size: 0.8rem; color: var(--dark-gray);">${event.type || 'Event'}</div>
+                        </td>
+                        <td>${formatDate(event.date)}</td>
+                        <td>${event.location || 'TBD'}</td>
+                        <td>${event.currentAttendees || 0} / ${event.maxAttendees || '∞'}</td>
+                        <td>
+                            <span class="status-badge ${getEventStatusClass(event.status)}">
+                                ${event.status || 'upcoming'}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="action-btn edit" onclick="window.editEvent('${id}')">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="action-btn delete" onclick="window.confirmDelete('events', '${id}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
+                
+                eventsTable.querySelector('tbody').innerHTML = eventRows || '<tr><td colspan="6">No events found</td></tr>';
+                console.log('Events loaded:', Object.keys(events).length);
+                
+            } catch (error) {
+                console.error('Error loading events:', error);
+                eventsTable.querySelector('tbody').innerHTML = '<tr><td colspan="6">Error loading events</td></tr>';
+            }
+        }
+
+        function getEventStatusClass(status) {
+            switch (status) {
+                case 'upcoming': return 'status-active';
+                case 'ongoing': return 'status-success';
+                case 'past': return 'status-secondary';
+                case 'cancelled': return 'status-danger';
+                default: return 'status-pending';
+            }
+        }
+
+        async function loadAnalytics() {
+            console.log('Loading analytics...');
+            // For now, just show a placeholder
+            document.getElementById('activityChart').innerHTML = `
+                <div style="text-align: center; padding: 2rem;">
+                    <i class="fas fa-chart-line" style="font-size: 3rem; color: var(--gold); margin-bottom: 1rem;"></i>
+                    <p>Analytics charts will be implemented with a charting library</p>
+                </div>
+            `;
+        }
+
+        async function loadSettings() {
+            console.log('Loading settings...');
+            try {
+                const snapshot = await database.ref('appSettings').once('value');
+                const settings = snapshot.val() || {};
+                
+                document.getElementById('platformName').value = settings.siteTitle || 'THE SONGA';
+                document.getElementById('whatsappNumber').value = settings.contactInfo?.whatsappNumber || '254727211191';
+                document.getElementById('contactEmail').value = settings.contactInfo?.email || 'office.songawelfare@gmail.com';
+                document.getElementById('libraryEmail').value = settings.contactInfo?.libraryEmail || 'library@thesongawelfare.com';
+                document.getElementById('maintenanceMode').checked = settings.maintenanceMode || false;
+                
+                console.log('Settings loaded successfully');
+                
+            } catch (error) {
+                console.error('Error loading settings:', error);
+            }
+        }
+
+        async function saveSettings() {
+            console.log('Saving settings...');
+            try {
+                const settingsData = {
+                    siteTitle: document.getElementById('platformName').value,
+                    contactInfo: {
+                        whatsappNumber: document.getElementById('whatsappNumber').value,
+                        email: document.getElementById('contactEmail').value,
+                        libraryEmail: document.getElementById('libraryEmail').value
+                    },
+                    maintenanceMode: document.getElementById('maintenanceMode').checked
                 };
                 
-                document.getElementById('deleteMessage').textContent = messages[collection] || 'Are you sure you want to delete this item?';
-                document.getElementById('deleteModal').classList.add('active');
-            }
-    
-            async function handleDelete() {
-                if (!itemsToDelete) return;
+                await database.ref('appSettings').set(settingsData);
+                alert('Settings saved successfully!');
+                console.log('Settings saved successfully');
                 
-                const { collection, id } = itemsToDelete;
-                
-                try {
-                    await remove(ref(database, `${collection}/${id}`));
-                    alert('Item deleted successfully!');
-                    
-                    // Reload current section
-                    switch (currentSection) {
-                        case 'users': loadUsers(); break;
-                        case 'posts': loadPosts(); break;
-                        case 'books': loadBooks(); break;
-                        case 'subscriptions': loadSubscriptions(); break;
-                        case 'events': loadEvents(); break;
-                    }
-                    
-                    closeModal('deleteModal');
-                    itemsToDelete = null;
-                    
-                } catch (error) {
-                    console.error('Error deleting item:', error);
-                    alert('Error deleting item: ' + error.message);
-                }
+            } catch (error) {
+                console.error('Error saving settings:', error);
+                alert('Error saving settings: ' + error.message);
             }
-    
-            // Utility functions
-            function formatDate(dateString) {
-                if (!dateString) return 'N/A';
-                const date = new Date(dateString);
-                return date.toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
+        }
+
+        // Modal functions
+        function openModal(modalId) {
+            console.log('Opening modal:', modalId);
+            editingItemId = null;
+            const modal = document.getElementById(modalId);
+            const title = modal.querySelector('h2');
+            
+            switch (modalId) {
+                case 'userModal':
+                    title.textContent = 'Add New User';
+                    document.getElementById('userForm').reset();
+                    document.getElementById('modalIsAdmin').checked = false;
+                    document.getElementById('modalNotifications').checked = true;
+                    break;
+                case 'postModal':
+                    title.textContent = 'Create Post';
+                    document.getElementById('postForm').reset();
+                    document.getElementById('postCategory').value = 'announcement';
+                    document.getElementById('postType').value = 'update';
+                    document.getElementById('postStatus').value = 'published';
+                    break;
+                case 'bookModal':
+                    title.textContent = 'Add Book to Library';
+                    document.getElementById('bookForm').reset();
+                    document.getElementById('bookCategory').value = 'Personal Growth';
+                    document.getElementById('bookPages').value = 200;
+                    document.getElementById('bookRating').value = 4.5;
+                    document.getElementById('bookTotalCopies').value = 5;
+                    document.getElementById('bookAvailableCopies').value = 5;
+                    // Check all subscription tier checkboxes by default
+                    document.querySelectorAll('#bookForm input[type="checkbox"]').forEach(cb => cb.checked = true);
+                    break;
+                case 'subscriptionModal':
+                    title.textContent = 'Add Subscription Plan';
+                    document.getElementById('subscriptionForm').reset();
+                    document.getElementById('subscriptionDuration').value = '1 month';
+                    document.getElementById('subscriptionPopularity').value = 'popular';
+                    document.getElementById('subscriptionStatus').value = 'active';
+                    break;
+                case 'eventModal':
+                    title.textContent = 'Create Event';
+                    document.getElementById('eventForm').reset();
+                    
+                    // Set default dates
+                    const now = new Date();
+                    const tomorrow = new Date(now);
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    
+                    document.getElementById('eventDate').value = formatDateTimeLocal(tomorrow);
+                    document.getElementById('eventEndDate').value = formatDateTimeLocal(new Date(tomorrow.getTime() + 2 * 60 * 60 * 1000));
+                    document.getElementById('eventRegistrationDeadline').value = formatDateTimeLocal(now);
+                    document.getElementById('eventType').value = 'workshop';
+                    document.getElementById('eventCategory').value = 'finance';
+                    document.getElementById('eventStatus').value = 'upcoming';
+                    document.getElementById('eventRegistrationOpen').checked = true;
+                    break;
             }
-    
-            // Make functions available globally for onclick handlers
-            window.admin = {
-                editUser,
-                editPost,
-                editBook,
-                editSubscription,
-                editEvent,
-                confirmDelete
+            
+            modal.classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            console.log('Closing modal:', modalId);
+            document.getElementById(modalId)?.classList.remove('active');
+            editingItemId = null;
+        }
+
+        function formatDateTimeLocal(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            return `${year}-${month}-${day}T${hours}:${minutes}`;
+        }
+
+        async function handleUserSubmit(e) {
+            e.preventDefault();
+            console.log('Handling user submit...');
+            
+            const userData = {
+                firstName: document.getElementById('modalFirstName').value,
+                lastName: document.getElementById('modalLastName').value,
+                email: document.getElementById('modalEmail').value,
+                phoneNumber: document.getElementById('modalPhone').value || '',
+                membershipTier: document.getElementById('modalMembership').value,
+                status: document.getElementById('modalStatus').value,
+                isAdmin: document.getElementById('modalIsAdmin').checked,
+                isModerator: document.getElementById('modalIsAdmin').checked,
+                notificationsEnabled: document.getElementById('modalNotifications').checked,
+                joinedDate: new Date().toISOString(),
+                lastLogin: new Date().toISOString(),
+                profilePicture: 'https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp'
             };
-        });
+            
+            try {
+                if (editingItemId) {
+                    // Update existing user
+                    await database.ref(`users/${editingItemId}`).update(userData);
+                    alert('User updated successfully!');
+                } else {
+                    // Create new user with a new ID
+                    const newUserRef = database.ref('users').push();
+                    await newUserRef.set({ 
+                        ...userData,
+                        uid: newUserRef.key
+                    });
+                    alert('User created successfully!');
+                }
+                
+                closeModal('userModal');
+                loadUsers();
+                
+            } catch (error) {
+                console.error('Error saving user:', error);
+                alert('Error saving user: ' + error.message);
+            }
+        }
+
+        async function handlePostSubmit(e) {
+            e.preventDefault();
+            console.log('Handling post submit...');
+            
+            const tags = document.getElementById('postTags').value
+                .split(',')
+                .map(t => t.trim())
+                .filter(t => t);
+            
+            const postData = {
+                title: document.getElementById('postTitle').value,
+                content: document.getElementById('postContent').value,
+                category: document.getElementById('postCategory').value,
+                type: document.getElementById('postType').value,
+                tags: tags,
+                imageUrl: document.getElementById('postImage').value || '',
+                isPinned: document.getElementById('postPinned').checked,
+                status: document.getElementById('postStatus').value,
+                authorId: currentUser.uid || 'admin_001',
+                authorName: 'THE SONGA',
+                authorAvatar: 'https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp',
+                likes: 0,
+                likedBy: [],
+                comments: 0,
+                shares: 0,
+                bookmarks: 0,
+                updatedAt: new Date().toISOString()
+            };
+            
+            if (!editingItemId) {
+                postData.createdAt = new Date().toISOString();
+            }
+            
+            try {
+                if (editingItemId) {
+                    // Update existing post
+                    await database.ref(`communityPosts/${editingItemId}`).update(postData);
+                    alert('Post updated successfully!');
+                } else {
+                    // Create new post with a new ID
+                    const newPostRef = database.ref('communityPosts').push();
+                    await newPostRef.set({ 
+                        ...postData,
+                        id: newPostRef.key
+                    });
+                    alert('Post created successfully!');
+                }
+                
+                closeModal('postModal');
+                loadPosts();
+                
+            } catch (error) {
+                console.error('Error saving post:', error);
+                alert('Error saving post: ' + error.message);
+            }
+        }
+
+        async function handleBookSubmit(e) {
+            e.preventDefault();
+            console.log('Handling book submit...');
+            
+            const tags = document.getElementById('bookTags').value
+                .split(',')
+                .map(t => t.trim())
+                .filter(t => t);
+            
+            const tierCheckboxes = document.querySelectorAll('#bookForm input[type="checkbox"]');
+            const subscriptionTiers = Array.from(tierCheckboxes)
+                .filter(cb => cb.checked)
+                .map(cb => cb.value);
+            
+            const bookData = {
+                title: document.getElementById('bookTitle').value,
+                author: document.getElementById('bookAuthor').value,
+                category: document.getElementById('bookCategory').value,
+                description: document.getElementById('bookDescription').value,
+                coverImage: document.getElementById('bookCover').value,
+                pages: parseInt(document.getElementById('bookPages').value) || 200,
+                isbn: document.getElementById('bookISBN').value || '',
+                rating: parseFloat(document.getElementById('bookRating').value) || 4.5,
+                totalRatings: 0,
+                totalCopies: parseInt(document.getElementById('bookTotalCopies').value) || 5,
+                availableCopies: parseInt(document.getElementById('bookAvailableCopies').value) || 5,
+                genre: [],
+                tags: tags,
+                featured: document.getElementById('bookFeatured').checked,
+                availability: 'available',
+                borrowCount: 0,
+                subscriptionTiers: subscriptionTiers
+            };
+            
+            if (!editingItemId) {
+                bookData.addedDate = new Date().toISOString();
+            }
+            
+            try {
+                if (editingItemId) {
+                    // Update existing book
+                    await database.ref(`libraryBooks/${editingItemId}`).update(bookData);
+                    alert('Book updated successfully!');
+                } else {
+                    // Create new book with a new ID
+                    const newBookRef = database.ref('libraryBooks').push();
+                    await newBookRef.set({ 
+                        ...bookData,
+                        id: newBookRef.key
+                    });
+                    alert('Book added successfully!');
+                }
+                
+                closeModal('bookModal');
+                loadBooks();
+                
+            } catch (error) {
+                console.error('Error saving book:', error);
+                alert('Error saving book: ' + error.message);
+            }
+        }
+
+        async function handleSubscriptionSubmit(e) {
+            e.preventDefault();
+            console.log('Handling subscription submit...');
+            
+            const features = document.getElementById('subscriptionFeatures').value
+                .split('\n')
+                .map(f => f.trim())
+                .filter(f => f);
+            
+            const subscriptionData = {
+                name: document.getElementById('subscriptionName').value,
+                price: parseInt(document.getElementById('subscriptionPrice').value),
+                currency: 'KSh',
+                duration: document.getElementById('subscriptionDuration').value,
+                popularity: document.getElementById('subscriptionPopularity').value,
+                features: features,
+                active: document.getElementById('subscriptionStatus').value === 'active'
+            };
+            
+            if (!editingItemId) {
+                subscriptionData.createdAt = new Date().toISOString();
+            }
+            
+            try {
+                if (editingItemId) {
+                    // Update existing plan
+                    await database.ref(`subscriptionPlans/${editingItemId}`).update(subscriptionData);
+                    alert('Subscription plan updated successfully!');
+                } else {
+                    // Create new plan with a new ID
+                    const newSubRef = database.ref('subscriptionPlans').push();
+                    await newSubRef.set({ 
+                        ...subscriptionData,
+                        id: newSubRef.key
+                    });
+                    alert('Subscription plan created successfully!');
+                }
+                
+                closeModal('subscriptionModal');
+                loadSubscriptions();
+                
+            } catch (error) {
+                console.error('Error saving subscription:', error);
+                alert('Error saving subscription: ' + error.message);
+            }
+        }
+
+        async function handleEventSubmit(e) {
+            e.preventDefault();
+            console.log('Handling event submit...');
+            
+            const registrationDeadline = document.getElementById('eventRegistrationDeadline').value;
+            
+            const eventData = {
+                title: document.getElementById('eventTitle').value,
+                description: document.getElementById('eventDescription').value,
+                date: new Date(document.getElementById('eventDate').value).toISOString(),
+                endDate: new Date(document.getElementById('eventEndDate').value).toISOString(),
+                location: document.getElementById('eventLocation').value,
+                maxAttendees: parseInt(document.getElementById('eventMaxAttendees').value) || 50,
+                type: document.getElementById('eventType').value,
+                category: document.getElementById('eventCategory').value,
+                registrationDeadline: registrationDeadline ? 
+                    new Date(registrationDeadline).toISOString() : null,
+                status: document.getElementById('eventStatus').value,
+                registrationOpen: document.getElementById('eventRegistrationOpen').checked,
+                host: 'THE SONGA',
+                hostAvatar: 'https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp',
+                currentAttendees: 0,
+                attendeeIds: [],
+                updatedAt: new Date().toISOString()
+            };
+            
+            if (!editingItemId) {
+                eventData.createdAt = new Date().toISOString();
+            }
+            
+            try {
+                if (editingItemId) {
+                    // Update existing event
+                    await database.ref(`events/${editingItemId}`).update(eventData);
+                    alert('Event updated successfully!');
+                } else {
+                    // Create new event with a new ID
+                    const newEventRef = database.ref('events').push();
+                    await newEventRef.set({ 
+                        ...eventData,
+                        id: newEventRef.key
+                    });
+                    alert('Event created successfully!');
+                }
+                
+                closeModal('eventModal');
+                loadEvents();
+                
+            } catch (error) {
+                console.error('Error saving event:', error);
+                alert('Error saving event: ' + error.message);
+            }
+        }
+
+        async function editUser(userId) {
+            console.log('Editing user:', userId);
+            try {
+                const snapshot = await database.ref(`users/${userId}`).once('value');
+                const user = snapshot.val();
+                
+                if (user) {
+                    editingItemId = userId;
+                    
+                    document.getElementById('modalFirstName').value = user.firstName || '';
+                    document.getElementById('modalLastName').value = user.lastName || '';
+                    document.getElementById('modalEmail').value = user.email || '';
+                    document.getElementById('modalPhone').value = user.phoneNumber || '';
+                    document.getElementById('modalMembership').value = user.membershipTier || 'scholar';
+                    document.getElementById('modalStatus').value = user.status || 'active';
+                    document.getElementById('modalIsAdmin').checked = user.isAdmin || false;
+                    document.getElementById('modalNotifications').checked = user.notificationsEnabled || false;
+                    document.getElementById('modalUserId').value = userId;
+                    
+                    document.getElementById('userModalTitle').textContent = 'Edit User';
+                    document.getElementById('userModal').classList.add('active');
+                }
+            } catch (error) {
+                console.error('Error loading user:', error);
+                alert('Error loading user: ' + error.message);
+            }
+        }
+
+        async function editPost(postId) {
+            console.log('Editing post:', postId);
+            try {
+                const snapshot = await database.ref(`communityPosts/${postId}`).once('value');
+                const post = snapshot.val();
+                
+                if (post) {
+                    editingItemId = postId;
+                    
+                    document.getElementById('postTitle').value = post.title || '';
+                    document.getElementById('postContent').value = post.content || '';
+                    document.getElementById('postCategory').value = post.category || 'announcement';
+                    document.getElementById('postType').value = post.type || 'update';
+                    document.getElementById('postTags').value = Array.isArray(post.tags) ? post.tags.join(', ') : '';
+                    document.getElementById('postImage').value = post.imageUrl || '';
+                    document.getElementById('postPinned').checked = post.isPinned || false;
+                    document.getElementById('postStatus').value = post.status || 'published';
+                    document.getElementById('postId').value = postId;
+                    
+                    document.getElementById('postModalTitle').textContent = 'Edit Post';
+                    document.getElementById('postModal').classList.add('active');
+                }
+            } catch (error) {
+                console.error('Error loading post:', error);
+                alert('Error loading post: ' + error.message);
+            }
+        }
+
+        async function editBook(bookId) {
+            console.log('Editing book:', bookId);
+            try {
+                const snapshot = await database.ref(`libraryBooks/${bookId}`).once('value');
+                const book = snapshot.val();
+                
+                if (book) {
+                    editingItemId = bookId;
+                    
+                    document.getElementById('bookTitle').value = book.title || '';
+                    document.getElementById('bookAuthor').value = book.author || '';
+                    document.getElementById('bookCategory').value = book.category || 'Personal Growth';
+                    document.getElementById('bookDescription').value = book.description || '';
+                    document.getElementById('bookCover').value = book.coverImage || '';
+                    document.getElementById('bookPages').value = book.pages || 200;
+                    document.getElementById('bookISBN').value = book.isbn || '';
+                    document.getElementById('bookRating').value = book.rating || 4.5;
+                    document.getElementById('bookTotalCopies').value = book.totalCopies || 5;
+                    document.getElementById('bookAvailableCopies').value = book.availableCopies || 5;
+                    document.getElementById('bookTags').value = Array.isArray(book.tags) ? book.tags.join(', ') : '';
+                    document.getElementById('bookFeatured').checked = book.featured || false;
+                    document.getElementById('bookId').value = bookId;
+                    
+                    // Set subscription tiers
+                    const tiers = book.subscriptionTiers || ['explorer', 'scholar', 'visionary'];
+                    document.querySelectorAll('#bookForm input[type="checkbox"]').forEach(cb => {
+                        cb.checked = tiers.includes(cb.value);
+                    });
+                    
+                    document.getElementById('bookModalTitle').textContent = 'Edit Book';
+                    document.getElementById('bookModal').classList.add('active');
+                }
+            } catch (error) {
+                console.error('Error loading book:', error);
+                alert('Error loading book: ' + error.message);
+            }
+        }
+
+        async function editSubscription(subId) {
+            console.log('Editing subscription:', subId);
+            try {
+                const snapshot = await database.ref(`subscriptionPlans/${subId}`).once('value');
+                const plan = snapshot.val();
+                
+                if (plan) {
+                    editingItemId = subId;
+                    
+                    document.getElementById('subscriptionName').value = plan.name || '';
+                    document.getElementById('subscriptionPrice').value = plan.price || 0;
+                    document.getElementById('subscriptionDuration').value = plan.duration || '1 month';
+                    document.getElementById('subscriptionPopularity').value = plan.popularity || 'standard';
+                    document.getElementById('subscriptionFeatures').value = Array.isArray(plan.features) ? plan.features.join('\n') : '';
+                    document.getElementById('subscriptionStatus').value = plan.active ? 'active' : 'inactive';
+                    document.getElementById('subscriptionId').value = subId;
+                    
+                    document.getElementById('subscriptionModalTitle').textContent = 'Edit Subscription Plan';
+                    document.getElementById('subscriptionModal').classList.add('active');
+                }
+            } catch (error) {
+                console.error('Error loading subscription:', error);
+                alert('Error loading subscription: ' + error.message);
+            }
+        }
+
+        async function editEvent(eventId) {
+            console.log('Editing event:', eventId);
+            try {
+                const snapshot = await database.ref(`events/${eventId}`).once('value');
+                const event = snapshot.val();
+                
+                if (event) {
+                    editingItemId = eventId;
+                    
+                    document.getElementById('eventTitle').value = event.title || '';
+                    document.getElementById('eventDescription').value = event.description || '';
+                    document.getElementById('eventDate').value = formatDateTimeLocal(new Date(event.date));
+                    document.getElementById('eventEndDate').value = formatDateTimeLocal(new Date(event.endDate));
+                    document.getElementById('eventLocation').value = event.location || '';
+                    document.getElementById('eventMaxAttendees').value = event.maxAttendees || 50;
+                    document.getElementById('eventType').value = event.type || 'workshop';
+                    document.getElementById('eventCategory').value = event.category || 'finance';
+                    document.getElementById('eventRegistrationDeadline').value = event.registrationDeadline ? 
+                        formatDateTimeLocal(new Date(event.registrationDeadline)) : '';
+                    document.getElementById('eventStatus').value = event.status || 'upcoming';
+                    document.getElementById('eventRegistrationOpen').checked = event.registrationOpen || false;
+                    document.getElementById('eventId').value = eventId;
+                    
+                    document.getElementById('eventModalTitle').textContent = 'Edit Event';
+                    document.getElementById('eventModal').classList.add('active');
+                }
+            } catch (error) {
+                console.error('Error loading event:', error);
+                alert('Error loading event: ' + error.message);
+            }
+        }
+
+        function confirmDelete(collection, id) {
+            console.log('Confirming delete:', collection, id);
+            itemsToDelete = { collection, id };
+            const messages = {
+                users: 'Are you sure you want to delete this user? This will remove all their data.',
+                communityPosts: 'Are you sure you want to delete this post? This cannot be undone.',
+                libraryBooks: 'Are you sure you want to delete this book? This will remove it from the library.',
+                subscriptionPlans: 'Are you sure you want to delete this subscription plan? Existing subscribers will be affected.',
+                events: 'Are you sure you want to delete this event? All registrations will be removed.'
+            };
+            
+            document.getElementById('deleteMessage').textContent = messages[collection] || 'Are you sure you want to delete this item?';
+            document.getElementById('deleteModal').classList.add('active');
+        }
+
+        async function handleDelete() {
+            if (!itemsToDelete) return;
+            
+            const { collection, id } = itemsToDelete;
+            console.log('Deleting:', collection, id);
+            
+            try {
+                await database.ref(`${collection}/${id}`).remove();
+                alert('Item deleted successfully!');
+                
+                // Reload current section
+                switch (currentSection) {
+                    case 'users': loadUsers(); break;
+                    case 'posts': loadPosts(); break;
+                    case 'books': loadBooks(); break;
+                    case 'subscriptions': loadSubscriptions(); break;
+                    case 'events': loadEvents(); break;
+                }
+                
+                closeModal('deleteModal');
+                itemsToDelete = null;
+                
+            } catch (error) {
+                console.error('Error deleting item:', error);
+                alert('Error deleting item: ' + error.message);
+            }
+        }
+
+        // Utility functions
+        function formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // Make functions available globally for onclick handlers
+        window.editUser = editUser;
+        window.editPost = editPost;
+        window.editBook = editBook;
+        window.editSubscription = editSubscription;
+        window.editEvent = editEvent;
+        window.confirmDelete = confirmDelete;
+        
+        console.log('Admin panel initialized successfully');
     </script>
 </body>
 </html>
