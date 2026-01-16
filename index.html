@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=0.8, maximum-scale=1.0, user-scalable=no">
     <title>THE SONGA WELFARE - Community</title>
-    <link rel="icon" type="image/x-icon" href="https://i.postimg.cc/QCfkMpcM/20251121-1617-Golden-Lion-Emblem-remix-01kak8vrfpfb9r1335qyg8w1gt.png">
+    <link rel="icon" type="image/x-icon" href="https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Google Sign-In API -->
@@ -21,7 +21,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="THE SONGA WELFARE">
-    <link rel="apple-touch-icon" href="https://i.postimg.cc/QCfkMpcM/20251121-1617-Golden-Lion-Emblem-01kak8vrfpfb9r1335qyg8w1gt.png">
+    <link rel="apple-touch-icon" href="https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp">
     
     <style>
         * {
@@ -79,6 +79,7 @@
         .logo {
             display: flex;
             align-items: center;
+            gap: 10px;
         }
 
         .logo img {
@@ -86,11 +87,21 @@
             width: auto;
         }
 
+        .brand-info {
+            display: flex;
+            flex-direction: column;
+        }
+
         .brand-name {
             font-weight: bold;
             font-size: 1.2rem;
-            margin-left: 10px;
             color: var(--gold-dark);
+        }
+
+        .brand-subtitle {
+            font-size: 0.7rem;
+            color: var(--dark-gray);
+            font-style: italic;
         }
 
         .auth-section {
@@ -171,6 +182,17 @@
             width: 20px;
             text-align: center;
             color: var(--gold-dark);
+        }
+
+        /* Membership Badge */
+        .membership-badge {
+            background: var(--gold);
+            color: var(--black);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 5px;
         }
 
         /* Sign In Modal */
@@ -309,6 +331,24 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
+        .post-card.pinned {
+            border: 2px solid var(--gold);
+            background: linear-gradient(135deg, #fefce8 0%, #fef3c7 100%);
+        }
+
+        .pinned-indicator {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--gold-dark);
+            font-size: 0.8rem;
+            margin-bottom: 8px;
+        }
+
+        .pinned-indicator i {
+            color: var(--gold);
+        }
+
         .post-header {
             display: flex;
             align-items: center;
@@ -386,6 +426,22 @@
             object-fit: cover;
         }
 
+        .post-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin: 1rem 0;
+        }
+
+        .post-tag {
+            background: var(--gold-light);
+            color: var(--gold-dark);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
         .post-actions {
             display: flex;
             gap: 1rem;
@@ -405,6 +461,7 @@
             padding: 8px 12px;
             border-radius: 6px;
             font-weight: 500;
+            position: relative;
         }
 
         .post-action:hover {
@@ -414,6 +471,10 @@
 
         .post-action.liked {
             color: #e74c3c;
+        }
+
+        .post-action.saved {
+            color: var(--gold-dark);
         }
 
         .post-type-indicator {
@@ -426,21 +487,16 @@
             vertical-align: middle;
         }
 
-        .welcome-post {
+        .post-category-announcement {
             border-left: 4px solid var(--gold);
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
         }
 
-        .event-post {
+        .post-category-event {
             border-left: 4px solid var(--accent);
         }
 
-        .resource-post {
+        .post-category-resource {
             border-left: 4px solid #3498db;
-        }
-
-        .announcement-post {
-            border-left: 4px solid #9b59b6;
         }
 
         /* Loading State */
@@ -499,6 +555,7 @@
             text-decoration: none;
             font-size: 0.8rem;
             transition: color 0.3s;
+            position: relative;
         }
 
         .nav-icon {
@@ -512,6 +569,19 @@
 
         .nav-item:hover {
             color: var(--gold-dark);
+        }
+
+        .nav-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #e74c3c;
+            color: white;
+            font-size: 0.6rem;
+            padding: 2px 5px;
+            border-radius: 10px;
+            min-width: 18px;
+            text-align: center;
         }
 
         /* Notification */
@@ -546,6 +616,10 @@
 
         /* Responsive Design */
         @media (max-width: 480px) {
+            .brand-subtitle {
+                display: none;
+            }
+            
             .user-name {
                 display: none;
             }
@@ -586,8 +660,8 @@
     <div class="signin-modal active" id="signinModal">
         <div class="signin-content">
             <div class="signin-header">
-                <h2>Welcome to THE SONGA WELFARE</h2>
-                <p>Member Community Portal</p>
+                <h2>Welcome to THE SONGA</h2>
+                <p>Mind. Body. Spirit. Beyond.</p>
                 <button class="close-modal" id="closeSigninModal">&times;</button>
             </div>
             <div class="signin-body">
@@ -595,7 +669,7 @@
                 
                 <div class="google-signin-container">
                     <div id="g_id_onload"
-                         data-client_id="123922889572-9dmjivsoese0b0o78poo5mgu7nqqm6e6.apps.googleusercontent.com"
+                         data-client_id="138110899008-60ae40rmsh5v7oqv50o18kuuo08kvvus.apps.googleusercontent.com"
                          data-context="signin"
                          data-ux_mode="popup"
                          data-callback="handleGoogleSignIn"
@@ -622,8 +696,11 @@
     <header>
         <div class="header-container">
             <div class="logo">
-                <img src="https://i.postimg.cc/QCfkMpcM/20251121-1617-Golden-Lion-Emblem-remix-01kak8vrfpfb9r1335qyg8w1gt.png" alt="THE SONGA WELFARE Logo">
-                <div class="brand-name">THE SONGA™</div>
+                <img src="https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp" alt="THE SONGA Logo">
+                <div class="brand-info">
+                    <div class="brand-name">THE SONGA</div>
+                    <div class="brand-subtitle">Mind. Body. Spirit. Beyond.</div>
+                </div>
             </div>
             <div class="auth-section">
                 <div id="userProfile" class="user-profile" style="display: none;">
@@ -639,6 +716,12 @@
                         <div class="dropdown-item" id="membershipOption">
                             <i class="fas fa-crown"></i>
                             <span>Membership Status</span>
+                            <span id="membershipBadge" class="membership-badge" style="margin-left: auto;"></span>
+                        </div>
+                        <div class="dropdown-item" id="notificationsOption">
+                            <i class="fas fa-bell"></i>
+                            <span>Notifications</span>
+                            <span id="notificationBadge" class="nav-badge" style="margin-left: auto; display: none;">0</span>
                         </div>
                         <div class="dropdown-item" id="settingsOption">
                             <i class="fas fa-cog"></i>
@@ -694,6 +777,10 @@
             <i class="fas fa-users nav-icon"></i>
             <span>Network</span>
         </a>
+        <a href="profile.html" class="nav-item">
+            <i class="fas fa-user nav-icon"></i>
+            <span>Profile</span>
+        </a>
     </nav>
 
     <script>
@@ -721,9 +808,12 @@
         const notification = document.getElementById('notification');
         const postsContainer = document.getElementById('postsContainer');
         const refreshBtn = document.getElementById('refreshPosts');
+        const membershipBadge = document.getElementById('membershipBadge');
+        const notificationBadge = document.getElementById('notificationBadge');
 
         // User state
         let currentUser = null;
+        let currentUserData = null;
         let dropdownOpen = false;
         let posts = [];
 
@@ -749,29 +839,43 @@
             if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`;
             if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)}d ago`;
             
-            return postTime.toLocaleDateString();
+            return postTime.toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: postTime.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
+            });
         }
 
-        // Get post type class
-        function getPostTypeClass(type) {
-            switch(type) {
-                case 'welcome': return 'welcome-post';
-                case 'event': return 'event-post';
-                case 'resource': return 'resource-post';
-                case 'announcement': return 'announcement-post';
-                default: return '';
+        // Get post category class
+        function getPostCategoryClass(category) {
+            switch(category) {
+                case 'announcement': return 'post-category-announcement';
+                case 'event': return 'post-category-event';
+                case 'resource': return 'post-category-resource';
+                default: return 'post-category-announcement';
             }
         }
 
         // Get post type indicator
-        function getPostTypeIndicator(type) {
-            switch(type) {
-                case 'welcome': return '<span class="post-type-indicator" style="background: var(--gold-light); color: var(--gold-dark);">WELCOME</span>';
+        function getPostCategoryIndicator(category) {
+            switch(category) {
+                case 'announcement': return '<span class="post-type-indicator" style="background: var(--gold-light); color: var(--gold-dark);">ANNOUNCEMENT</span>';
                 case 'event': return '<span class="post-type-indicator" style="background: rgba(37, 211, 102, 0.1); color: var(--accent);">EVENT</span>';
                 case 'resource': return '<span class="post-type-indicator" style="background: rgba(52, 152, 219, 0.1); color: #3498db;">RESOURCE</span>';
-                case 'announcement': return '<span class="post-type-indicator" style="background: rgba(155, 89, 182, 0.1); color: #9b59b6;">ANNOUNCEMENT</span>';
-                default: return '';
+                default: return '<span class="post-type-indicator" style="background: var(--gray); color: var(--dark-gray);">POST</span>';
             }
+        }
+
+        // Check if user has liked a post
+        function hasUserLikedPost(post, userId) {
+            if (!post.likedBy || !userId) return false;
+            return post.likedBy.includes(userId);
+        }
+
+        // Check if user has bookmarked a post
+        function hasUserBookmarkedPost(postId) {
+            if (!currentUserData || !currentUserData.bookmarkedPosts) return false;
+            return currentUserData.bookmarkedPosts.includes(postId);
         }
 
         // Render posts
@@ -787,30 +891,50 @@
                 return;
             }
 
-            // Sort posts by timestamp (newest first)
+            // Sort posts: pinned first, then by timestamp (newest first)
             const sortedPosts = [...postsArray].sort((a, b) => {
-                return new Date(b.timestamp) - new Date(a.timestamp);
+                if (a.isPinned && !b.isPinned) return -1;
+                if (!a.isPinned && b.isPinned) return 1;
+                return new Date(b.createdAt) - new Date(a.createdAt);
             });
 
             postsContainer.innerHTML = sortedPosts.map(post => {
                 const likes = post.likes || 0;
                 const comments = post.comments || 0;
                 const shares = post.shares || 0;
-                const postClass = getPostTypeClass(post.type);
-                const typeIndicator = getPostTypeIndicator(post.type);
+                const bookmarks = post.bookmarks || 0;
+                const postClass = getPostCategoryClass(post.category);
+                const typeIndicator = getPostCategoryIndicator(post.category);
+                const isPinned = post.isPinned || false;
+                const hasLiked = hasUserLikedPost(post, currentUser?.uid);
+                const hasBookmarked = hasUserBookmarkedPost(post.id);
+                
+                // Create tags HTML
+                const tagsHtml = post.tags && post.tags.length > 0 ? `
+                    <div class="post-tags">
+                        ${post.tags.map(tag => `<span class="post-tag">#${tag}</span>`).join('')}
+                    </div>
+                ` : '';
                 
                 return `
-                    <div class="post-card ${postClass}" data-post-id="${post.id}">
+                    <div class="post-card ${postClass} ${isPinned ? 'pinned' : ''}" data-post-id="${post.id}">
+                        ${isPinned ? `
+                            <div class="pinned-indicator">
+                                <i class="fas fa-thumbtack"></i>
+                                <span>Pinned Post</span>
+                            </div>
+                        ` : ''}
+                        
                         <div class="post-header">
                             <div class="post-avatar">
-                                <img src="${post.authorAvatar || 'https://i.postimg.cc/QCfkMpcM/20251121-1617-Golden-Lion-Emblem-remix-01kak8vrfpfb9r1335qyg8w1gt.png'}" alt="${post.author}">
+                                <img src="${post.authorAvatar || 'https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp'}" alt="${post.authorName}">
                             </div>
                             <div class="post-author-info">
                                 <div class="post-author">
-                                    ${post.author}
+                                    ${post.authorName}
                                     ${typeIndicator}
                                 </div>
-                                <div class="post-time">${formatTime(post.timestamp)}</div>
+                                <div class="post-time">${formatTime(post.createdAt)}</div>
                             </div>
                         </div>
                         <div class="post-content">
@@ -821,23 +945,24 @@
                                     <img src="${post.imageUrl}" alt="Post image" loading="lazy">
                                 </div>
                             ` : ''}
+                            ${tagsHtml}
                         </div>
                         <div class="post-actions">
-                            <button class="post-action" data-action="like">
+                            <button class="post-action ${hasLiked ? 'liked' : ''}" data-action="like" title="${hasLiked ? 'Unlike' : 'Like'}">
                                 <i class="fas fa-heart"></i>
                                 <span>${likes}</span>
                             </button>
-                            <button class="post-action" data-action="comment">
+                            <button class="post-action" data-action="comment" title="Comment">
                                 <i class="fas fa-comment"></i>
                                 <span>${comments}</span>
                             </button>
-                            <button class="post-action" data-action="share">
+                            <button class="post-action" data-action="share" title="Share">
                                 <i class="fas fa-share"></i>
                                 <span>${shares}</span>
                             </button>
-                            <button class="post-action" data-action="save">
+                            <button class="post-action ${hasBookmarked ? 'saved' : ''}" data-action="save" title="${hasBookmarked ? 'Remove bookmark' : 'Save'}">
                                 <i class="fas fa-bookmark"></i>
-                                <span>Save</span>
+                                <span>${bookmarks}</span>
                             </button>
                         </div>
                     </div>
@@ -845,7 +970,7 @@
             }).join('');
         }
 
-        // Fetch posts from Firebase
+        // Fetch posts from Firebase - Aligned with songa.json structure
         async function fetchPosts() {
             try {
                 postsContainer.innerHTML = `
@@ -855,7 +980,7 @@
                     </div>
                 `;
 
-                const postsRef = database.ref('posts');
+                const postsRef = database.ref('communityPosts');
                 const snapshot = await postsRef.once('value');
                 
                 if (snapshot.exists()) {
@@ -865,12 +990,15 @@
                         ...postsData[key]
                     }));
                     
-                    if (posts.length === 0) {
-                        // Load sample posts if database is empty
+                    // Filter only published posts
+                    const publishedPosts = posts.filter(post => post.status === 'published');
+                    
+                    if (publishedPosts.length === 0) {
+                        // Load sample posts aligned with songa.json structure
                         await loadSamplePosts();
                         await fetchPosts(); // Fetch again after loading samples
                     } else {
-                        renderPosts(posts);
+                        renderPosts(publishedPosts);
                         showNotification('Posts loaded successfully!', 'success');
                     }
                 } else {
@@ -891,64 +1019,77 @@
             }
         }
 
-        // Load sample posts to database
+        // Load sample posts aligned with songa.json structure
         async function loadSamplePosts() {
-            const samplePosts = [
-                {
-                    author: "THE SONGA WELFARE",
-                    authorAvatar: "https://i.postimg.cc/QCfkMpcM/20251121-1617-Golden-Lion-Emblem-remix-01kak8vrfpfb9r1335qyg8w1gt.png",
-                    title: "🎉 Welcome to Our Community!",
-                    content: "We're thrilled to have you as part of THE SONGA WELFARE family. This is your space to connect, learn, and grow with like-minded individuals.\n\nWhat to expect in our community:\n📚 Exclusive educational content and resources\n🎯 Practical financial strategies and insights\n🤝 Networking with ambitious members\n💡 Regular updates and announcements\n🌟 Member success stories and spotlights\n\nMake sure to engage with posts you find valuable and connect with fellow members in the comments!\n\nWelcome aboard!\n- The SONGA WELFARE Team",
-                    type: "welcome",
+            const samplePosts = {
+                post_001: {
+                    id: "post_001",
+                    authorId: "admin_001",
+                    authorName: "THE SONGA",
+                    authorAvatar: "https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp",
+                    title: "Welcome to Our Community!",
+                    content: "We're thrilled to have you as part of THE SONGA family. This is your space to connect, learn, and grow with like-minded individuals.\n\nWhat to expect in our community:\n📚 Exclusive educational content and resources\n🎯 Practical financial strategies and insights\n🤝 Networking with ambitious members\n💡 Regular updates and announcements\n🌟 Member success stories and spotlights\n\nMake sure to engage with posts you find valuable and connect with fellow members!\n\nWelcome aboard!\n- The SONGA Team",
+                    category: "announcement",
+                    tags: ["welcome", "community", "introduction"],
+                    imageUrl: "",
                     likes: 24,
+                    likedBy: [],
                     comments: 8,
                     shares: 3,
-                    timestamp: new Date().toISOString()
+                    bookmarks: 15,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                    isPinned: true,
+                    status: "published",
+                    type: "welcome"
                 },
-                {
-                    author: "THE SONGA WELFARE",
-                    authorAvatar: "https://i.postimg.cc/QCfkMpcM/20251121-1617-Golden-Lion-Emblem-remix-01kak8vrfpfb9r1335qyg8w1gt.png",
-                    title: "📅 Wealth Building Workshop - This Saturday!",
-                    content: "Join us for an exclusive members-only workshop where we'll dive deep into practical wealth creation strategies.\n\nWorkshop Highlights:\n• Investment strategies for beginners\n• Passive income opportunities\n• Wealth preservation techniques\n• Q&A with financial experts\n\nDate: This Saturday, 2:00 PM\nLocation: Members Portal → Events Section\n\nLimited spots available! Make sure to RSVP in the Events section.",
-                    type: "event",
+                post_002: {
+                    id: "post_002",
+                    authorId: "admin_001",
+                    authorName: "THE SONGA",
+                    authorAvatar: "https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp",
+                    title: "Wealth Building Workshop - This Saturday!",
+                    content: "Join us for an exclusive members-only workshop where we'll dive deep into practical wealth creation strategies.\n\nWorkshop Highlights:\n• Investment strategies for beginners\n• Passive income opportunities\n• Wealth preservation techniques\n• Q&A with financial experts\n\nDate: This Saturday, 2:00 PM\nLocation: Virtual - Members Portal\n\nLimited spots available! Make sure to RSVP in the Events section.",
+                    category: "event",
+                    tags: ["workshop", "finance", "wealth"],
+                    imageUrl: "",
                     likes: 18,
+                    likedBy: [],
                     comments: 5,
                     shares: 2,
-                    timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString()
+                    bookmarks: 8,
+                    createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+                    updatedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+                    isPinned: false,
+                    status: "published",
+                    type: "event"
                 },
-                {
-                    author: "THE SONGA WELFARE",
-                    authorAvatar: "https://i.postimg.cc/QCfkMpcM/20251121-1617-Golden-Lion-Emblem-remix-01kak8vrfpfb9r1335qyg8w1gt.png",
-                    title: "📖 New Resource: Financial Independence Guide",
+                post_003: {
+                    id: "post_003",
+                    authorId: "admin_001",
+                    authorName: "THE SONGA",
+                    authorAvatar: "https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp",
+                    title: "New Resource: Financial Independence Guide",
                     content: "We've just added a comprehensive guide to achieving financial independence to our resource library!\n\nThis 50-page guide covers:\n• Setting realistic financial goals\n• Budgeting and expense tracking\n• Investment fundamentals\n• Debt management strategies\n• Building multiple income streams\n\nAccess it now in the Library section of your member portal. Perfect for both beginners and those looking to optimize their financial strategy.",
-                    type: "resource",
+                    category: "resource",
+                    tags: ["library", "finance", "resources"],
+                    imageUrl: "",
                     likes: 32,
+                    likedBy: [],
                     comments: 12,
-                    shares: 7,
-                    timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
-                },
-                {
-                    author: "THE SONGA WELFARE",
-                    authorAvatar: "https://i.postimg.cc/QCfkMpcM/20251121-1617-Golden-Lion-Emblem-remix-01kak8vrfpfb9r1335qyg8w1gt.png",
-                    title: "🌟 Community Spotlight: Member Success Stories",
-                    content: "We're excited to share that several of our members have reached significant financial milestones this month!\n\nRecent Successes:\n• Sarah M. paid off $15,000 in student loans\n• James K. started his first investment portfolio\n• The Johnson family built their emergency fund\n• Michael T. launched his side business\n\nRemember, every journey starts with a single step. Celebrate your wins, no matter how small, and keep pushing forward!\n\nWant to share your success story? Reach out to us - we'd love to feature you in our next community update!",
-                    type: "announcement",
-                    likes: 45,
-                    comments: 22,
-                    shares: 15,
-                    timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString()
+                    shares: 5,
+                    bookmarks: 20,
+                    createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+                    updatedAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+                    isPinned: false,
+                    status: "published",
+                    type: "resource"
                 }
-            ];
+            };
 
             try {
-                const postsRef = database.ref('posts');
-                for (const post of samplePosts) {
-                    const newPostRef = postsRef.push();
-                    await newPostRef.set({
-                        ...post,
-                        createdAt: firebase.database.ServerValue.TIMESTAMP
-                    });
-                }
+                const postsRef = database.ref('communityPosts');
+                await postsRef.set(samplePosts);
                 showNotification('Sample posts loaded!', 'success');
             } catch (error) {
                 console.error('Error loading sample posts:', error);
@@ -956,18 +1097,38 @@
         }
 
         // Handle post actions
-        function handlePostAction(postId, action) {
-            const postRef = database.ref(`posts/${postId}`);
+        async function handlePostAction(postId, action) {
+            if (!currentUser) {
+                showNotification('Please sign in to interact with posts', 'error');
+                return;
+            }
+
+            const postRef = database.ref(`communityPosts/${postId}`);
             
             switch(action) {
                 case 'like':
-                    postRef.transaction(post => {
-                        if (post) {
-                            post.likes = (post.likes || 0) + 1;
-                        }
-                        return post;
+                    const postSnapshot = await postRef.once('value');
+                    const post = postSnapshot.val();
+                    let likedBy = post.likedBy || [];
+                    let likes = post.likes || 0;
+                    
+                    if (likedBy.includes(currentUser.uid)) {
+                        // Unlike
+                        likedBy = likedBy.filter(id => id !== currentUser.uid);
+                        likes--;
+                    } else {
+                        // Like
+                        likedBy.push(currentUser.uid);
+                        likes++;
+                    }
+                    
+                    await postRef.update({
+                        likedBy: likedBy,
+                        likes: likes,
+                        updatedAt: new Date().toISOString()
                     });
-                    showNotification('Post liked!', 'success');
+                    
+                    showNotification(likedBy.includes(currentUser.uid) ? 'Post liked!' : 'Post unliked!', 'success');
                     break;
                     
                 case 'comment':
@@ -978,15 +1139,86 @@
                     postRef.transaction(post => {
                         if (post) {
                             post.shares = (post.shares || 0) + 1;
+                            post.updatedAt = new Date().toISOString();
                         }
                         return post;
                     });
-                    showNotification('Post shared to your clipboard!', 'success');
+                    
+                    // Copy post URL to clipboard
+                    const postUrl = `${window.location.origin}?post=${postId}`;
+                    navigator.clipboard.writeText(postUrl).then(() => {
+                        showNotification('Post link copied to clipboard!', 'success');
+                    });
                     break;
                     
                 case 'save':
-                    showNotification('Post saved!', 'success');
+                    // Update user's bookmarked posts
+                    const userRef = database.ref(`users/${currentUser.uid}`);
+                    const userSnapshot = await userRef.once('value');
+                    const userData = userSnapshot.val();
+                    let bookmarkedPosts = userData.bookmarkedPosts || [];
+                    
+                    if (bookmarkedPosts.includes(postId)) {
+                        // Remove bookmark
+                        bookmarkedPosts = bookmarkedPosts.filter(id => id !== postId);
+                        showNotification('Post removed from bookmarks', 'success');
+                    } else {
+                        // Add bookmark
+                        bookmarkedPosts.push(postId);
+                        showNotification('Post bookmarked!', 'success');
+                    }
+                    
+                    await userRef.update({
+                        bookmarkedPosts: bookmarkedPosts,
+                        lastLogin: new Date().toISOString()
+                    });
+                    
+                    // Update post bookmarks count
+                    postRef.transaction(post => {
+                        if (post) {
+                            post.bookmarks = bookmarkedPosts.includes(postId) ? 
+                                (post.bookmarks || 0) + 1 : 
+                                Math.max((post.bookmarks || 1) - 1, 0);
+                            post.updatedAt = new Date().toISOString();
+                        }
+                        return post;
+                    });
+                    
+                    // Refresh current user data
+                    await fetchUserData(currentUser.uid);
                     break;
+            }
+        }
+
+        // Fetch user data from Firebase
+        async function fetchUserData(userId) {
+            try {
+                const userRef = database.ref(`users/${userId}`);
+                const snapshot = await userRef.once('value');
+                
+                if (snapshot.exists()) {
+                    currentUserData = snapshot.val();
+                    updateUserBadges();
+                }
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        }
+
+        // Update user badges
+        function updateUserBadges() {
+            if (currentUserData) {
+                // Update membership badge
+                if (currentUserData.membershipTier) {
+                    membershipBadge.textContent = currentUserData.membershipTier.toUpperCase();
+                    membershipBadge.style.display = 'inline-block';
+                }
+                
+                // Update notification badge
+                if (currentUserData.unreadNotifications) {
+                    notificationBadge.textContent = currentUserData.unreadNotifications;
+                    notificationBadge.style.display = 'inline-block';
+                }
             }
         }
 
@@ -997,6 +1229,7 @@
                 currentUser = JSON.parse(storedUser);
                 updateUIForMember();
                 signinModal.classList.remove('active');
+                fetchUserData(currentUser.uid);
             } else {
                 signinModal.classList.add('active');
             }
@@ -1013,27 +1246,94 @@
         }
 
         // Google Sign-In Handler
-        function handleGoogleSignIn(response) {
-            console.log('Google Sign-In response:', response);
-            
-            const userData = parseJwt(response.credential);
-            console.log('User data:', userData);
-            
-            currentUser = {
-                id: userData.sub,
-                email: userData.email,
-                firstName: userData.given_name,
-                lastName: userData.family_name,
-                fullName: userData.name,
-                picture: userData.picture,
-                emailVerified: userData.email_verified
-            };
-            
-            localStorage.setItem('the_songa_welfare_user', JSON.stringify(currentUser));
-            updateUIForMember();
-            signinModal.classList.remove('active');
-            
-            showNotification(`Welcome to the community, ${currentUser.firstName}!`, 'success');
+        async function handleGoogleSignIn(response) {
+            try {
+                console.log('Google Sign-In response:', response);
+                
+                const userData = parseJwt(response.credential);
+                console.log('User data:', userData);
+                
+                currentUser = {
+                    uid: userData.sub,
+                    email: userData.email,
+                    firstName: userData.given_name,
+                    lastName: userData.family_name,
+                    fullName: userData.name,
+                    picture: userData.picture,
+                    emailVerified: userData.email_verified
+                };
+                
+                // Save to localStorage
+                localStorage.setItem('the_songa_welfare_user', JSON.stringify(currentUser));
+                
+                // Check if user exists in Firebase
+                const userRef = database.ref(`users/${currentUser.uid}`);
+                const snapshot = await userRef.once('value');
+                
+                if (!snapshot.exists()) {
+                    // Create new user in Firebase
+                    const newUser = {
+                        uid: currentUser.uid,
+                        email: currentUser.email,
+                        firstName: currentUser.firstName,
+                        lastName: currentUser.lastName,
+                        profilePicture: currentUser.picture,
+                        joinedDate: new Date().toISOString(),
+                        lastLogin: new Date().toISOString(),
+                        membershipStatus: "active",
+                        membershipTier: "explorer",
+                        membershipSince: new Date().toISOString(),
+                        subscriptionPlan: "explorer_plan",
+                        readingPreferences: [],
+                        bookmarkedPosts: [],
+                        borrowedBooks: [],
+                        attendedEvents: [],
+                        notificationsEnabled: true,
+                        isAdmin: false,
+                        isModerator: false,
+                        status: "active",
+                        stats: {
+                            postsLiked: 0,
+                            booksBorrowed: 0,
+                            eventsAttended: 0,
+                            communityPoints: 0
+                        }
+                    };
+                    
+                    await userRef.set(newUser);
+                    currentUserData = newUser;
+                    
+                    // Log system activity
+                    const logRef = database.ref('systemLogs').push();
+                    await logRef.set({
+                        action: "user_registration",
+                        userId: currentUser.uid,
+                        details: "New user registered via Google OAuth",
+                        timestamp: new Date().toISOString(),
+                        ipAddress: "detected" // You would normally get this from a server
+                    });
+                    
+                    showNotification(`Welcome to THE SONGA, ${currentUser.firstName}! Your account has been created.`, 'success');
+                } else {
+                    // Update last login
+                    await userRef.update({
+                        lastLogin: new Date().toISOString()
+                    });
+                    currentUserData = snapshot.val();
+                    showNotification(`Welcome back, ${currentUser.firstName}!`, 'success');
+                }
+                
+                updateUIForMember();
+                updateUserBadges();
+                signinModal.classList.remove('active');
+                
+                // Refresh posts to show user-specific interactions
+                fetchPosts();
+                
+            } catch (error) {
+                console.error('Error in Google Sign-In:', error);
+                showNotification('Error signing in. Please try again.', 'error');
+            }
         }
 
         // Parse JWT token
@@ -1054,10 +1354,13 @@
         // Sign out user
         function signOut() {
             currentUser = null;
+            currentUserData = null;
             localStorage.removeItem('the_songa_welfare_user');
             closeDropdown();
             signinModal.classList.add('active');
             showNotification('Signed out successfully', 'success');
+            posts = [];
+            renderPosts([]);
         }
 
         // Toggle dropdown
@@ -1097,16 +1400,23 @@
             // Post actions delegation
             postsContainer.addEventListener('click', function(e) {
                 const actionBtn = e.target.closest('.post-action');
-                if (actionBtn) {
+                if (actionBtn && currentUser) {
                     const postCard = actionBtn.closest('.post-card');
                     const postId = postCard.dataset.postId;
                     const action = actionBtn.dataset.action;
                     handlePostAction(postId, action);
+                } else if (actionBtn && !currentUser) {
+                    showNotification('Please sign in to interact with posts', 'error');
                 }
             });
 
             // Refresh posts button
             refreshBtn.addEventListener('click', fetchPosts);
+
+            // Close sign-in modal
+            document.getElementById('closeSigninModal').addEventListener('click', function() {
+                signinModal.classList.remove('active');
+            });
         });
 
         // Dropdown option event listeners
@@ -1116,7 +1426,14 @@
         });
 
         document.getElementById('membershipOption').addEventListener('click', function() {
-            showNotification('Your membership is active and in good standing.');
+            if (currentUserData) {
+                showNotification(`Your ${currentUserData.membershipTier} membership is active and in good standing.`);
+            }
+            closeDropdown();
+        });
+
+        document.getElementById('notificationsOption').addEventListener('click', function() {
+            showNotification('Notifications page coming soon!');
             closeDropdown();
         });
 
