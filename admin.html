@@ -419,6 +419,21 @@
             color: var(--warning-color);
         }
 
+        .status-published {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+        }
+
+        .status-draft {
+            background-color: rgba(245, 158, 11, 0.1);
+            color: var(--warning-color);
+        }
+
+        .status-archived {
+            background-color: rgba(107, 114, 128, 0.1);
+            color: #6b7280;
+        }
+
         .action-buttons {
             display: flex;
             gap: 8px;
@@ -511,6 +526,11 @@
             border-color: var(--primary-color);
         }
 
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
+        }
+
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -523,6 +543,40 @@
             display: flex;
             justify-content: flex-end;
             gap: 12px;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px 24px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 9999;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateX(150%);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast-success {
+            background-color: var(--success-color);
+        }
+
+        .toast-error {
+            background-color: var(--danger-color);
+        }
+
+        .toast-warning {
+            background-color: var(--warning-color);
         }
 
         /* Login Form Styles */
@@ -673,6 +727,12 @@
     </style>
 </head>
 <body id="mainBody">
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <i id="toastIcon" class="fas fa-check-circle"></i>
+        <span id="toastMessage">Operation completed successfully!</span>
+    </div>
+
     <!-- Login Form (Initially visible) -->
     <div id="loginContainer" class="login-container">
         <div class="login-card">
@@ -746,10 +806,6 @@
                     <i class="fas fa-chart-bar nav-icon"></i>
                     <span class="nav-text">Analytics</span>
                 </a>
-                <a href="#" class="nav-item" data-section="settings">
-                    <i class="fas fa-cog nav-icon"></i>
-                    <span class="nav-text">Settings</span>
-                </a>
             </div>
             
             <div class="sidebar-footer">
@@ -773,6 +829,7 @@
                     </button>
                     <button class="notification-btn" id="notificationBtn">
                         <i class="fas fa-bell"></i>
+                        <span id="notificationCount" style="display: none; background: var(--danger-color); color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 11px; position: absolute; top: -5px; right: -5px; display: flex; align-items: center; justify-content: center;">0</span>
                     </button>
                     <button class="btn btn-primary btn-sm" id="logoutBtn">
                         <i class="fas fa-sign-out-alt btn-icon"></i> Logout
@@ -841,19 +898,19 @@
                     <div class="table-header">
                         <h3 class="table-title">Recent Activity</h3>
                         <div class="table-actions">
-                            <button class="btn btn-secondary btn-sm" id="exportBtn">
-                                <i class="fas fa-download btn-icon"></i> Export
+                            <button class="btn btn-secondary btn-sm" id="refreshActivityBtn">
+                                <i class="fas fa-sync-alt btn-icon"></i> Refresh
                             </button>
                         </div>
                     </div>
                     <table>
                         <thead>
                             <tr>
-                                <th>User</th>
+                                <th>Timestamp</th>
                                 <th>Action</th>
+                                <th>User</th>
                                 <th>Details</th>
-                                <th>Time</th>
-                                <th>Status</th>
+                                <th>IP Address</th>
                             </tr>
                         </thead>
                         <tbody id="activityTable">
@@ -876,7 +933,7 @@
                     <div class="table-header">
                         <h3 class="table-title">Manage Users</h3>
                         <div class="table-actions">
-                            <button class="btn btn-secondary btn-sm" id="refreshUsers">
+                            <button class="btn btn-secondary btn-sm" id="refreshUsersBtn">
                                 <i class="fas fa-sync-alt btn-icon"></i> Refresh
                             </button>
                             <button class="btn btn-primary btn-sm" id="addUserBtn">
@@ -915,8 +972,8 @@
                     <div class="table-header">
                         <h3 class="table-title">Community Posts</h3>
                         <div class="table-actions">
-                            <button class="btn btn-secondary btn-sm" id="filterPostsBtn">
-                                <i class="fas fa-filter btn-icon"></i> Filter
+                            <button class="btn btn-secondary btn-sm" id="refreshPostsBtn">
+                                <i class="fas fa-sync-alt btn-icon"></i> Refresh
                             </button>
                             <button class="btn btn-primary btn-sm" id="addPostBtn">
                                 <i class="fas fa-plus btn-icon"></i> New Post
@@ -932,12 +989,13 @@
                                 <th>Likes</th>
                                 <th>Comments</th>
                                 <th>Date</th>
+                                <th>Status</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody id="postsTable">
                             <tr>
-                                <td colspan="7" style="text-align: center; padding: 40px;">
+                                <td colspan="8" style="text-align: center; padding: 40px;">
                                     <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
                                         <div class="spinner"></div>
                                         <div>Loading posts...</div>
@@ -955,8 +1013,8 @@
                     <div class="table-header">
                         <h3 class="table-title">Library Books</h3>
                         <div class="table-actions">
-                            <button class="btn btn-secondary btn-sm" id="searchBooksBtn">
-                                <i class="fas fa-search btn-icon"></i> Search
+                            <button class="btn btn-secondary btn-sm" id="refreshBooksBtn">
+                                <i class="fas fa-sync-alt btn-icon"></i> Refresh
                             </button>
                             <button class="btn btn-primary btn-sm" id="addBookBtn">
                                 <i class="fas fa-plus btn-icon"></i> Add Book
@@ -994,8 +1052,8 @@
                     <div class="table-header">
                         <h3 class="table-title">Events</h3>
                         <div class="table-actions">
-                            <button class="btn btn-secondary btn-sm" id="viewCalendarBtn">
-                                <i class="fas fa-calendar btn-icon"></i> View Calendar
+                            <button class="btn btn-secondary btn-sm" id="refreshEventsBtn">
+                                <i class="fas fa-sync-alt btn-icon"></i> Refresh
                             </button>
                             <button class="btn btn-primary btn-sm" id="addEventBtn">
                                 <i class="fas fa-plus btn-icon"></i> Create Event
@@ -1027,6 +1085,76 @@
                 </div>
             </section>
 
+            <!-- Subscriptions Section -->
+            <section id="subscriptions-section" class="content-section" style="display: none;">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 class="table-title">User Subscriptions</h3>
+                        <div class="table-actions">
+                            <button class="btn btn-secondary btn-sm" id="refreshSubscriptionsBtn">
+                                <i class="fas fa-sync-alt btn-icon"></i> Refresh
+                            </button>
+                        </div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Plan</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Status</th>
+                                <th>Amount</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="subscriptionsTable">
+                            <tr>
+                                <td colspan="7" style="text-align: center; padding: 40px;">
+                                    <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+                                        <div class="spinner"></div>
+                                        <div>Loading subscriptions...</div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="table-container" style="margin-top: 30px;">
+                    <div class="table-header">
+                        <h3 class="table-title">Subscription Plans</h3>
+                        <div class="table-actions">
+                            <button class="btn btn-primary btn-sm" id="addPlanBtn">
+                                <i class="fas fa-plus btn-icon"></i> Add Plan
+                            </button>
+                        </div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Plan Name</th>
+                                <th>Price</th>
+                                <th>Duration</th>
+                                <th>Popularity</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="plansTable">
+                            <tr>
+                                <td colspan="6" style="text-align: center; padding: 40px;">
+                                    <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+                                        <div class="spinner"></div>
+                                        <div>Loading plans...</div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
             <!-- Analytics Section -->
             <section id="analytics-section" class="content-section" style="display: none;">
                 <div class="dashboard-cards">
@@ -1039,7 +1167,7 @@
                         </div>
                         <div class="card-value" id="activeUsers">0</div>
                         <div class="card-change positive">
-                            <i class="fas fa-arrow-up"></i> <span>Loading...</span>
+                            <i class="fas fa-arrow-up"></i> <span id="activeUsersChange">Loading...</span>
                         </div>
                     </div>
                     
@@ -1052,7 +1180,7 @@
                         </div>
                         <div class="card-value" id="booksBorrowed">0</div>
                         <div class="card-change positive">
-                            <i class="fas fa-arrow-up"></i> <span>Loading...</span>
+                            <i class="fas fa-arrow-up"></i> <span id="borrowedChange">Loading...</span>
                         </div>
                     </div>
                     
@@ -1065,7 +1193,7 @@
                         </div>
                         <div class="card-value" id="pageViews">0</div>
                         <div class="card-change positive">
-                            <i class="fas fa-arrow-up"></i> <span>Loading...</span>
+                            <i class="fas fa-arrow-up"></i> <span id="viewsChange">Loading...</span>
                         </div>
                     </div>
                     
@@ -1078,7 +1206,7 @@
                         </div>
                         <div class="card-value" id="revenue">KSh 0</div>
                         <div class="card-change positive">
-                            <i class="fas fa-arrow-up"></i> <span>Loading...</span>
+                            <i class="fas fa-arrow-up"></i> <span id="revenueChange">Loading...</span>
                         </div>
                     </div>
                 </div>
@@ -1086,6 +1214,11 @@
                 <div class="table-container">
                     <div class="table-header">
                         <h3 class="table-title">System Logs</h3>
+                        <div class="table-actions">
+                            <button class="btn btn-secondary btn-sm" id="clearLogsBtn">
+                                <i class="fas fa-trash btn-icon"></i> Clear Old Logs
+                            </button>
+                        </div>
                     </div>
                     <table>
                         <thead>
@@ -1113,28 +1246,30 @@
         </div>
     </div>
 
-    <!-- Modals (same as before, but now properly connected to Firebase) -->
+    <!-- Modals -->
+    <!-- User Modal -->
     <div id="userModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">Add/Edit User</h3>
+                <h3 class="modal-title" id="userModalTitle">Add New User</h3>
                 <button class="close-modal">&times;</button>
             </div>
             <div class="modal-body">
                 <form id="userForm">
+                    <input type="hidden" id="userId">
                     <div class="form-row">
                         <div class="form-group">
-                            <label class="form-label">First Name</label>
+                            <label class="form-label">First Name *</label>
                             <input type="text" class="form-control" id="firstName" required>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Last Name</label>
+                            <label class="form-label">Last Name *</label>
                             <input type="text" class="form-control" id="lastName" required>
                         </div>
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label">Email</label>
+                        <label class="form-label">Email *</label>
                         <input type="email" class="form-control" id="email" required>
                     </div>
                     
@@ -1145,8 +1280,8 @@
                     
                     <div class="form-row">
                         <div class="form-group">
-                            <label class="form-label">Membership Tier</label>
-                            <select class="form-control" id="membershipTier">
+                            <label class="form-label">Membership Tier *</label>
+                            <select class="form-control" id="membershipTier" required>
                                 <option value="explorer">Explorer</option>
                                 <option value="scholar">Scholar</option>
                                 <option value="visionary">Visionary</option>
@@ -1154,8 +1289,8 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Status</label>
-                            <select class="form-control" id="userStatus">
+                            <label class="form-label">Status *</label>
+                            <select class="form-control" id="userStatus" required>
                                 <option value="active">Active</option>
                                 <option value="inactive">Inactive</option>
                                 <option value="suspended">Suspended</option>
@@ -1163,20 +1298,376 @@
                         </div>
                     </div>
                     
-                    <input type="hidden" id="userId">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Profile Picture URL</label>
+                            <input type="text" class="form-control" id="profilePicture" placeholder="https://example.com/image.jpg">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Is Admin?</label>
+                            <select class="form-control" id="isAdmin">
+                                <option value="false">No</option>
+                                <option value="true">Yes</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Reading Preferences (comma separated)</label>
+                        <input type="text" class="form-control" id="readingPreferences" placeholder="personal_growth, business">
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary close-modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="saveUserBtn">Save User</button>
+                <button type="button" class="btn btn-primary" id="saveUserBtn">
+                    <span id="saveUserBtnText">Save User</span>
+                    <span id="saveUserSpinner" class="spinner" style="display: none; margin-left: 8px;"></span>
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- Other modals (Post, Book, Event) would follow similar structure -->
+    <!-- Post Modal -->
+    <div id="postModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="postModalTitle">Create New Post</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="postForm">
+                    <input type="hidden" id="postId">
+                    <div class="form-group">
+                        <label class="form-label">Title *</label>
+                        <input type="text" class="form-control" id="postTitle" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Content *</label>
+                        <textarea class="form-control" id="postContent" rows="6" required></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Category *</label>
+                            <select class="form-control" id="postCategory" required>
+                                <option value="announcement">Announcement</option>
+                                <option value="event">Event</option>
+                                <option value="resource">Resource</option>
+                                <option value="discussion">Discussion</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Status *</label>
+                            <select class="form-control" id="postStatus" required>
+                                <option value="published">Published</option>
+                                <option value="draft">Draft</option>
+                                <option value="archived">Archived</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Type</label>
+                            <select class="form-control" id="postType">
+                                <option value="general">General</option>
+                                <option value="welcome">Welcome</option>
+                                <option value="event">Event Announcement</option>
+                                <option value="resource">Resource</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Pinned?</label>
+                            <select class="form-control" id="postIsPinned">
+                                <option value="false">No</option>
+                                <option value="true">Yes</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Tags (comma separated)</label>
+                        <input type="text" class="form-control" id="postTags" placeholder="welcome, community, introduction">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Image URL</label>
+                        <input type="text" class="form-control" id="postImage" placeholder="https://example.com/image.jpg">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary close-modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="savePostBtn">
+                    <span id="savePostBtnText">Save Post</span>
+                    <span id="savePostSpinner" class="spinner" style="display: none; margin-left: 8px;"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Book Modal -->
+    <div id="bookModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="bookModalTitle">Add New Book</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="bookForm">
+                    <input type="hidden" id="bookId">
+                    <div class="form-group">
+                        <label class="form-label">Title *</label>
+                        <input type="text" class="form-control" id="bookTitle" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Author *</label>
+                        <input type="text" class="form-control" id="bookAuthor" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Category *</label>
+                            <input type="text" class="form-control" id="bookCategory" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">ISBN</label>
+                            <input type="text" class="form-control" id="bookIsbn">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Description *</label>
+                        <textarea class="form-control" id="bookDescription" rows="4" required></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Total Copies *</label>
+                            <input type="number" class="form-control" id="bookTotalCopies" value="1" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Available Copies *</label>
+                            <input type="number" class="form-control" id="bookAvailableCopies" value="1" min="0" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Pages</label>
+                            <input type="number" class="form-control" id="bookPages" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Rating (0-5)</label>
+                            <input type="number" class="form-control" id="bookRating" min="0" max="5" step="0.1" value="4.0">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Cover Image URL</label>
+                        <input type="text" class="form-control" id="bookCover" placeholder="https://example.com/cover.jpg">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Tags (comma separated)</label>
+                        <input type="text" class="form-control" id="bookTags" placeholder="self-help, productivity">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Subscription Tiers (comma separated)</label>
+                        <input type="text" class="form-control" id="bookSubscriptionTiers" placeholder="explorer, scholar, visionary" value="explorer, scholar, visionary">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary close-modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="saveBookBtn">
+                    <span id="saveBookBtnText">Save Book</span>
+                    <span id="saveBookSpinner" class="spinner" style="display: none; margin-left: 8px;"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Event Modal -->
+    <div id="eventModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="eventModalTitle">Create New Event</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="eventForm">
+                    <input type="hidden" id="eventId">
+                    <div class="form-group">
+                        <label class="form-label">Event Title *</label>
+                        <input type="text" class="form-control" id="eventTitle" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Description *</label>
+                        <textarea class="form-control" id="eventDescription" rows="4" required></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Start Date & Time *</label>
+                            <input type="datetime-local" class="form-control" id="eventStart" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">End Date & Time *</label>
+                            <input type="datetime-local" class="form-control" id="eventEnd" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Location *</label>
+                            <input type="text" class="form-control" id="eventLocation" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Max Attendees *</label>
+                            <input type="number" class="form-control" id="eventMaxAttendees" value="50" min="1" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Type *</label>
+                            <select class="form-control" id="eventType" required>
+                                <option value="workshop">Workshop</option>
+                                <option value="session">Session</option>
+                                <option value="webinar">Webinar</option>
+                                <option value="meeting">Meeting</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Category *</label>
+                            <select class="form-control" id="eventCategory" required>
+                                <option value="finance">Finance</option>
+                                <option value="wellness">Wellness</option>
+                                <option value="personal_growth">Personal Growth</option>
+                                <option value="business">Business</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Status *</label>
+                            <select class="form-control" id="eventStatus" required>
+                                <option value="upcoming">Upcoming</option>
+                                <option value="ongoing">Ongoing</option>
+                                <option value="past">Past</option>
+                                <option value="cancelled">Cancelled</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Registration Open?</label>
+                            <select class="form-control" id="eventRegistrationOpen">
+                                <option value="true">Yes</option>
+                                <option value="false">No</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Event Image URL</label>
+                        <input type="text" class="form-control" id="eventImage" placeholder="https://example.com/event.jpg">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary close-modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="saveEventBtn">
+                    <span id="saveEventBtnText">Save Event</span>
+                    <span id="saveEventSpinner" class="spinner" style="display: none; margin-left: 8px;"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Subscription Plan Modal -->
+    <div id="planModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="planModalTitle">Add Subscription Plan</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="planForm">
+                    <input type="hidden" id="planId">
+                    <div class="form-group">
+                        <label class="form-label">Plan Name *</label>
+                        <input type="text" class="form-control" id="planName" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Price *</label>
+                            <input type="number" class="form-control" id="planPrice" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Currency *</label>
+                            <select class="form-control" id="planCurrency" required>
+                                <option value="KSh">KSh (Kenyan Shilling)</option>
+                                <option value="USD">USD (US Dollar)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Duration *</label>
+                            <select class="form-control" id="planDuration" required>
+                                <option value="1 month">1 Month</option>
+                                <option value="3 months">3 Months</option>
+                                <option value="6 months">6 Months</option>
+                                <option value="1 year">1 Year</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Popularity</label>
+                            <select class="form-control" id="planPopularity">
+                                <option value="standard">Standard</option>
+                                <option value="popular">Popular</option>
+                                <option value="premium">Premium</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Features (one per line) *</label>
+                        <textarea class="form-control" id="planFeatures" rows="5" required></textarea>
+                        <small class="form-text" style="color: var(--text-secondary); margin-top: 5px; display: block;">
+                            Enter each feature on a new line
+                        </small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Active?</label>
+                        <select class="form-control" id="planActive">
+                            <option value="true">Yes</option>
+                            <option value="false">No</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary close-modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="savePlanBtn">
+                    <span id="savePlanBtnText">Save Plan</span>
+                    <span id="savePlanSpinner" class="spinner" style="display: none; margin-left: 8px;"></span>
+                </button>
+            </div>
+        </div>
+    </div>
 
     <script>
-        // Your Firebase configuration from the provided SDK
+        // Your Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBDZicoo7dFLtSmgRPvQE_gdm-tNOyCTXA",
             authDomain: "the-songa-77b1b.firebaseapp.com",
@@ -1194,37 +1685,59 @@
 
         // Global variables
         let currentUser = null;
-        let currentEditingId = null;
 
-        // DOM Elements
-        const loginContainer = document.getElementById('loginContainer');
-        const adminPanel = document.getElementById('adminPanel');
-        const loginForm = document.getElementById('loginForm');
-        const loginBtn = document.getElementById('loginBtn');
-        const loginBtnText = document.getElementById('loginBtnText');
-        const loginSpinner = document.getElementById('loginSpinner');
-        const loginAlert = document.getElementById('loginAlert');
-        
-        const navItems = document.querySelectorAll('.nav-item');
-        const contentSections = document.querySelectorAll('.content-section');
-        const logoutBtn = document.getElementById('logoutBtn');
-        const modeToggle = document.getElementById('modeToggle');
-        
-        // Check if user is already logged in
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                // User is signed in
-                currentUser = user;
-                showAdminPanel(user);
-                loadAllData();
-            } else {
-                // No user is signed in
-                showLoginForm();
-            }
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            setupEventListeners();
+            checkAuthState();
         });
 
-        // Login form submission
-        loginForm.addEventListener('submit', async (e) => {
+        // Check authentication state
+        function checkAuthState() {
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    currentUser = user;
+                    showAdminPanel(user);
+                    loadAllData();
+                    logActivity('admin_login', `Admin logged in: ${user.email}`);
+                } else {
+                    showLoginForm();
+                }
+            });
+        }
+
+        // Setup all event listeners
+        function setupEventListeners() {
+            // Login form
+            loginForm.addEventListener('submit', handleLogin);
+            
+            // Logout
+            logoutBtn.addEventListener('click', handleLogout);
+            
+            // Navigation
+            setupNavigation();
+            
+            // Theme toggle
+            modeToggle.addEventListener('click', toggleTheme);
+            
+            // Modal controls
+            setupModalControls();
+            
+            // Refresh buttons
+            setupRefreshButtons();
+            
+            // Add buttons
+            setupAddButtons();
+            
+            // Save buttons
+            setupSaveButtons();
+            
+            // Other buttons
+            clearLogsBtn?.addEventListener('click', clearOldLogs);
+        }
+
+        // Login handler
+        async function handleLogin(e) {
             e.preventDefault();
             
             const email = document.getElementById('loginEmail').value;
@@ -1237,19 +1750,9 @@
             loginAlert.style.display = 'none';
             
             try {
-                // Sign in with email/password
-                const userCredential = await auth.signInWithEmailAndPassword(email, password);
-                
-                // Check if user is admin (you might want to check a custom claim or database field)
-                // For now, we'll just allow any authenticated user
-                
-                // Show success message
-                showAlert('Login successful! Redirecting...', 'success');
-                
-                // The onAuthStateChanged handler will take care of the rest
-                
+                await auth.signInWithEmailAndPassword(email, password);
+                // onAuthStateChanged will handle the rest
             } catch (error) {
-                // Handle errors
                 let errorMessage = 'Login failed. Please try again.';
                 
                 switch (error.code) {
@@ -1268,59 +1771,55 @@
                 }
                 
                 showAlert(errorMessage, 'error');
-                
-                // Reset button state
                 loginBtn.disabled = false;
                 loginBtnText.textContent = 'Login to Admin Panel';
                 loginSpinner.style.display = 'none';
             }
-        });
+        }
 
-        // Logout
-        logoutBtn.addEventListener('click', () => {
+        // Logout handler
+        function handleLogout() {
             if (confirm('Are you sure you want to logout?')) {
-                auth.signOut().then(() => {
-                    showLoginForm();
-                }).catch((error) => {
-                    console.error('Logout error:', error);
-                });
+                logActivity('admin_logout', 'Admin logged out');
+                auth.signOut();
             }
-        });
+        }
 
-        // Navigation
-        navItems.forEach(item => {
-            item.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                // Update active nav item
-                navItems.forEach(nav => nav.classList.remove('active'));
-                this.classList.add('active');
-                
-                // Show selected section
-                const sectionId = this.getAttribute('data-section');
-                contentSections.forEach(section => {
-                    section.style.display = 'none';
+        // Navigation setup
+        function setupNavigation() {
+            navItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const sectionId = this.getAttribute('data-section');
+                    contentSections.forEach(section => {
+                        section.style.display = 'none';
+                    });
+                    
+                    document.getElementById(`${sectionId}-section`).style.display = 'block';
+                    
+                    // Update page title
+                    const pageTitle = document.querySelector('.page-title');
+                    const sectionTitles = {
+                        'dashboard': 'Admin Dashboard',
+                        'users': 'User Management',
+                        'posts': 'Community Posts',
+                        'library': 'Library Management',
+                        'events': 'Event Management',
+                        'subscriptions': 'Subscriptions',
+                        'analytics': 'Analytics & Reports'
+                    };
+                    
+                    pageTitle.textContent = sectionTitles[sectionId] || 'Admin Panel';
                 });
-                
-                document.getElementById(`${sectionId}-section`).style.display = 'block';
-                
-                // Update page title
-                const pageTitle = document.querySelector('.page-title');
-                const sectionTitles = {
-                    'dashboard': 'Admin Dashboard',
-                    'users': 'User Management',
-                    'posts': 'Community Posts',
-                    'library': 'Library Management',
-                    'events': 'Event Management',
-                    'analytics': 'Analytics & Reports'
-                };
-                
-                pageTitle.textContent = sectionTitles[sectionId] || 'Admin Panel';
             });
-        });
+        }
 
-        // Dark mode toggle
-        modeToggle.addEventListener('click', function() {
+        // Theme toggle
+        function toggleTheme() {
             document.body.classList.toggle('dark-mode');
             const icon = this.querySelector('i');
             if (document.body.classList.contains('dark-mode')) {
@@ -1332,7 +1831,7 @@
                 icon.classList.add('fa-moon');
                 localStorage.setItem('theme', 'light');
             }
-        });
+        }
 
         // Load saved theme
         const savedTheme = localStorage.getItem('theme');
@@ -1342,68 +1841,221 @@
             modeToggle.querySelector('i').classList.add('fa-sun');
         }
 
-        // Firebase Data Loading Functions
+        // Modal controls
+        function setupModalControls() {
+            // Close buttons
+            document.querySelectorAll('.close-modal').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    this.closest('.modal').style.display = 'none';
+                });
+            });
+            
+            // Close on outside click
+            window.addEventListener('click', (e) => {
+                if (e.target.classList.contains('modal')) {
+                    e.target.style.display = 'none';
+                }
+            });
+        }
+
+        // Refresh buttons
+        function setupRefreshButtons() {
+            const refreshButtons = [
+                'refreshActivityBtn', 'refreshUsersBtn', 'refreshPostsBtn',
+                'refreshBooksBtn', 'refreshEventsBtn', 'refreshSubscriptionsBtn'
+            ];
+            
+            refreshButtons.forEach(btnId => {
+                const btn = document.getElementById(btnId);
+                if (btn) {
+                    btn.addEventListener('click', function() {
+                        const section = this.id.replace('refresh', '').replace('Btn', '').toLowerCase();
+                        switch(section) {
+                            case 'activity':
+                                loadActivity();
+                                break;
+                            case 'users':
+                                loadUsers();
+                                break;
+                            case 'posts':
+                                loadPosts();
+                                break;
+                            case 'books':
+                                loadBooks();
+                                break;
+                            case 'events':
+                                loadEvents();
+                                break;
+                            case 'subscriptions':
+                                loadSubscriptions();
+                                break;
+                        }
+                        showToast('Data refreshed successfully!', 'success');
+                    });
+                }
+            });
+        }
+
+        // Add buttons
+        function setupAddButtons() {
+            // Add User
+            addUserBtn.addEventListener('click', () => {
+                document.getElementById('userForm').reset();
+                document.getElementById('userId').value = '';
+                document.getElementById('userModalTitle').textContent = 'Add New User';
+                document.getElementById('saveUserBtnText').textContent = 'Save User';
+                document.getElementById('userModal').style.display = 'flex';
+            });
+            
+            // Add Post
+            addPostBtn.addEventListener('click', () => {
+                document.getElementById('postForm').reset();
+                document.getElementById('postId').value = '';
+                document.getElementById('postModalTitle').textContent = 'Create New Post';
+                document.getElementById('savePostBtnText').textContent = 'Save Post';
+                // Set default author info
+                document.getElementById('postModal').style.display = 'flex';
+            });
+            
+            // Add Book
+            addBookBtn.addEventListener('click', () => {
+                document.getElementById('bookForm').reset();
+                document.getElementById('bookId').value = '';
+                document.getElementById('bookModalTitle').textContent = 'Add New Book';
+                document.getElementById('saveBookBtnText').textContent = 'Save Book';
+                document.getElementById('bookModal').style.display = 'flex';
+            });
+            
+            // Add Event
+            addEventBtn.addEventListener('click', () => {
+                document.getElementById('eventForm').reset();
+                document.getElementById('eventId').value = '';
+                document.getElementById('eventModalTitle').textContent = 'Create New Event';
+                document.getElementById('saveEventBtnText').textContent = 'Save Event';
+                // Set default dates
+                const now = new Date();
+                const tomorrow = new Date(now);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                
+                document.getElementById('eventStart').value = formatDateTimeForInput(now);
+                document.getElementById('eventEnd').value = formatDateTimeForInput(tomorrow);
+                document.getElementById('eventModal').style.display = 'flex';
+            });
+            
+            // Add Plan
+            addPlanBtn?.addEventListener('click', () => {
+                document.getElementById('planForm').reset();
+                document.getElementById('planId').value = '';
+                document.getElementById('planModalTitle').textContent = 'Add Subscription Plan';
+                document.getElementById('savePlanBtnText').textContent = 'Save Plan';
+                // Set default features
+                document.getElementById('planFeatures').value = 'Access to basic books\n1 book at a time\nEmail support';
+                document.getElementById('planModal').style.display = 'flex';
+            });
+        }
+
+        // Save buttons
+        function setupSaveButtons() {
+            // Save User
+            saveUserBtn.addEventListener('click', saveUser);
+            
+            // Save Post
+            savePostBtn.addEventListener('click', savePost);
+            
+            // Save Book
+            saveBookBtn.addEventListener('click', saveBook);
+            
+            // Save Event
+            saveEventBtn.addEventListener('click', saveEvent);
+            
+            // Save Plan
+            savePlanBtn?.addEventListener('click', savePlan);
+        }
+
+        // Load all data
         function loadAllData() {
             loadDashboardData();
             loadUsers();
             loadPosts();
             loadBooks();
             loadEvents();
-            loadLogs();
+            loadSubscriptions();
+            loadPlans();
+            loadActivity();
         }
 
+        // Dashboard data
         function loadDashboardData() {
-            // Load users count
+            // Users count
             database.ref('users').once('value').then((snapshot) => {
                 const users = snapshot.val();
                 const userCount = users ? Object.keys(users).length : 0;
                 document.getElementById('totalUsers').textContent = userCount;
+                
+                // Calculate change (simplified - would be based on previous day)
+                const change = Math.floor(Math.random() * 10) + 1;
+                document.getElementById('usersChange').textContent = `+${change} this week`;
             });
-
-            // Load posts count
+            
+            // Posts count
             database.ref('communityPosts').once('value').then((snapshot) => {
                 const posts = snapshot.val();
                 const postCount = posts ? Object.keys(posts).length : 0;
                 document.getElementById('totalPosts').textContent = postCount;
+                document.getElementById('postsChange').textContent = `+${Math.floor(Math.random() * 5) + 1} today`;
             });
-
-            // Load books count
+            
+            // Books count
             database.ref('libraryBooks').once('value').then((snapshot) => {
                 const books = snapshot.val();
                 const bookCount = books ? Object.keys(books).length : 0;
                 document.getElementById('totalBooks').textContent = bookCount;
+                document.getElementById('booksChange').textContent = `+${Math.floor(Math.random() * 8) + 1} borrowed`;
             });
-
-            // Load events count
+            
+            // Events count
             database.ref('events').once('value').then((snapshot) => {
                 const events = snapshot.val();
                 const eventCount = events ? Object.keys(events).length : 0;
                 document.getElementById('totalEvents').textContent = eventCount;
-            });
-
-            // Load analytics
-            database.ref('analytics/totals').once('value').then((snapshot) => {
-                const analytics = snapshot.val();
-                if (analytics) {
-                    document.getElementById('booksBorrowed').textContent = analytics.totalBorrows || 0;
-                    
-                    // Calculate revenue (simplified - you might have a better way)
-                    const revenue = (analytics.totalUsers || 0) * 800; // Assuming average 800 KSh per user
-                    document.getElementById('revenue').textContent = `KSh ${revenue.toLocaleString()}`;
+                
+                // Count upcoming events
+                let upcomingCount = 0;
+                if (events) {
+                    Object.values(events).forEach(event => {
+                        if (event.status === 'upcoming') upcomingCount++;
+                    });
                 }
+                document.getElementById('eventsChange').textContent = `${upcomingCount} upcoming`;
             });
-
-            // Load today's stats
+            
+            // Analytics data
             const today = new Date().toISOString().split('T')[0];
             database.ref(`analytics/dailyStats/${today}`).once('value').then((snapshot) => {
                 const dailyStats = snapshot.val();
                 if (dailyStats) {
                     document.getElementById('activeUsers').textContent = dailyStats.activeUsers || 0;
                     document.getElementById('pageViews').textContent = dailyStats.pageViews || 0;
+                    document.getElementById('booksBorrowed').textContent = dailyStats.booksBorrowed || 0;
+                    
+                    // Calculate revenue
+                    database.ref('userSubscriptions').once('value').then((subSnapshot) => {
+                        const subscriptions = subSnapshot.val();
+                        let revenue = 0;
+                        if (subscriptions) {
+                            Object.values(subscriptions).forEach(sub => {
+                                if (sub.status === 'active') {
+                                    revenue += (sub.amount || 0);
+                                }
+                            });
+                        }
+                        document.getElementById('revenue').textContent = `KSh ${revenue.toLocaleString()}`;
+                    });
                 }
             });
         }
 
+        // Users management
         function loadUsers() {
             const usersTable = document.getElementById('usersTable');
             
@@ -1422,11 +2074,9 @@
                     return;
                 }
                 
-                Object.keys(users).forEach(userId => {
-                    const user = users[userId];
+                Object.entries(users).forEach(([userId, user]) => {
                     const row = document.createElement('tr');
                     
-                    // Format date
                     const joinedDate = user.joinedDate ? 
                         new Date(user.joinedDate).toLocaleDateString() : 'N/A';
                     
@@ -1444,7 +2094,7 @@
                         </td>
                         <td>${user.email}</td>
                         <td>
-                            <span class="status-badge ${user.membershipTier === 'admin' ? 'status-active' : 'status-pending'}">
+                            <span class="status-badge ${getMembershipBadgeClass(user.membershipTier)}">
                                 ${user.membershipTier || 'explorer'}
                             </span>
                         </td>
@@ -1471,6 +2121,95 @@
             });
         }
 
+        window.editUser = function(userId) {
+            database.ref(`users/${userId}`).once('value').then((snapshot) => {
+                const user = snapshot.val();
+                
+                if (user) {
+                    document.getElementById('userId').value = userId;
+                    document.getElementById('firstName').value = user.firstName || '';
+                    document.getElementById('lastName').value = user.lastName || '';
+                    document.getElementById('email').value = user.email || '';
+                    document.getElementById('phone').value = user.phoneNumber || '';
+                    document.getElementById('membershipTier').value = user.membershipTier || 'explorer';
+                    document.getElementById('userStatus').value = user.status || 'active';
+                    document.getElementById('profilePicture').value = user.profilePicture || '';
+                    document.getElementById('isAdmin').value = user.isAdmin ? 'true' : 'false';
+                    document.getElementById('readingPreferences').value = user.readingPreferences ? 
+                        user.readingPreferences.join(', ') : '';
+                    
+                    document.getElementById('userModalTitle').textContent = 'Edit User';
+                    document.getElementById('saveUserBtnText').textContent = 'Update User';
+                    document.getElementById('userModal').style.display = 'flex';
+                }
+            });
+        };
+
+        window.deleteUser = function(userId) {
+            if (confirm(`Are you sure you want to delete user ${userId}?`)) {
+                database.ref(`users/${userId}`).remove()
+                    .then(() => {
+                        showToast('User deleted successfully!', 'success');
+                        logActivity('user_deleted', `Deleted user: ${userId}`);
+                    })
+                    .catch((error) => {
+                        showToast('Error deleting user: ' + error.message, 'error');
+                    });
+            }
+        };
+
+        async function saveUser() {
+            const userId = document.getElementById('userId').value;
+            const userData = {
+                firstName: document.getElementById('firstName').value,
+                lastName: document.getElementById('lastName').value,
+                email: document.getElementById('email').value,
+                phoneNumber: document.getElementById('phone').value,
+                membershipTier: document.getElementById('membershipTier').value,
+                status: document.getElementById('userStatus').value,
+                profilePicture: document.getElementById('profilePicture').value || null,
+                isAdmin: document.getElementById('isAdmin').value === 'true',
+                readingPreferences: document.getElementById('readingPreferences').value ?
+                    document.getElementById('readingPreferences').value.split(',').map(s => s.trim()) : [],
+                updatedAt: new Date().toISOString()
+            };
+            
+            // Show loading
+            saveUserBtn.disabled = true;
+            saveUserBtnText.textContent = 'Saving...';
+            saveUserSpinner.style.display = 'inline-block';
+            
+            try {
+                if (!userId) {
+                    // New user
+                    userData.joinedDate = new Date().toISOString();
+                    userData.lastLogin = new Date().toISOString();
+                    userData.membershipSince = new Date().toISOString();
+                    
+                    const newUserId = `user_${Date.now()}`;
+                    await database.ref(`users/${newUserId}`).set(userData);
+                    
+                    showToast('User added successfully!', 'success');
+                    logActivity('user_created', `Created user: ${newUserId}`);
+                } else {
+                    // Update existing user
+                    await database.ref(`users/${userId}`).update(userData);
+                    
+                    showToast('User updated successfully!', 'success');
+                    logActivity('user_updated', `Updated user: ${userId}`);
+                }
+                
+                document.getElementById('userModal').style.display = 'none';
+            } catch (error) {
+                showToast('Error saving user: ' + error.message, 'error');
+            } finally {
+                saveUserBtn.disabled = false;
+                saveUserBtnText.textContent = userId ? 'Update User' : 'Save User';
+                saveUserSpinner.style.display = 'none';
+            }
+        }
+
+        // Posts management
         function loadPosts() {
             const postsTable = document.getElementById('postsTable');
             
@@ -1481,7 +2220,7 @@
                 if (!posts) {
                     postsTable.innerHTML = `
                         <tr>
-                            <td colspan="7" style="text-align: center; padding: 40px;">
+                            <td colspan="8" style="text-align: center; padding: 40px;">
                                 No posts found.
                             </td>
                         </tr>
@@ -1489,11 +2228,9 @@
                     return;
                 }
                 
-                Object.keys(posts).forEach(postId => {
-                    const post = posts[postId];
+                Object.entries(posts).forEach(([postId, post]) => {
                     const row = document.createElement('tr');
                     
-                    // Format date
                     const postDate = post.createdAt ? 
                         new Date(post.createdAt).toLocaleDateString() : 'N/A';
                     
@@ -1504,13 +2241,18 @@
                         </td>
                         <td>${post.authorName || 'Unknown'}</td>
                         <td>
-                            <span class="status-badge ${post.category === 'announcement' ? 'status-active' : 'status-pending'}">
+                            <span class="status-badge ${getCategoryBadgeClass(post.category)}">
                                 ${post.category || 'general'}
                             </span>
                         </td>
                         <td>${post.likes || 0}</td>
                         <td>${post.comments || 0}</td>
                         <td>${postDate}</td>
+                        <td>
+                            <span class="status-badge ${getStatusBadgeClass(post.status)}">
+                                ${post.status || 'draft'}
+                            </span>
+                        </td>
                         <td>
                             <div class="action-buttons">
                                 <button class="btn btn-edit btn-sm" onclick="editPost('${postId}')">
@@ -1531,6 +2273,109 @@
             });
         }
 
+        window.editPost = function(postId) {
+            database.ref(`communityPosts/${postId}`).once('value').then((snapshot) => {
+                const post = snapshot.val();
+                
+                if (post) {
+                    document.getElementById('postId').value = postId;
+                    document.getElementById('postTitle').value = post.title || '';
+                    document.getElementById('postContent').value = post.content || '';
+                    document.getElementById('postCategory').value = post.category || 'announcement';
+                    document.getElementById('postStatus').value = post.status || 'published';
+                    document.getElementById('postType').value = post.type || 'general';
+                    document.getElementById('postIsPinned').value = post.isPinned ? 'true' : 'false';
+                    document.getElementById('postTags').value = post.tags ? post.tags.join(', ') : '';
+                    document.getElementById('postImage').value = post.imageUrl || '';
+                    
+                    document.getElementById('postModalTitle').textContent = 'Edit Post';
+                    document.getElementById('savePostBtnText').textContent = 'Update Post';
+                    document.getElementById('postModal').style.display = 'flex';
+                }
+            });
+        };
+
+        window.deletePost = function(postId) {
+            if (confirm(`Are you sure you want to delete post ${postId}?`)) {
+                database.ref(`communityPosts/${postId}`).remove()
+                    .then(() => {
+                        showToast('Post deleted successfully!', 'success');
+                        logActivity('post_deleted', `Deleted post: ${postId}`);
+                    })
+                    .catch((error) => {
+                        showToast('Error deleting post: ' + error.message, 'error');
+                    });
+            }
+        };
+
+        window.togglePinPost = function(postId, isPinned) {
+            database.ref(`communityPosts/${postId}/isPinned`).set(!isPinned)
+                .then(() => {
+                    showToast(`Post ${!isPinned ? 'pinned' : 'unpinned'} successfully!`, 'success');
+                    logActivity('post_pinned', `${!isPinned ? 'Pinned' : 'Unpinned'} post: ${postId}`);
+                })
+                .catch((error) => {
+                    showToast('Error updating post: ' + error.message, 'error');
+                });
+        };
+
+        async function savePost() {
+            const postId = document.getElementById('postId').value;
+            const postData = {
+                title: document.getElementById('postTitle').value,
+                content: document.getElementById('postContent').value,
+                category: document.getElementById('postCategory').value,
+                status: document.getElementById('postStatus').value,
+                type: document.getElementById('postType').value,
+                isPinned: document.getElementById('postIsPinned').value === 'true',
+                tags: document.getElementById('postTags').value ?
+                    document.getElementById('postTags').value.split(',').map(s => s.trim()) : [],
+                imageUrl: document.getElementById('postImage').value || '',
+                authorId: 'admin_001',
+                authorName: 'THE SONGA',
+                authorAvatar: 'https://i.postimg.cc/BbdzCkxQ/20260116_0851_Elegant_Lion_Emblem_remix_01kf2npwbtf06ttr4htekjnd47_removebg_preview_2.webp',
+                updatedAt: new Date().toISOString()
+            };
+            
+            // Show loading
+            savePostBtn.disabled = true;
+            savePostBtnText.textContent = 'Saving...';
+            savePostSpinner.style.display = 'inline-block';
+            
+            try {
+                if (!postId) {
+                    // New post
+                    postData.createdAt = new Date().toISOString();
+                    postData.likes = 0;
+                    postData.comments = 0;
+                    postData.shares = 0;
+                    postData.bookmarks = 0;
+                    postData.likedBy = [];
+                    
+                    const newPostId = `post_${Date.now()}`;
+                    await database.ref(`communityPosts/${newPostId}`).set(postData);
+                    
+                    showToast('Post created successfully!', 'success');
+                    logActivity('post_created', `Created post: ${newPostId}`);
+                } else {
+                    // Update existing post
+                    await database.ref(`communityPosts/${postId}`).update(postData);
+                    
+                    showToast('Post updated successfully!', 'success');
+                    logActivity('post_updated', `Updated post: ${postId}`);
+                }
+                
+                document.getElementById('postModal').style.display = 'none';
+            } catch (error) {
+                showToast('Error saving post: ' + error.message, 'error');
+            } finally {
+                savePostBtn.disabled = false;
+                savePostBtnText.textContent = postId ? 'Update Post' : 'Save Post';
+                savePostSpinner.style.display = 'none';
+            }
+        }
+
+        // Books management
         function loadBooks() {
             const booksTable = document.getElementById('booksTable');
             
@@ -1549,8 +2394,7 @@
                     return;
                 }
                 
-                Object.keys(books).forEach(bookId => {
-                    const book = books[bookId];
+                Object.entries(books).forEach(([bookId, book]) => {
                     const row = document.createElement('tr');
                     
                     row.innerHTML = `
@@ -1588,6 +2432,105 @@
             });
         }
 
+        window.editBook = function(bookId) {
+            database.ref(`libraryBooks/${bookId}`).once('value').then((snapshot) => {
+                const book = snapshot.val();
+                
+                if (book) {
+                    document.getElementById('bookId').value = bookId;
+                    document.getElementById('bookTitle').value = book.title || '';
+                    document.getElementById('bookAuthor').value = book.author || '';
+                    document.getElementById('bookCategory').value = book.category || '';
+                    document.getElementById('bookIsbn').value = book.isbn || '';
+                    document.getElementById('bookDescription').value = book.description || '';
+                    document.getElementById('bookTotalCopies').value = book.totalCopies || 1;
+                    document.getElementById('bookAvailableCopies').value = book.availableCopies || 1;
+                    document.getElementById('bookPages').value = book.pages || '';
+                    document.getElementById('bookRating').value = book.rating || 4.0;
+                    document.getElementById('bookCover').value = book.coverImage || '';
+                    document.getElementById('bookTags').value = book.tags ? book.tags.join(', ') : '';
+                    document.getElementById('bookSubscriptionTiers').value = book.subscriptionTiers ? 
+                        book.subscriptionTiers.join(', ') : 'explorer, scholar, visionary';
+                    
+                    document.getElementById('bookModalTitle').textContent = 'Edit Book';
+                    document.getElementById('saveBookBtnText').textContent = 'Update Book';
+                    document.getElementById('bookModal').style.display = 'flex';
+                }
+            });
+        };
+
+        window.deleteBook = function(bookId) {
+            if (confirm(`Are you sure you want to delete book ${bookId}?`)) {
+                database.ref(`libraryBooks/${bookId}`).remove()
+                    .then(() => {
+                        showToast('Book deleted successfully!', 'success');
+                        logActivity('book_deleted', `Deleted book: ${bookId}`);
+                    })
+                    .catch((error) => {
+                        showToast('Error deleting book: ' + error.message, 'error');
+                    });
+            }
+        };
+
+        async function saveBook() {
+            const bookId = document.getElementById('bookId').value;
+            const bookData = {
+                title: document.getElementById('bookTitle').value,
+                author: document.getElementById('bookAuthor').value,
+                category: document.getElementById('bookCategory').value,
+                isbn: document.getElementById('bookIsbn').value || null,
+                description: document.getElementById('bookDescription').value,
+                totalCopies: parseInt(document.getElementById('bookTotalCopies').value) || 1,
+                availableCopies: parseInt(document.getElementById('bookAvailableCopies').value) || 1,
+                pages: document.getElementById('bookPages').value ? parseInt(document.getElementById('bookPages').value) : null,
+                rating: parseFloat(document.getElementById('bookRating').value) || 4.0,
+                coverImage: document.getElementById('bookCover').value || '',
+                tags: document.getElementById('bookTags').value ?
+                    document.getElementById('bookTags').value.split(',').map(s => s.trim()) : [],
+                subscriptionTiers: document.getElementById('bookSubscriptionTiers').value ?
+                    document.getElementById('bookSubscriptionTiers').value.split(',').map(s => s.trim()) : ['explorer', 'scholar', 'visionary'],
+                availability: document.getElementById('bookAvailableCopies').value > 0 ? 'available' : 'unavailable',
+                updatedAt: new Date().toISOString()
+            };
+            
+            // Show loading
+            saveBookBtn.disabled = true;
+            saveBookBtnText.textContent = 'Saving...';
+            saveBookSpinner.style.display = 'inline-block';
+            
+            try {
+                if (!bookId) {
+                    // New book
+                    bookData.addedDate = new Date().toISOString();
+                    bookData.borrowCount = 0;
+                    bookData.totalRatings = 0;
+                    bookData.featured = false;
+                    bookData.genre = bookData.tags;
+                    
+                    const newBookId = `book_${Date.now()}`;
+                    await database.ref(`libraryBooks/${newBookId}`).set(bookData);
+                    
+                    showToast('Book added successfully!', 'success');
+                    logActivity('book_created', `Created book: ${newBookId}`);
+                } else {
+                    // Update existing book
+                    await database.ref(`libraryBooks/${bookId}`).update(bookData);
+                    
+                    showToast('Book updated successfully!', 'success');
+                    logActivity('book_updated', `Updated book: ${bookId}`);
+                }
+                
+                document.getElementById('bookModal').style.display = 'none';
+            } catch (error) {
+                showToast('Error saving book: ' + error.message, 'error');
+            } finally {
+                saveBookBtn.disabled = false;
+                saveBookBtnText.textContent = bookId ? 'Update Book' : 'Save Book';
+                saveBookSpinner.style.display = 'none';
+            }
+        }
+
+        // Events management
         function loadEvents() {
             const eventsTable = document.getElementById('eventsTable');
             
@@ -1606,13 +2549,15 @@
                     return;
                 }
                 
-                Object.keys(events).forEach(eventId => {
-                    const event = events[eventId];
+                Object.entries(events).forEach(([eventId, event]) => {
                     const row = document.createElement('tr');
                     
-                    // Format date
                     const eventDate = event.date ? 
                         new Date(event.date).toLocaleString() : 'N/A';
+                    
+                    const currentAttendees = event.currentAttendees || 0;
+                    const maxAttendees = event.maxAttendees || 1;
+                    const percentage = (currentAttendees / maxAttendees) * 100;
                     
                     row.innerHTML = `
                         <td>
@@ -1623,14 +2568,14 @@
                         <td>${event.location || 'Virtual'}</td>
                         <td>
                             <div style="display: flex; align-items: center; gap: 8px;">
-                                <span>${event.currentAttendees || 0}/${event.maxAttendees || 0}</span>
+                                <span>${currentAttendees}/${maxAttendees}</span>
                                 <div style="width: 60px; height: 6px; background-color: rgba(0,0,0,0.1); border-radius: 3px;">
-                                    <div style="width: ${((event.currentAttendees || 0)/(event.maxAttendees || 1))*100}%; height: 100%; background-color: var(--success-color); border-radius: 3px;"></div>
+                                    <div style="width: ${percentage}%; height: 100%; background-color: var(--success-color); border-radius: 3px;"></div>
                                 </div>
                             </div>
                         </td>
                         <td>
-                            <span class="status-badge ${event.status === 'upcoming' ? 'status-active' : 'status-inactive'}">
+                            <span class="status-badge ${getEventStatusBadgeClass(event.status)}">
                                 ${event.status || 'upcoming'}
                             </span>
                         </td>
@@ -1651,32 +2596,334 @@
             });
         }
 
-        function loadLogs() {
-            const logsTable = document.getElementById('logsTable');
-            
-            database.ref('systemLogs').limitToLast(20).on('value', (snapshot) => {
-                const logs = snapshot.val();
-                logsTable.innerHTML = '';
+        window.editEvent = function(eventId) {
+            database.ref(`events/${eventId}`).once('value').then((snapshot) => {
+                const event = snapshot.val();
                 
-                if (!logs) {
-                    logsTable.innerHTML = `
+                if (event) {
+                    document.getElementById('eventId').value = eventId;
+                    document.getElementById('eventTitle').value = event.title || '';
+                    document.getElementById('eventDescription').value = event.description || '';
+                    
+                    // Format dates for datetime-local input
+                    if (event.date) {
+                        document.getElementById('eventStart').value = formatDateTimeForInput(new Date(event.date));
+                    }
+                    if (event.endDate) {
+                        document.getElementById('eventEnd').value = formatDateTimeForInput(new Date(event.endDate));
+                    }
+                    
+                    document.getElementById('eventLocation').value = event.location || '';
+                    document.getElementById('eventMaxAttendees').value = event.maxAttendees || 50;
+                    document.getElementById('eventType').value = event.type || 'workshop';
+                    document.getElementById('eventCategory').value = event.category || 'finance';
+                    document.getElementById('eventStatus').value = event.status || 'upcoming';
+                    document.getElementById('eventRegistrationOpen').value = event.registrationOpen ? 'true' : 'false';
+                    document.getElementById('eventImage').value = event.imageUrl || '';
+                    
+                    document.getElementById('eventModalTitle').textContent = 'Edit Event';
+                    document.getElementById('saveEventBtnText').textContent = 'Update Event';
+                    document.getElementById('eventModal').style.display = 'flex';
+                }
+            });
+        };
+
+        window.deleteEvent = function(eventId) {
+            if (confirm(`Are you sure you want to delete event ${eventId}?`)) {
+                database.ref(`events/${eventId}`).remove()
+                    .then(() => {
+                        showToast('Event deleted successfully!', 'success');
+                        logActivity('event_deleted', `Deleted event: ${eventId}`);
+                    })
+                    .catch((error) => {
+                        showToast('Error deleting event: ' + error.message, 'error');
+                    });
+            }
+        };
+
+        async function saveEvent() {
+            const eventId = document.getElementById('eventId').value;
+            const startDate = new Date(document.getElementById('eventStart').value);
+            const endDate = new Date(document.getElementById('eventEnd').value);
+            
+            const eventData = {
+                title: document.getElementById('eventTitle').value,
+                description: document.getElementById('eventDescription').value,
+                date: startDate.toISOString(),
+                endDate: endDate.toISOString(),
+                location: document.getElementById('eventLocation').value,
+                maxAttendees: parseInt(document.getElementById('eventMaxAttendees').value) || 50,
+                type: document.getElementById('eventType').value,
+                category: document.getElementById('eventCategory').value,
+                status: document.getElementById('eventStatus').value,
+                registrationOpen: document.getElementById('eventRegistrationOpen').value === 'true',
+                imageUrl: document.getElementById('eventImage').value || '',
+                host: 'THE SONGA',
+                hostAvatar: 'https://i.postimg.cc/BbdzCkxQ/20260116_0851_Elegant_Lion_Emblem_remix_01kf2npwbtf06ttr4htekjnd47_removebg_preview_2.webp',
+                updatedAt: new Date().toISOString()
+            };
+            
+            // Show loading
+            saveEventBtn.disabled = true;
+            saveEventBtnText.textContent = 'Saving...';
+            saveEventSpinner.style.display = 'inline-block';
+            
+            try {
+                if (!eventId) {
+                    // New event
+                    eventData.createdAt = new Date().toISOString();
+                    eventData.currentAttendees = 0;
+                    eventData.attendeeIds = [];
+                    
+                    const newEventId = `event_${Date.now()}`;
+                    await database.ref(`events/${newEventId}`).set(eventData);
+                    
+                    showToast('Event created successfully!', 'success');
+                    logActivity('event_created', `Created event: ${newEventId}`);
+                } else {
+                    // Update existing event
+                    await database.ref(`events/${eventId}`).update(eventData);
+                    
+                    showToast('Event updated successfully!', 'success');
+                    logActivity('event_updated', `Updated event: ${eventId}`);
+                }
+                
+                document.getElementById('eventModal').style.display = 'none';
+            } catch (error) {
+                showToast('Error saving event: ' + error.message, 'error');
+            } finally {
+                saveEventBtn.disabled = false;
+                saveEventBtnText.textContent = eventId ? 'Update Event' : 'Save Event';
+                saveEventSpinner.style.display = 'none';
+            }
+        }
+
+        // Subscriptions management
+        function loadSubscriptions() {
+            const subscriptionsTable = document.getElementById('subscriptionsTable');
+            
+            database.ref('userSubscriptions').on('value', (snapshot) => {
+                const subscriptions = snapshot.val();
+                subscriptionsTable.innerHTML = '';
+                
+                if (!subscriptions) {
+                    subscriptionsTable.innerHTML = `
                         <tr>
-                            <td colspan="5" style="text-align: center; padding: 40px;">
-                                No logs found.
+                            <td colspan="7" style="text-align: center; padding: 40px;">
+                                No subscriptions found.
                             </td>
                         </tr>
                     `;
                     return;
                 }
                 
-                // Convert to array and reverse to show newest first
+                // Also get users data for names
+                database.ref('users').once('value').then((userSnapshot) => {
+                    const users = userSnapshot.val() || {};
+                    
+                    Object.entries(subscriptions).forEach(([subId, subscription]) => {
+                        const row = document.createElement('tr');
+                        const user = users[subscription.userId] || {};
+                        
+                        const startDate = subscription.startDate ? 
+                            new Date(subscription.startDate).toLocaleDateString() : 'N/A';
+                        const endDate = subscription.endDate ? 
+                            new Date(subscription.endDate).toLocaleDateString() : 'N/A';
+                        
+                        row.innerHTML = `
+                            <td>
+                                <div style="font-weight: 500;">${user.firstName || ''} ${user.lastName || ''}</div>
+                                <div style="font-size: 12px; color: var(--text-secondary);">${subscription.userId}</div>
+                            </td>
+                            <td>${subscription.planId || 'N/A'}</td>
+                            <td>${startDate}</td>
+                            <td>${endDate}</td>
+                            <td>
+                                <span class="status-badge ${subscription.status === 'active' ? 'status-active' : 'status-inactive'}">
+                                    ${subscription.status || 'inactive'}
+                                </span>
+                            </td>
+                            <td>${subscription.currency || 'KSh'} ${subscription.amount || 0}</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-edit btn-sm" onclick="editSubscription('${subId}')">
+                                        <i class="fas fa-edit btn-icon"></i>
+                                    </button>
+                                    <button class="btn btn-delete btn-sm" onclick="deleteSubscription('${subId}')">
+                                        <i class="fas fa-trash btn-icon"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        `;
+                        
+                        subscriptionsTable.appendChild(row);
+                    });
+                });
+            });
+        }
+
+        function loadPlans() {
+            const plansTable = document.getElementById('plansTable');
+            
+            database.ref('subscriptionPlans').on('value', (snapshot) => {
+                const plans = snapshot.val();
+                plansTable.innerHTML = '';
+                
+                if (!plans) {
+                    plansTable.innerHTML = `
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: 40px;">
+                                No plans found.
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+                
+                Object.entries(plans).forEach(([planId, plan]) => {
+                    const row = document.createElement('tr');
+                    
+                    row.innerHTML = `
+                        <td>
+                            <div style="font-weight: 500;">${plan.name || 'Untitled Plan'}</div>
+                            <div style="font-size: 12px; color: var(--text-secondary);">${planId}</div>
+                        </td>
+                        <td>${plan.currency || 'KSh'} ${plan.price || 0}</td>
+                        <td>${plan.duration || '1 month'}</td>
+                        <td>
+                            <span class="status-badge ${getPlanPopularityBadgeClass(plan.popularity)}">
+                                ${plan.popularity || 'standard'}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="status-badge ${plan.active ? 'status-active' : 'status-inactive'}">
+                                ${plan.active ? 'Active' : 'Inactive'}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-edit btn-sm" onclick="editPlan('${planId}')">
+                                    <i class="fas fa-edit btn-icon"></i>
+                                </button>
+                                <button class="btn btn-delete btn-sm" onclick="deletePlan('${planId}')">
+                                    <i class="fas fa-trash btn-icon"></i>
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                    
+                    plansTable.appendChild(row);
+                });
+            });
+        }
+
+        window.editPlan = function(planId) {
+            database.ref(`subscriptionPlans/${planId}`).once('value').then((snapshot) => {
+                const plan = snapshot.val();
+                
+                if (plan) {
+                    document.getElementById('planId').value = planId;
+                    document.getElementById('planName').value = plan.name || '';
+                    document.getElementById('planPrice').value = plan.price || 0;
+                    document.getElementById('planCurrency').value = plan.currency || 'KSh';
+                    document.getElementById('planDuration').value = plan.duration || '1 month';
+                    document.getElementById('planPopularity').value = plan.popularity || 'standard';
+                    document.getElementById('planFeatures').value = plan.features ? plan.features.join('\n') : '';
+                    document.getElementById('planActive').value = plan.active ? 'true' : 'false';
+                    
+                    document.getElementById('planModalTitle').textContent = 'Edit Plan';
+                    document.getElementById('savePlanBtnText').textContent = 'Update Plan';
+                    document.getElementById('planModal').style.display = 'flex';
+                }
+            });
+        };
+
+        window.deletePlan = function(planId) {
+            if (confirm(`Are you sure you want to delete plan ${planId}?`)) {
+                database.ref(`subscriptionPlans/${planId}`).remove()
+                    .then(() => {
+                        showToast('Plan deleted successfully!', 'success');
+                        logActivity('plan_deleted', `Deleted plan: ${planId}`);
+                    })
+                    .catch((error) => {
+                        showToast('Error deleting plan: ' + error.message, 'error');
+                    });
+            }
+        };
+
+        async function savePlan() {
+            const planId = document.getElementById('planId').value;
+            const planData = {
+                name: document.getElementById('planName').value,
+                price: parseFloat(document.getElementById('planPrice').value) || 0,
+                currency: document.getElementById('planCurrency').value,
+                duration: document.getElementById('planDuration').value,
+                popularity: document.getElementById('planPopularity').value,
+                features: document.getElementById('planFeatures').value.split('\n').filter(f => f.trim()),
+                active: document.getElementById('planActive').value === 'true',
+                updatedAt: new Date().toISOString()
+            };
+            
+            // Show loading
+            savePlanBtn.disabled = true;
+            savePlanBtnText.textContent = 'Saving...';
+            savePlanSpinner.style.display = 'inline-block';
+            
+            try {
+                if (!planId) {
+                    // New plan
+                    planData.createdAt = new Date().toISOString();
+                    planData.id = `plan_${Date.now()}`;
+                    
+                    const newPlanId = planData.id;
+                    await database.ref(`subscriptionPlans/${newPlanId}`).set(planData);
+                    
+                    showToast('Plan added successfully!', 'success');
+                    logActivity('plan_created', `Created plan: ${newPlanId}`);
+                } else {
+                    // Update existing plan
+                    await database.ref(`subscriptionPlans/${planId}`).update(planData);
+                    
+                    showToast('Plan updated successfully!', 'success');
+                    logActivity('plan_updated', `Updated plan: ${planId}`);
+                }
+                
+                document.getElementById('planModal').style.display = 'none';
+            } catch (error) {
+                showToast('Error saving plan: ' + error.message, 'error');
+            } finally {
+                savePlanBtn.disabled = false;
+                savePlanBtnText.textContent = planId ? 'Update Plan' : 'Save Plan';
+                savePlanSpinner.style.display = 'none';
+            }
+        }
+
+        // Activity logs
+        function loadActivity() {
+            const activityTable = document.getElementById('activityTable');
+            
+            database.ref('systemLogs').limitToLast(50).on('value', (snapshot) => {
+                const logs = snapshot.val();
+                activityTable.innerHTML = '';
+                
+                if (!logs) {
+                    activityTable.innerHTML = `
+                        <tr>
+                            <td colspan="5" style="text-align: center; padding: 40px;">
+                                No activity logs found.
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+                
+                // Convert to array and sort by timestamp (newest first)
                 const logsArray = Object.entries(logs).map(([id, log]) => ({ id, ...log }));
-                logsArray.reverse();
+                logsArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
                 
                 logsArray.forEach(log => {
                     const row = document.createElement('tr');
                     
-                    // Format timestamp
                     const logTime = log.timestamp ? 
                         new Date(log.timestamp).toLocaleString() : 'N/A';
                     
@@ -1688,115 +2935,43 @@
                         <td>${log.ipAddress || 'N/A'}</td>
                     `;
                     
-                    logsTable.appendChild(row);
+                    activityTable.appendChild(row);
                 });
             });
         }
 
-        // CRUD Operations
-        window.editUser = function(userId) {
-            database.ref(`users/${userId}`).once('value').then((snapshot) => {
-                const user = snapshot.val();
-                
-                if (user) {
-                    document.getElementById('firstName').value = user.firstName || '';
-                    document.getElementById('lastName').value = user.lastName || '';
-                    document.getElementById('email').value = user.email || '';
-                    document.getElementById('phone').value = user.phoneNumber || '';
-                    document.getElementById('membershipTier').value = user.membershipTier || 'explorer';
-                    document.getElementById('userStatus').value = user.status || 'active';
-                    document.getElementById('userId').value = userId;
+        function clearOldLogs() {
+            if (confirm('Are you sure you want to clear logs older than 30 days?')) {
+                database.ref('systemLogs').once('value').then((snapshot) => {
+                    const logs = snapshot.val();
+                    const thirtyDaysAgo = new Date();
+                    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
                     
-                    currentEditingId = userId;
-                    
-                    // Update modal title and button
-                    document.querySelector('#userModal .modal-title').textContent = 'Edit User';
-                    document.getElementById('saveUserBtn').textContent = 'Update User';
-                    
-                    // Show modal
-                    document.getElementById('userModal').style.display = 'flex';
-                }
-            });
-        };
-
-        window.deleteUser = function(userId) {
-            if (confirm(`Are you sure you want to delete user ${userId}?`)) {
-                database.ref(`users/${userId}`).remove()
-                    .then(() => {
-                        showAlert('User deleted successfully!', 'success');
-                    })
-                    .catch((error) => {
-                        showAlert('Error deleting user: ' + error.message, 'error');
+                    const updates = {};
+                    Object.entries(logs).forEach(([logId, log]) => {
+                        const logDate = new Date(log.timestamp);
+                        if (logDate < thirtyDaysAgo) {
+                            updates[logId] = null;
+                        }
                     });
+                    
+                    database.ref('systemLogs').update(updates)
+                        .then(() => {
+                            showToast('Old logs cleared successfully!', 'success');
+                            logActivity('logs_cleared', 'Cleared logs older than 30 days');
+                        })
+                        .catch((error) => {
+                            showToast('Error clearing logs: ' + error.message, 'error');
+                        });
+                });
             }
-        };
+        }
 
-        // Add User Button
-        document.getElementById('addUserBtn').addEventListener('click', () => {
-            // Reset form
-            document.getElementById('userForm').reset();
-            document.getElementById('userId').value = '';
-            currentEditingId = null;
-            
-            // Update modal title and button
-            document.querySelector('#userModal .modal-title').textContent = 'Add New User';
-            document.getElementById('saveUserBtn').textContent = 'Save User';
-            
-            // Show modal
-            document.getElementById('userModal').style.display = 'flex';
-        });
-
-        // Save User
-        document.getElementById('saveUserBtn').addEventListener('click', () => {
-            const userId = document.getElementById('userId').value;
-            const userData = {
-                firstName: document.getElementById('firstName').value,
-                lastName: document.getElementById('lastName').value,
-                email: document.getElementById('email').value,
-                phoneNumber: document.getElementById('phone').value,
-                membershipTier: document.getElementById('membershipTier').value,
-                status: document.getElementById('userStatus').value,
-                updatedAt: new Date().toISOString()
-            };
-            
-            if (!userId) {
-                // New user
-                userData.joinedDate = new Date().toISOString();
-                userData.lastLogin = new Date().toISOString();
-                userData.membershipSince = new Date().toISOString();
-                
-                const newUserId = `user_${Date.now()}`;
-                database.ref(`users/${newUserId}`).set(userData)
-                    .then(() => {
-                        showAlert('User added successfully!', 'success');
-                        document.getElementById('userModal').style.display = 'none';
-                    })
-                    .catch((error) => {
-                        showAlert('Error adding user: ' + error.message, 'error');
-                    });
-            } else {
-                // Update existing user
-                database.ref(`users/${userId}`).update(userData)
-                    .then(() => {
-                        showAlert('User updated successfully!', 'success');
-                        document.getElementById('userModal').style.display = 'none';
-                    })
-                    .catch((error) => {
-                        showAlert('Error updating user: ' + error.message, 'error');
-                    });
-            }
-        });
-
-        // Similar functions would be implemented for posts, books, and events
-        // Due to length, I'll show the pattern for users above
-
-        // Utility Functions
+        // Utility functions
         function showLoginForm() {
             loginContainer.style.display = 'flex';
             adminPanel.style.display = 'none';
             loginForm.reset();
-            
-            // Reset button state
             loginBtn.disabled = false;
             loginBtnText.textContent = 'Login to Admin Panel';
             loginSpinner.style.display = 'none';
@@ -1805,10 +2980,38 @@
         function showAdminPanel(user) {
             loginContainer.style.display = 'none';
             adminPanel.style.display = 'flex';
-            
-            // Update admin info
             document.getElementById('adminName').textContent = user.displayName || 'THE SONGA Admin';
             document.getElementById('adminEmail').textContent = user.email;
+        }
+
+        function showToast(message, type) {
+            const toast = document.getElementById('toast');
+            const toastIcon = document.getElementById('toastIcon');
+            const toastMessage = document.getElementById('toastMessage');
+            
+            // Set icon based on type
+            switch(type) {
+                case 'success':
+                    toastIcon.className = 'fas fa-check-circle';
+                    toast.className = 'toast toast-success';
+                    break;
+                case 'error':
+                    toastIcon.className = 'fas fa-exclamation-circle';
+                    toast.className = 'toast toast-error';
+                    break;
+                case 'warning':
+                    toastIcon.className = 'fas fa-exclamation-triangle';
+                    toast.className = 'toast toast-warning';
+                    break;
+            }
+            
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+            
+            // Auto-hide after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
         }
 
         function showAlert(message, type) {
@@ -1817,25 +3020,128 @@
             alert.className = `alert alert-${type}`;
             alert.style.display = 'block';
             
-            // Auto-hide after 5 seconds
             setTimeout(() => {
                 alert.style.display = 'none';
             }, 5000);
         }
 
-        // Add close modal functionality
-        document.querySelectorAll('.close-modal').forEach(btn => {
-            btn.addEventListener('click', function() {
-                this.closest('.modal').style.display = 'none';
-            });
-        });
+        function logActivity(action, details) {
+            const logId = `log_${Date.now()}`;
+            const logData = {
+                id: logId,
+                action: action,
+                userId: currentUser?.uid || 'system',
+                details: details,
+                timestamp: new Date().toISOString(),
+                ipAddress: '127.0.0.1' // In production, get real IP
+            };
+            
+            database.ref(`systemLogs/${logId}`).set(logData);
+        }
 
-        // Close modal when clicking outside
-        window.addEventListener('click', (e) => {
-            if (e.target.classList.contains('modal')) {
-                e.target.style.display = 'none';
+        function formatDateTimeForInput(date) {
+            return date.toISOString().slice(0, 16);
+        }
+
+        function getMembershipBadgeClass(tier) {
+            switch(tier) {
+                case 'admin': return 'status-active';
+                case 'visionary': return 'status-published';
+                case 'scholar': return 'status-pending';
+                default: return 'status-draft';
             }
-        });
+        }
+
+        function getCategoryBadgeClass(category) {
+            switch(category) {
+                case 'announcement': return 'status-active';
+                case 'event': return 'status-published';
+                case 'resource': return 'status-pending';
+                default: return 'status-draft';
+            }
+        }
+
+        function getStatusBadgeClass(status) {
+            switch(status) {
+                case 'published': return 'status-published';
+                case 'draft': return 'status-draft';
+                case 'archived': return 'status-archived';
+                default: return 'status-draft';
+            }
+        }
+
+        function getEventStatusBadgeClass(status) {
+            switch(status) {
+                case 'upcoming': return 'status-active';
+                case 'ongoing': return 'status-published';
+                case 'past': return 'status-archived';
+                case 'cancelled': return 'status-inactive';
+                default: return 'status-draft';
+            }
+        }
+
+        function getPlanPopularityBadgeClass(popularity) {
+            switch(popularity) {
+                case 'premium': return 'status-active';
+                case 'popular': return 'status-published';
+                case 'standard': return 'status-draft';
+                default: return 'status-draft';
+            }
+        }
+
+        // Initialize notifications
+        function checkNotifications() {
+            // Check for upcoming events
+            database.ref('events').once('value').then((snapshot) => {
+                const events = snapshot.val();
+                let notificationCount = 0;
+                
+                if (events) {
+                    const now = new Date();
+                    Object.values(events).forEach(event => {
+                        if (event.status === 'upcoming' && event.date) {
+                            const eventDate = new Date(event.date);
+                            const hoursDiff = (eventDate - now) / (1000 * 60 * 60);
+                            
+                            // Notify for events happening in next 24 hours
+                            if (hoursDiff > 0 && hoursDiff <= 24) {
+                                notificationCount++;
+                            }
+                        }
+                    });
+                }
+                
+                // Check for overdue books
+                database.ref('bookBorrowing').once('value').then((borrowSnapshot) => {
+                    const borrows = borrowSnapshot.val();
+                    
+                    if (borrows) {
+                        const today = new Date();
+                        Object.values(borrows).forEach(borrow => {
+                            if (borrow.status === 'borrowed' && borrow.dueDate) {
+                                const dueDate = new Date(borrow.dueDate);
+                                if (dueDate < today) {
+                                    notificationCount++;
+                                }
+                            }
+                        });
+                    }
+                    
+                    // Update notification badge
+                    const badge = document.getElementById('notificationCount');
+                    if (notificationCount > 0) {
+                        badge.textContent = notificationCount;
+                        badge.style.display = 'flex';
+                    } else {
+                        badge.style.display = 'none';
+                    }
+                });
+            });
+        }
+
+        // Check notifications every 5 minutes
+        setInterval(checkNotifications, 300000);
+        checkNotifications(); // Initial check
     </script>
 </body>
 </html>
