@@ -7,14 +7,10 @@
     <link rel="icon" type="image/x-icon" href="https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Google Sign-In API -->
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-    
-    <!-- Firebase SDK -->
+    <!-- Firebase SDK for Authentication ONLY -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, get, set, update, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBDZicoo7dFLtSmgRPvQE_gdm-tNOyCTXA",
@@ -22,24 +18,17 @@
             projectId: "the-songa-77b1b",
             storageBucket: "the-songa-77b1b.firebasestorage.app",
             messagingSenderId: "123922889572",
-            appId: "1:123922889572:web:482b2a624930baaf92d871",
-            databaseURL: "https://the-songa-77b1b-default-rtdb.firebaseio.com/"
+            appId: "1:123922889572:web:482b2a624930baaf92d871"
         };
 
         const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
         const auth = getAuth(app);
 
-        window.firebase = {
-            database,
+        window.firebaseAuth = {
             auth,
-            ref,
-            get,
-            set,
-            update,
-            push,
-            onValue,
-            remove,
+            GoogleAuthProvider,
+            signInWithPopup,
+            signOut,
             onAuthStateChanged
         };
     </script>
@@ -68,7 +57,8 @@
             --like-red: #f91880;
             --retweet-green: #00ba7c;
             --comment-blue: #1d9bf0;
-            --share-blue: #1d9bf0;
+            --whatsapp-green: #25D366;
+            --whatsapp-dark: #128C7E;
         }
 
         html {
@@ -80,9 +70,10 @@
             color: var(--text-primary);
             line-height: 1.6;
             padding-bottom: 70px;
+            overflow-x: hidden;
         }
 
-        /* Header Styles - Twitter-like */
+        /* Header Styles */
         header {
             background-color: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
@@ -293,6 +284,42 @@
             margin: 2rem 0;
         }
 
+        .google-signin-btn {
+            background: #4285F4;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 14px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(66, 133, 244, 0.3);
+        }
+
+        .google-signin-btn:hover {
+            background: #3367D6;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(66, 133, 244, 0.4);
+        }
+
+        .google-signin-btn i {
+            font-size: 18px;
+            background: white;
+            color: #4285F4;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .close-modal {
             position: absolute;
             top: 15px;
@@ -315,7 +342,7 @@
             background: rgba(0, 0, 0, 0.3);
         }
 
-        /* Main Content - Social Media Feed */
+        /* Main Content */
         .container {
             max-width: 600px;
             margin: 0 auto;
@@ -429,7 +456,7 @@
             cursor: not-allowed;
         }
 
-        /* Community Posts Feed */
+        /* Community Posts */
         .community-posts {
             margin: 1rem 0;
         }
@@ -453,7 +480,7 @@
             color: var(--gold);
         }
 
-        /* Post Card - Twitter Style */
+        /* Post Card */
         .post-card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -542,31 +569,6 @@
             margin-bottom: 0;
         }
 
-        .post-content ul, .post-content ol {
-            margin: 0.8rem 0;
-            padding-left: 1.5rem;
-        }
-
-        .post-content li {
-            margin-bottom: 0.4rem;
-        }
-
-        .post-image {
-            width: 100%;
-            border-radius: 12px;
-            margin: 1rem 0;
-            overflow: hidden;
-            max-height: 400px;
-            background: #000;
-        }
-
-        .post-image img {
-            width: 100%;
-            height: auto;
-            object-fit: cover;
-            display: block;
-        }
-
         .post-stats {
             display: flex;
             gap: 20px;
@@ -623,7 +625,7 @@
         }
 
         .post-action.share:hover {
-            color: var(--share-blue);
+            color: var(--whatsapp-green);
         }
 
         .post-action.liked {
@@ -776,67 +778,11 @@
             margin-top: 4px;
         }
 
-        .comment-actions {
-            display: flex;
-            gap: 15px;
-            margin-top: 8px;
-            font-size: 0.8rem;
-        }
-
-        .comment-action {
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-
-        .comment-action:hover {
-            color: var(--gold-dark);
-        }
-
-        .comment-action.like:hover {
-            color: var(--like-red);
-        }
-
         .no-comments {
             text-align: center;
             padding: 2rem;
             color: var(--text-secondary);
             font-style: italic;
-        }
-
-        /* Loading Spinner */
-        .loading-spinner {
-            text-align: center;
-            padding: 2rem;
-            color: var(--text-secondary);
-        }
-
-        .spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid var(--gold);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 1rem;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* No Posts Message */
-        .no-posts {
-            text-align: center;
-            padding: 3rem 1rem;
-            color: var(--text-secondary);
-        }
-
-        .no-posts-icon {
-            font-size: 3rem;
-            color: var(--light-gray);
-            margin-bottom: 1rem;
         }
 
         /* Notification */
@@ -927,6 +873,31 @@
             color: var(--gold-dark);
         }
 
+        /* Offline Indicator */
+        .offline-indicator {
+            position: fixed;
+            bottom: 70px;
+            left: 0;
+            right: 0;
+            background: var(--whatsapp-green);
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-size: 0.9rem;
+            z-index: 99;
+            display: none;
+        }
+
+        .offline-indicator.show {
+            display: block;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .container {
@@ -959,53 +930,15 @@
             .dropdown-icon {
                 display: none;
             }
-            
-            .notification {
-                right: 10px;
-                left: 10px;
-                max-width: none;
-            }
         }
 
-        @media (max-width: 480px) {
-            .post-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 8px;
-            }
-            
-            .post-author-info {
-                width: 100%;
-            }
-            
-            .post-actions {
-                flex-wrap: wrap;
-                gap: 8px;
-            }
-            
-            .post-action {
-                flex: 1;
-                min-width: auto;
-                justify-content: center;
-            }
-            
-            .brand-name {
-                font-size: 1.1rem;
-            }
-            
-            .logo img {
-                height: 32px;
-                width: 32px;
-            }
-        }
-
-        /* Floating Action Button for Mobile */
+        /* Floating Action Button */
         .fab {
             position: fixed;
             bottom: 80px;
             right: 20px;
-            background: var(--gold);
-            color: var(--black);
+            background: var(--whatsapp-green);
+            color: white;
             width: 56px;
             height: 56px;
             border-radius: 50%;
@@ -1014,7 +947,7 @@
             justify-content: center;
             font-size: 1.5rem;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
             transition: all 0.3s;
             z-index: 99;
             display: none;
@@ -1050,6 +983,11 @@
     </style>
 </head>
 <body>
+    <!-- Offline Indicator -->
+    <div class="offline-indicator" id="offlineIndicator">
+        <i class="fas fa-wifi"></i> You're offline. Posts are saved locally.
+    </div>
+
     <!-- Notification -->
     <div class="notification" id="notification">
         <i class="fas fa-info-circle"></i>
@@ -1061,32 +999,21 @@
         <div class="signin-content">
             <div class="signin-header">
                 <h2>Welcome to THE SONGA</h2>
-                <p>Join our community of growth and connection</p>
+                <p>Your private community space</p>
                 <button class="close-modal" id="closeSigninModal">&times;</button>
             </div>
             <div class="signin-body">
-                <p>Sign in to connect with our community, share insights, and grow together.</p>
+                <p>Sign in to connect with our community. All your posts and interactions are stored locally on your device.</p>
                 
                 <div class="google-signin-container">
-                    <div id="g_id_onload"
-                         data-client_id="123922889572-9dmjivsoese0b0o78poo5mgu7nqqm6e6.apps.googleusercontent.com"
-                         data-context="signin"
-                         data-ux_mode="popup"
-                         data-callback="handleGoogleSignIn"
-                         data-auto_prompt="false">
-                    </div>
-                    <div class="g_id_signin"
-                         data-type="standard"
-                         data-shape="pill"
-                         data-theme="outline"
-                         data-text="signin_with"
-                         data-size="large"
-                         data-logo_alignment="left">
-                    </div>
+                    <button class="google-signin-btn" id="googleSignInBtn">
+                        <i class="fab fa-google"></i>
+                        <span>Continue with Google</span>
+                    </button>
                 </div>
                 
                 <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 1.5rem;">
-                    By signing in, you agree to our community guidelines and terms of service.
+                    <i class="fas fa-lock"></i> End-to-end privacy: Your posts are stored on your device only
                 </p>
             </div>
         </div>
@@ -1100,7 +1027,7 @@
                 <div class="brand-name">THE SONGA</div>
             </div>
             <div class="auth-section">
-                <button class="create-post-btn" id="createPostBtnHeader">
+                <button class="create-post-btn" id="createPostBtnHeader" style="display: none;">
                     <i class="fas fa-feather-alt"></i>
                     <span>Post</span>
                 </button>
@@ -1115,17 +1042,13 @@
                             <i class="fas fa-user"></i>
                             <span>My Profile</span>
                         </div>
-                        <div class="dropdown-item" id="membershipOption">
-                            <i class="fas fa-crown"></i>
-                            <span>Membership Status</span>
+                        <div class="dropdown-item" id="exportDataOption">
+                            <i class="fas fa-download"></i>
+                            <span>Export My Data</span>
                         </div>
-                        <div class="dropdown-item" id="notificationsOption">
-                            <i class="fas fa-bell"></i>
-                            <span>Notifications</span>
-                        </div>
-                        <div class="dropdown-item" id="settingsOption">
-                            <i class="fas fa-cog"></i>
-                            <span>Preferences</span>
+                        <div class="dropdown-item" id="clearLocalDataOption">
+                            <i class="fas fa-trash"></i>
+                            <span>Clear Local Data</span>
                         </div>
                         <div class="dropdown-item" id="signOutOption">
                             <i class="fas fa-sign-out-alt"></i>
@@ -1137,7 +1060,7 @@
         </div>
     </header>
 
-    <!-- Main Content - Social Media Feed -->
+    <!-- Main Content -->
     <main class="container">
         <!-- Create Post Section -->
         <div class="create-post-section" id="createPostSection">
@@ -1151,14 +1074,14 @@
             </div>
             <div class="create-post-actions">
                 <div class="post-options">
-                    <button class="post-option" title="Add Image">
+                    <button class="post-option" title="Add Image" onclick="showNotification('Image upload coming soon!')">
                         <i class="fas fa-image"></i>
                     </button>
-                    <button class="post-option" title="Add Emoji">
-                        <i class="fas fa-smile"></i>
+                    <button class="post-option" title="Add Video" onclick="showNotification('Video upload coming soon!')">
+                        <i class="fas fa-video"></i>
                     </button>
-                    <button class="post-option" title="Add Hashtag">
-                        <i class="fas fa-hashtag"></i>
+                    <button class="post-option" title="Record Audio" onclick="showNotification('Audio recording coming soon!')">
+                        <i class="fas fa-microphone"></i>
                     </button>
                 </div>
                 <button class="post-submit" id="submitPostBtn" disabled>
@@ -1171,8 +1094,11 @@
         <div class="community-posts">
             <div class="posts-header">
                 <h1 class="posts-title">
-                    <i class="fas fa-users"></i>
+                    <i class="fas fa-comments"></i>
                     Community Feed
+                    <span style="font-size: 0.8rem; color: var(--text-secondary); margin-left: 10px;">
+                        <i class="fas fa-lock"></i> Local Storage
+                    </span>
                 </h1>
             </div>
 
@@ -1180,7 +1106,7 @@
             <div id="postsContainer">
                 <div class="loading-spinner" id="loadingSpinner">
                     <div class="spinner"></div>
-                    <p>Loading posts...</p>
+                    <p>Loading your local posts...</p>
                 </div>
             </div>
         </div>
@@ -1205,462 +1131,899 @@
             <i class="fas fa-book nav-icon"></i>
             <span>Library</span>
         </a>
-        <a href="community.html" class="nav-item">
-            <i class="fas fa-users nav-icon"></i>
-            <span>Network</span>
+        <a href="about.html" class="nav-item">
+            <i class="fas fa-info-circle nav-icon"></i>
+            <span>About</span>
         </a>
     </nav>
 
     <script>
-        // Wait for Firebase to load
-        document.addEventListener('DOMContentLoaded', async function() {
-            // Wait for Firebase SDK
-            while (!window.firebase) {
-                await new Promise(resolve => setTimeout(resolve, 100));
-            }
-            
-            const { 
-                database, auth, ref, get, set, update, push, onValue, remove, onAuthStateChanged 
-            } = window.firebase;
-
-            // Global state
-            let currentUser = null;
-            let dropdownOpen = false;
-            let postsData = {};
-            let likedPosts = new Set();
-            let retweetedPosts = new Set();
-            let savedPosts = new Set();
-            let activeComments = null;
-
-            // DOM Elements
-            const signinModal = document.getElementById('signinModal');
-            const userProfile = document.getElementById('userProfile');
-            const userAvatar = document.getElementById('userAvatar');
-            const userDisplayName = document.getElementById('userDisplayName');
-            const userDropdown = document.getElementById('userDropdown');
-            const notification = document.getElementById('notification');
-            const notificationMessage = document.getElementById('notificationMessage');
-            const postsContainer = document.getElementById('postsContainer');
-            const loadingSpinner = document.getElementById('loadingSpinner');
-            const postContentInput = document.getElementById('postContentInput');
-            const submitPostBtn = document.getElementById('submitPostBtn');
-            const createPostAvatar = document.getElementById('createPostAvatar');
-            const createPostBtnHeader = document.getElementById('createPostBtnHeader');
-            const createPostSection = document.getElementById('createPostSection');
-            const fabBtn = document.getElementById('fabBtn');
-
-            // Initialize
-            init();
-
-            async function init() {
-                setupEventListeners();
-                checkAuthState();
+        // WhatsApp-style Local Storage System
+        class LocalStorageManager {
+            constructor() {
+                this.prefix = 'the_songa_';
+                this.maxStorageSize = 5 * 1024 * 1024; // 5MB
             }
 
-            function setupEventListeners() {
-                // Post content input
-                postContentInput.addEventListener('input', function() {
-                    submitPostBtn.disabled = this.value.trim().length === 0;
-                });
-
-                // Submit post
-                submitPostBtn.addEventListener('click', createPost);
-
-                // Enter key to submit post
-                postContentInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        if (!submitPostBtn.disabled) {
-                            createPost();
-                        }
-                    }
-                });
-
-                // Header create post button
-                createPostBtnHeader.addEventListener('click', function() {
-                    postContentInput.focus();
-                    if (window.innerWidth <= 768) {
-                        createPostSection.classList.add('mobile-visible');
-                    }
-                });
-
-                // Mobile FAB
-                fabBtn.addEventListener('click', function() {
-                    createPostSection.classList.add('mobile-visible');
-                    postContentInput.focus();
-                });
-
-                // Close mobile post creator
-                createPostSection.addEventListener('click', function(e) {
-                    if (e.target === this && window.innerWidth <= 768) {
-                        this.classList.remove('mobile-visible');
-                    }
-                });
-
-                // Close mobile post creator with escape key
-                document.addEventListener('keydown', function(e) {
-                    if (e.key === 'Escape' && window.innerWidth <= 768) {
-                        createPostSection.classList.remove('mobile-visible');
-                    }
-                });
-            }
-
-            function checkAuthState() {
-                onAuthStateChanged(auth, async (user) => {
-                    if (user) {
-                        currentUser = user;
-                        await loadUserProfile();
-                        updateUIForMember();
-                        signinModal.classList.remove('active');
-                        loadPosts();
-                    } else {
-                        currentUser = null;
-                        signinModal.classList.add('active');
-                        showDefaultPosts();
-                    }
-                });
-            }
-
-            async function loadUserProfile() {
+            // Save data with automatic cleanup
+            setItem(key, data) {
                 try {
-                    const userRef = ref(database, `users/${currentUser.uid}`);
-                    const snapshot = await get(userRef);
+                    const fullKey = this.prefix + key;
+                    const jsonData = JSON.stringify(data);
                     
-                    if (snapshot.exists()) {
-                        const userData = snapshot.val();
-                        updateUserProfileUI(userData);
-                        
-                        // Load user interactions
-                        if (userData.likedPosts) {
-                            likedPosts = new Set(userData.likedPosts);
-                        }
-                        if (userData.retweetedPosts) {
-                            retweetedPosts = new Set(userData.retweetedPosts);
-                        }
-                        if (userData.savedPosts) {
-                            savedPosts = new Set(userData.savedPosts);
-                        }
+                    // Check storage size
+                    if (this.getStorageSize() + jsonData.length > this.maxStorageSize) {
+                        this.cleanupOldData();
                     }
+                    
+                    localStorage.setItem(fullKey, jsonData);
+                    this.updateLastModified(key);
+                    return true;
                 } catch (error) {
-                    console.error('Error loading user profile:', error);
+                    console.error('Error saving to localStorage:', error);
+                    return false;
                 }
             }
 
-            function updateUserProfileUI(userData) {
-                userAvatar.src = userData.profilePicture || getDefaultAvatar();
-                userDisplayName.textContent = userData.firstName || currentUser.displayName || 'Member';
-                createPostAvatar.src = userData.profilePicture || getDefaultAvatar();
+            // Get data
+            getItem(key) {
+                try {
+                    const fullKey = this.prefix + key;
+                    const data = localStorage.getItem(fullKey);
+                    return data ? JSON.parse(data) : null;
+                } catch (error) {
+                    console.error('Error reading from localStorage:', error);
+                    return null;
+                }
             }
 
-            function getDefaultAvatar() {
-                return 'https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp';
+            // Remove data
+            removeItem(key) {
+                try {
+                    const fullKey = this.prefix + key;
+                    localStorage.removeItem(fullKey);
+                    return true;
+                } catch (error) {
+                    console.error('Error removing from localStorage:', error);
+                    return false;
+                }
             }
 
-            function updateUIForMember() {
-                userProfile.style.display = 'flex';
-                createPostBtnHeader.style.display = 'flex';
-                
-                // Add user dropdown event listeners
-                userProfile.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    toggleDropdown();
-                });
-                
-                // Dropdown option event listeners
-                document.getElementById('viewProfileOption').addEventListener('click', function(e) {
-                    e.preventDefault();
-                    showNotification('Profile feature coming soon!');
-                    closeDropdown();
-                });
-                
-                document.getElementById('membershipOption').addEventListener('click', function(e) {
-                    e.preventDefault();
-                    showNotification('Your membership is active and in good standing.');
-                    closeDropdown();
-                });
-                
-                document.getElementById('notificationsOption').addEventListener('click', function(e) {
-                    e.preventDefault();
-                    showNotification('Notifications feature coming soon!');
-                    closeDropdown();
-                });
-                
-                document.getElementById('settingsOption').addEventListener('click', function(e) {
-                    e.preventDefault();
-                    showNotification('Settings feature coming soon!');
-                    closeDropdown();
-                });
-                
-                document.getElementById('signOutOption').addEventListener('click', function(e) {
-                    e.preventDefault();
-                    signOut();
-                    closeDropdown();
-                });
-                
-                // Close dropdown when clicking elsewhere
-                document.addEventListener('click', function() {
-                    closeDropdown();
-                });
-                
-                userDropdown.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                });
+            // Clear all app data
+            clearAll() {
+                try {
+                    Object.keys(localStorage).forEach(key => {
+                        if (key.startsWith(this.prefix)) {
+                            localStorage.removeItem(key);
+                        }
+                    });
+                    return true;
+                } catch (error) {
+                    console.error('Error clearing localStorage:', error);
+                    return false;
+                }
             }
 
-            function toggleDropdown() {
-                dropdownOpen = !dropdownOpen;
-                if (dropdownOpen) {
-                    userDropdown.classList.add('active');
+            // Get storage size
+            getStorageSize() {
+                let total = 0;
+                Object.keys(localStorage).forEach(key => {
+                    if (key.startsWith(this.prefix)) {
+                        total += localStorage[key].length;
+                    }
+                });
+                return total;
+            }
+
+            // Cleanup old data
+            cleanupOldData() {
+                const items = [];
+                Object.keys(localStorage).forEach(key => {
+                    if (key.startsWith(this.prefix)) {
+                        try {
+                            const data = JSON.parse(localStorage[key]);
+                            if (data.lastModified) {
+                                items.push({
+                                    key,
+                                    lastModified: new Date(data.lastModified),
+                                    size: localStorage[key].length
+                                });
+                            }
+                        } catch (e) {
+                            // Skip invalid JSON
+                        }
+                    }
+                });
+
+                // Sort by oldest first
+                items.sort((a, b) => a.lastModified - b.lastModified);
+
+                // Remove oldest items until under limit
+                let currentSize = this.getStorageSize();
+                for (const item of items) {
+                    if (currentSize <= this.maxStorageSize * 0.8) break;
+                    localStorage.removeItem(item.key);
+                    currentSize -= item.size;
+                }
+            }
+
+            // Update last modified timestamp
+            updateLastModified(key) {
+                const data = this.getItem(key);
+                if (data && typeof data === 'object') {
+                    data.lastModified = new Date().toISOString();
+                    this.setItem(key, data);
+                }
+            }
+
+            // Export all data
+            exportData() {
+                const exportData = {};
+                Object.keys(localStorage).forEach(key => {
+                    if (key.startsWith(this.prefix)) {
+                        try {
+                            exportData[key.replace(this.prefix, '')] = JSON.parse(localStorage[key]);
+                        } catch (e) {
+                            exportData[key.replace(this.prefix, '')] = localStorage[key];
+                        }
+                    }
+                });
+                return exportData;
+            }
+
+            // Import data
+            importData(data) {
+                Object.keys(data).forEach(key => {
+                    this.setItem(key, data[key]);
+                });
+            }
+        }
+
+        // Post Manager
+        class PostManager {
+            constructor() {
+                this.storage = new LocalStorageManager();
+                this.postsKey = 'posts';
+                this.commentsKey = 'comments';
+                this.likesKey = 'likes';
+                this.savesKey = 'saves';
+            }
+
+            // Create new post
+            createPost(content, author, authorAvatar, type = 'user-post') {
+                const postId = 'post_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                const post = {
+                    id: postId,
+                    authorId: author.id || 'local_user',
+                    authorName: author.name,
+                    authorAvatar: authorAvatar,
+                    content: content,
+                    likes: 0,
+                    comments: 0,
+                    shares: 0,
+                    type: type,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                    isPinned: false,
+                    tags: this.extractTags(content)
+                };
+
+                // Save post
+                const posts = this.getAllPosts();
+                posts.unshift(post); // Add to beginning
+                this.storage.setItem(this.postsKey, posts);
+
+                return post;
+            }
+
+            // Get all posts
+            getAllPosts() {
+                return this.storage.getItem(this.postsKey) || [];
+            }
+
+            // Get post by ID
+            getPost(postId) {
+                const posts = this.getAllPosts();
+                return posts.find(post => post.id === postId);
+            }
+
+            // Update post
+            updatePost(postId, updates) {
+                const posts = this.getAllPosts();
+                const index = posts.findIndex(post => post.id === postId);
+                if (index !== -1) {
+                    posts[index] = { ...posts[index], ...updates, updatedAt: new Date().toISOString() };
+                    this.storage.setItem(this.postsKey, posts);
+                    return true;
+                }
+                return false;
+            }
+
+            // Delete post
+            deletePost(postId) {
+                const posts = this.getAllPosts();
+                const filteredPosts = posts.filter(post => post.id !== postId);
+                this.storage.setItem(this.postsKey, filteredPosts);
+                
+                // Also delete associated comments and likes
+                this.deleteComments(postId);
+                this.deleteLikes(postId);
+                
+                return true;
+            }
+
+            // Like/Unlike post
+            toggleLike(postId, userId) {
+                const likes = this.storage.getItem(this.likesKey) || {};
+                if (!likes[postId]) {
+                    likes[postId] = [];
+                }
+
+                const userIndex = likes[postId].indexOf(userId);
+                if (userIndex === -1) {
+                    // Like
+                    likes[postId].push(userId);
+                    
+                    // Update post likes count
+                    const post = this.getPost(postId);
+                    if (post) {
+                        this.updatePost(postId, { likes: post.likes + 1 });
+                    }
                 } else {
-                    userDropdown.classList.remove('active');
-                }
-            }
-
-            function closeDropdown() {
-                dropdownOpen = false;
-                userDropdown.classList.remove('active');
-            }
-
-            async function signOut() {
-                try {
-                    await auth.signOut();
-                    currentUser = null;
-                    userProfile.style.display = 'none';
-                    createPostBtnHeader.style.display = 'none';
-                    likedPosts.clear();
-                    retweetedPosts.clear();
-                    savedPosts.clear();
-                    showDefaultPosts();
-                    showNotification('Signed out successfully', 'success');
-                } catch (error) {
-                    console.error('Sign out error:', error);
-                    showNotification('Error signing out', 'error');
-                }
-            }
-
-            async function createPost() {
-                const content = postContentInput.value.trim();
-                
-                if (!content || !currentUser) {
-                    showNotification('Please sign in and enter post content', 'error');
-                    return;
-                }
-
-                try {
-                    submitPostBtn.disabled = true;
-                    submitPostBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Posting...';
-
-                    // Get user data
-                    const userRef = ref(database, `users/${currentUser.uid}`);
-                    const userSnapshot = await get(userRef);
-                    const userData = userSnapshot.val();
-
-                    const postData = {
-                        authorId: currentUser.uid,
-                        authorName: userData?.firstName ? `${userData.firstName} ${userData.lastName || ''}`.trim() : 'Member',
-                        authorAvatar: userData?.profilePicture || getDefaultAvatar(),
-                        content: content,
-                        likes: 0,
-                        comments: 0,
-                        retweets: 0,
-                        shares: 0,
-                        createdAt: new Date().toISOString(),
-                        updatedAt: new Date().toISOString(),
-                        isPinned: false,
-                        status: 'published',
-                        type: 'user-post',
-                        category: 'general',
-                        tags: extractHashtags(content)
-                    };
-
-                    // Save to Firebase
-                    const newPostRef = push(ref(database, 'communityPosts'));
-                    await set(newPostRef, { id: newPostRef.key, ...postData });
-
-                    // Clear input
-                    postContentInput.value = '';
-                    submitPostBtn.disabled = true;
+                    // Unlike
+                    likes[postId].splice(userIndex, 1);
                     
-                    // Hide mobile post creator
-                    if (window.innerWidth <= 768) {
-                        createPostSection.classList.remove('mobile-visible');
+                    // Update post likes count
+                    const post = this.getPost(postId);
+                    if (post) {
+                        this.updatePost(postId, { likes: Math.max(0, post.likes - 1) });
                     }
-
-                    showNotification('Post published successfully!', 'success');
-                    
-                    // Reload posts
-                    loadPosts();
-
-                } catch (error) {
-                    console.error('Error creating post:', error);
-                    showNotification('Error creating post', 'error');
-                } finally {
-                    submitPostBtn.disabled = false;
-                    submitPostBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Post';
                 }
+
+                this.storage.setItem(this.likesKey, likes);
+                return userIndex === -1; // Returns true if liked, false if unliked
             }
 
-            function extractHashtags(content) {
+            // Check if user liked a post
+            hasLiked(postId, userId) {
+                const likes = this.storage.getItem(this.likesKey) || {};
+                return likes[postId] && likes[postId].includes(userId);
+            }
+
+            // Save/Unsave post
+            toggleSave(postId, userId) {
+                const saves = this.storage.getItem(this.savesKey) || {};
+                if (!saves[userId]) {
+                    saves[userId] = [];
+                }
+
+                const postIndex = saves[userId].indexOf(postId);
+                if (postIndex === -1) {
+                    // Save
+                    saves[userId].push(postId);
+                } else {
+                    // Unsave
+                    saves[userId].splice(postIndex, 1);
+                }
+
+                this.storage.setItem(this.savesKey, saves);
+                return postIndex === -1; // Returns true if saved, false if unsaved
+            }
+
+            // Check if user saved a post
+            hasSaved(postId, userId) {
+                const saves = this.storage.getItem(this.savesKey) || {};
+                return saves[userId] && saves[userId].includes(postId);
+            }
+
+            // Add comment
+            addComment(postId, content, author, authorAvatar) {
+                const commentId = 'comment_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                const comment = {
+                    id: commentId,
+                    postId: postId,
+                    authorId: author.id || 'local_user',
+                    authorName: author.name,
+                    authorAvatar: authorAvatar,
+                    content: content,
+                    createdAt: new Date().toISOString()
+                };
+
+                // Save comment
+                const comments = this.storage.getItem(this.commentsKey) || {};
+                if (!comments[postId]) {
+                    comments[postId] = [];
+                }
+                comments[postId].push(comment);
+                this.storage.setItem(this.commentsKey, comments);
+
+                // Update post comment count
+                const post = this.getPost(postId);
+                if (post) {
+                    this.updatePost(postId, { comments: (post.comments || 0) + 1 });
+                }
+
+                return comment;
+            }
+
+            // Get comments for post
+            getComments(postId) {
+                const comments = this.storage.getItem(this.commentsKey) || {};
+                return comments[postId] || [];
+            }
+
+            // Delete comments for post
+            deleteComments(postId) {
+                const comments = this.storage.getItem(this.commentsKey) || {};
+                delete comments[postId];
+                this.storage.setItem(this.commentsKey, comments);
+            }
+
+            // Delete likes for post
+            deleteLikes(postId) {
+                const likes = this.storage.getItem(this.likesKey) || {};
+                delete likes[postId];
+                this.storage.setItem(this.likesKey, likes);
+            }
+
+            // Extract hashtags from content
+            extractTags(content) {
                 const hashtags = content.match(/#\w+/g);
                 return hashtags ? hashtags.map(tag => tag.substring(1)) : [];
             }
 
-            async function loadPosts() {
-                try {
-                    loadingSpinner.style.display = 'block';
-                    postsContainer.innerHTML = '<div class="loading-spinner" id="loadingSpinner"><div class="spinner"></div><p>Loading posts...</p></div>';
+            // Get user's posts
+            getUserPosts(userId) {
+                const posts = this.getAllPosts();
+                return posts.filter(post => post.authorId === userId);
+            }
 
-                    const postsRef = ref(database, 'communityPosts');
-                    const snapshot = await get(postsRef);
-                    const posts = snapshot.val() || {};
+            // Get saved posts for user
+            getSavedPosts(userId) {
+                const saves = this.storage.getItem(this.savesKey) || {};
+                const savedPostIds = saves[userId] || [];
+                const posts = this.getAllPosts();
+                return posts.filter(post => savedPostIds.includes(post.id));
+            }
 
-                    // Convert to array and sort by date
-                    const postsArray = Object.entries(posts)
-                        .map(([id, post]) => ({ id, ...post }))
-                        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            // Clear all data
+            clearAllData() {
+                this.storage.clearAll();
+            }
 
-                    if (postsArray.length === 0) {
-                        showNoPostsMessage();
-                        return;
+            // Export all data
+            exportAllData() {
+                return this.storage.exportData();
+            }
+        }
+
+        // Main Application
+        class THE_SONGA_App {
+            constructor() {
+                this.postManager = new PostManager();
+                this.currentUser = null;
+                this.isOnline = navigator.onLine;
+                this.initializeApp();
+            }
+
+            initializeApp() {
+                this.setupEventListeners();
+                this.checkAuthState();
+                this.setupOfflineDetection();
+                this.loadInitialPosts();
+            }
+
+            setupEventListeners() {
+                // Google Sign-In
+                document.getElementById('googleSignInBtn').addEventListener('click', () => this.signInWithGoogle());
+                
+                // Close modal
+                document.getElementById('closeSigninModal').addEventListener('click', () => {
+                    document.getElementById('signinModal').classList.remove('active');
+                });
+
+                // Create post
+                const postContentInput = document.getElementById('postContentInput');
+                const submitPostBtn = document.getElementById('submitPostBtn');
+                
+                postContentInput.addEventListener('input', () => {
+                    submitPostBtn.disabled = postContentInput.value.trim().length === 0;
+                });
+
+                submitPostBtn.addEventListener('click', () => this.createPost());
+
+                // Enter key to submit post
+                postContentInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        if (!submitPostBtn.disabled) {
+                            this.createPost();
+                        }
                     }
+                });
 
-                    // Render posts
-                    renderPosts(postsArray);
-                    postsData = posts;
+                // Mobile FAB
+                document.getElementById('fabBtn').addEventListener('click', () => {
+                    document.getElementById('createPostSection').classList.add('mobile-visible');
+                    postContentInput.focus();
+                });
+
+                // Header create post button
+                document.getElementById('createPostBtnHeader').addEventListener('click', () => {
+                    postContentInput.focus();
+                    if (window.innerWidth <= 768) {
+                        document.getElementById('createPostSection').classList.add('mobile-visible');
+                    }
+                });
+
+                // Dropdown items
+                document.getElementById('exportDataOption').addEventListener('click', () => this.exportData());
+                document.getElementById('clearLocalDataOption').addEventListener('click', () => this.clearLocalData());
+                document.getElementById('signOutOption').addEventListener('click', () => this.signOut());
+            }
+
+            setupOfflineDetection() {
+                window.addEventListener('online', () => {
+                    this.isOnline = true;
+                    document.getElementById('offlineIndicator').classList.remove('show');
+                    this.showNotification('You are back online', 'success');
+                });
+
+                window.addEventListener('offline', () => {
+                    this.isOnline = false;
+                    document.getElementById('offlineIndicator').classList.add('show');
+                    this.showNotification('You are offline. Posts saved locally.', 'info');
+                });
+            }
+
+            async signInWithGoogle() {
+                try {
+                    const { auth, GoogleAuthProvider, signInWithPopup } = window.firebaseAuth;
+                    const provider = new GoogleAuthProvider();
+                    
+                    const result = await signInWithPopup(auth, provider);
+                    this.currentUser = result.user;
+                    
+                    // Save user info locally
+                    const userData = {
+                        id: this.currentUser.uid,
+                        name: this.currentUser.displayName || 'User',
+                        email: this.currentUser.email,
+                        avatar: this.currentUser.photoURL || 'https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp',
+                        joinedDate: new Date().toISOString()
+                    };
+
+                    const storage = new LocalStorageManager();
+                    storage.setItem('currentUser', userData);
+
+                    this.updateUIAfterSignIn(userData);
+                    this.showNotification(`Welcome to THE SONGA, ${userData.name}!`, 'success');
 
                 } catch (error) {
-                    console.error('Error loading posts:', error);
-                    showNotification('Error loading posts', 'error');
-                    showDefaultPosts();
-                } finally {
-                    loadingSpinner.style.display = 'none';
+                    console.error('Sign-in error:', error);
+                    
+                    // Fallback: Create local user
+                    this.createLocalUser();
                 }
             }
 
-            function renderPosts(postsArray) {
-                postsContainer.innerHTML = '';
-                
-                postsArray.forEach(post => {
-                    const postElement = createPostElement(post);
-                    postsContainer.appendChild(postElement);
-                });
+            createLocalUser() {
+                const localUserId = 'local_' + Date.now();
+                const userData = {
+                    id: localUserId,
+                    name: 'Local User',
+                    email: 'local@user.com',
+                    avatar: 'https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp',
+                    joinedDate: new Date().toISOString(),
+                    isLocal: true
+                };
+
+                const storage = new LocalStorageManager();
+                storage.setItem('currentUser', userData);
+
+                this.currentUser = userData;
+                this.updateUIAfterSignIn(userData);
+                this.showNotification('Welcome to THE SONGA! Using local storage.', 'info');
             }
 
-            function createPostElement(post) {
-                const postCard = document.createElement('div');
-                postCard.className = `post-card ${post.type || 'general'}`;
-                postCard.dataset.postId = post.id;
-
-                const isLiked = likedPosts.has(post.id);
-                const isRetweeted = retweetedPosts.has(post.id);
-                const isSaved = savedPosts.has(post.id);
-                const isAdminPost = post.authorName === 'THE SONGA';
-
-                // Format time
-                const timeAgo = getTimeAgo(post.createdAt);
+            updateUIAfterSignIn(userData) {
+                // Update UI elements
+                document.getElementById('userAvatar').src = userData.avatar;
+                document.getElementById('userDisplayName').textContent = userData.name.split(' ')[0];
+                document.getElementById('createPostAvatar').src = userData.avatar;
                 
-                // Create post HTML
-                postCard.innerHTML = `
-                    <div class="post-header">
-                        <div class="post-avatar">
-                            <img src="${post.authorAvatar || getDefaultAvatar()}" alt="${post.authorName}">
-                        </div>
-                        <div class="post-author-info">
-                            <div class="post-author">
-                                ${post.authorName}
-                                ${isAdminPost ? '<i class="fas fa-check-circle verified-badge"></i>' : ''}
-                                <span class="post-handle">@${post.authorName.toLowerCase().replace(/\s+/g, '')}</span>
+                // Show user profile and post button
+                document.getElementById('userProfile').style.display = 'flex';
+                document.getElementById('createPostBtnHeader').style.display = 'flex';
+                
+                // Hide sign-in modal
+                document.getElementById('signinModal').classList.remove('active');
+                
+                // Load user-specific posts
+                this.loadPosts();
+            }
+
+            checkAuthState() {
+                const storage = new LocalStorageManager();
+                const savedUser = storage.getItem('currentUser');
+                
+                if (savedUser) {
+                    this.currentUser = savedUser;
+                    this.updateUIAfterSignIn(savedUser);
+                } else {
+                    // Show sign-in modal
+                    document.getElementById('signinModal').classList.add('active');
+                }
+            }
+
+            loadInitialPosts() {
+                // Add default welcome posts if no posts exist
+                const posts = this.postManager.getAllPosts();
+                if (posts.length === 0) {
+                    this.createDefaultPosts();
+                }
+                this.loadPosts();
+            }
+
+            createDefaultPosts() {
+                const welcomePost = this.postManager.createPost(
+                    'Welcome to THE SONGA community! This is your private space to connect, share, and grow. All your posts and interactions are stored locally on your device for complete privacy.',
+                    { id: 'system', name: 'THE SONGA' },
+                    'https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp',
+                    'announcement'
+                );
+
+                const tutorialPost = this.postManager.createPost(
+                    'How to use this platform:\n\n1. Sign in with Google or use local storage\n2. Create posts - they stay on your device\n3. Like, comment, and save posts\n4. All data is end-to-end private\n\n#Welcome #Privacy #Community',
+                    { id: 'system', name: 'THE SONGA' },
+                    'https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp',
+                    'resource'
+                );
+            }
+
+            async createPost() {
+                if (!this.currentUser) {
+                    this.showNotification('Please sign in first', 'error');
+                    return;
+                }
+
+                const content = document.getElementById('postContentInput').value.trim();
+                if (!content) {
+                    this.showNotification('Please enter some content', 'error');
+                    return;
+                }
+
+                try {
+                    const post = this.postManager.createPost(
+                        content,
+                        { id: this.currentUser.id, name: this.currentUser.name },
+                        this.currentUser.avatar
+                    );
+
+                    // Clear input
+                    document.getElementById('postContentInput').value = '';
+                    document.getElementById('submitPostBtn').disabled = true;
+                    
+                    // Hide mobile post creator
+                    if (window.innerWidth <= 768) {
+                        document.getElementById('createPostSection').classList.remove('mobile-visible');
+                    }
+
+                    this.showNotification('Post created locally!', 'success');
+                    this.loadPosts();
+
+                } catch (error) {
+                    console.error('Error creating post:', error);
+                    this.showNotification('Error creating post', 'error');
+                }
+            }
+
+            loadPosts() {
+                const postsContainer = document.getElementById('postsContainer');
+                const loadingSpinner = document.getElementById('loadingSpinner');
+                
+                loadingSpinner.style.display = 'block';
+                
+                setTimeout(() => {
+                    const posts = this.postManager.getAllPosts();
+                    
+                    if (posts.length === 0) {
+                        postsContainer.innerHTML = `
+                            <div class="no-posts">
+                                <div class="no-posts-icon">
+                                    <i class="fas fa-comments"></i>
+                                </div>
+                                <h3>No posts yet</h3>
+                                <p>Be the first to share something with the community!</p>
+                                ${!this.currentUser ? '<p>Sign in to create your first post.</p>' : ''}
                             </div>
-                            <div class="post-time">${timeAgo}</div>
-                        </div>
-                    </div>
+                        `;
+                        return;
+                    }
+
+                    postsContainer.innerHTML = posts.map(post => this.renderPost(post)).join('');
+                    loadingSpinner.style.display = 'none';
                     
-                    <div class="post-content">
-                        ${formatPostContent(post.content)}
-                    </div>
+                    // Add event listeners to new posts
+                    this.attachPostEventListeners();
                     
-                    <div class="post-stats">
-                        <div class="post-stat">
-                            <i class="fas fa-heart"></i>
-                            <span>${post.likes || 0} likes</span>
-                        </div>
-                        <div class="post-stat">
-                            <i class="fas fa-comment"></i>
-                            <span>${post.comments || 0} comments</span>
-                        </div>
-                        <div class="post-stat">
-                            <i class="fas fa-retweet"></i>
-                            <span>${post.retweets || 0} retweets</span>
-                        </div>
-                        <div class="post-stat">
-                            <i class="fas fa-share"></i>
-                            <span>${post.shares || 0} shares</span>
-                        </div>
-                    </div>
-                    
-                    <div class="post-actions">
-                        <button class="post-action like ${isLiked ? 'liked' : ''}" data-action="like">
-                            <i class="fas fa-heart action-icon"></i>
-                            <span class="action-count">${post.likes || 0}</span>
-                        </button>
-                        <button class="post-action comment" data-action="comment">
-                            <i class="fas fa-comment action-icon"></i>
-                            <span class="action-count">${post.comments || 0}</span>
-                        </button>
-                        <button class="post-action retweet ${isRetweeted ? 'retweeted' : ''}" data-action="retweet">
-                            <i class="fas fa-retweet action-icon"></i>
-                            <span class="action-count">${post.retweets || 0}</span>
-                        </button>
-                        <button class="post-action share" data-action="share">
-                            <i class="fas fa-share-alt action-icon"></i>
-                        </button>
-                        <button class="post-action ${isSaved ? 'saved' : ''}" data-action="save">
-                            <i class="fas fa-bookmark action-icon"></i>
-                        </button>
-                    </div>
-                    
-                    <div class="comments-section" id="comments-${post.id}">
-                        <div class="comment-form">
-                            <div class="comment-avatar">
-                                <img src="${currentUser ? (userAvatar.src || getDefaultAvatar()) : getDefaultAvatar()}" alt="You">
+                }, 500);
+            }
+
+            renderPost(post) {
+                const isLiked = this.currentUser ? this.postManager.hasLiked(post.id, this.currentUser.id) : false;
+                const isSaved = this.currentUser ? this.postManager.hasSaved(post.id, this.currentUser.id) : false;
+                const comments = this.postManager.getComments(post.id);
+                
+                return `
+                    <div class="post-card ${post.type}" data-post-id="${post.id}">
+                        <div class="post-header">
+                            <div class="post-avatar">
+                                <img src="${post.authorAvatar}" alt="${post.authorName}">
                             </div>
-                            <div class="comment-input">
-                                <input type="text" placeholder="Add a comment..." maxlength="280">
-                                <button class="comment-submit">Post</button>
+                            <div class="post-author-info">
+                                <div class="post-author">
+                                    ${post.authorName}
+                                    ${post.authorId === 'system' ? '<i class="fas fa-check-circle verified-badge"></i>' : ''}
+                                </div>
+                                <div class="post-time">${this.formatTimeAgo(post.createdAt)}</div>
                             </div>
                         </div>
-                        <div class="comments-list" id="comments-list-${post.id}">
-                            <div class="no-comments">No comments yet. Be the first to comment!</div>
+                        
+                        <div class="post-content">
+                            ${this.formatContent(post.content)}
+                        </div>
+                        
+                        <div class="post-stats">
+                            <div class="post-stat">
+                                <i class="fas fa-heart"></i>
+                                <span>${post.likes || 0} likes</span>
+                            </div>
+                            <div class="post-stat">
+                                <i class="fas fa-comment"></i>
+                                <span>${post.comments || 0} comments</span>
+                            </div>
+                            <div class="post-stat">
+                                <i class="fas fa-share"></i>
+                                <span>${post.shares || 0} shares</span>
+                            </div>
+                        </div>
+                        
+                        <div class="post-actions">
+                            <button class="post-action like ${isLiked ? 'liked' : ''}" data-action="like" data-post-id="${post.id}">
+                                <i class="fas fa-heart action-icon"></i>
+                                <span class="action-count">${post.likes || 0}</span>
+                            </button>
+                            <button class="post-action comment" data-action="comment" data-post-id="${post.id}">
+                                <i class="fas fa-comment action-icon"></i>
+                                <span class="action-count">${post.comments || 0}</span>
+                            </button>
+                            <button class="post-action share" data-action="share" data-post-id="${post.id}">
+                                <i class="fas fa-share-alt action-icon"></i>
+                            </button>
+                            <button class="post-action ${isSaved ? 'saved' : ''}" data-action="save" data-post-id="${post.id}">
+                                <i class="fas fa-bookmark action-icon"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="comments-section" id="comments-${post.id}">
+                            <div class="comment-form">
+                                <div class="comment-avatar">
+                                    <img src="${this.currentUser ? this.currentUser.avatar : 'https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp'}" alt="You">
+                                </div>
+                                <div class="comment-input">
+                                    <input type="text" placeholder="Add a comment..." maxlength="280" data-post-id="${post.id}">
+                                    <button class="comment-submit" data-post-id="${post.id}">Post</button>
+                                </div>
+                            </div>
+                            <div class="comments-list" id="comments-list-${post.id}">
+                                ${comments.length === 0 ? 
+                                    '<div class="no-comments">No comments yet. Be the first to comment!</div>' : 
+                                    comments.map(comment => this.renderComment(comment)).join('')
+                                }
+                            </div>
                         </div>
                     </div>
                 `;
-
-                // Add event listeners
-                const likeBtn = postCard.querySelector('[data-action="like"]');
-                const commentBtn = postCard.querySelector('[data-action="comment"]');
-                const retweetBtn = postCard.querySelector('[data-action="retweet"]');
-                const shareBtn = postCard.querySelector('[data-action="share"]');
-                const saveBtn = postCard.querySelector('[data-action="save"]');
-                const commentSubmitBtn = postCard.querySelector('.comment-submit');
-                const commentInput = postCard.querySelector('.comment-input input');
-
-                likeBtn.addEventListener('click', () => handleLike(post.id));
-                commentBtn.addEventListener('click', () => toggleComments(post.id));
-                retweetBtn.addEventListener('click', () => handleRetweet(post.id));
-                shareBtn.addEventListener('click', () => handleShare(post.id));
-                saveBtn.addEventListener('click', () => handleSave(post.id));
-                
-                commentSubmitBtn.addEventListener('click', () => handleComment(post.id, commentInput));
-                commentInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                        handleComment(post.id, commentInput);
-                    }
-                });
-
-                return postCard;
             }
 
-            function formatPostContent(content) {
+            renderComment(comment) {
+                return `
+                    <div class="comment-item">
+                        <div class="comment-avatar">
+                            <img src="${comment.authorAvatar}" alt="${comment.authorName}">
+                        </div>
+                        <div class="comment-content">
+                            <div class="comment-author">${comment.authorName}</div>
+                            <div class="comment-text">${comment.content}</div>
+                            <div class="comment-time">${this.formatTimeAgo(comment.createdAt)}</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            attachPostEventListeners() {
+                // Like buttons
+                document.querySelectorAll('[data-action="like"]').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        if (!this.currentUser) {
+                            this.showNotification('Please sign in to like posts', 'error');
+                            return;
+                        }
+                        const postId = e.currentTarget.dataset.postId;
+                        this.handleLike(postId);
+                    });
+                });
+
+                // Comment buttons
+                document.querySelectorAll('[data-action="comment"]').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        if (!this.currentUser) {
+                            this.showNotification('Please sign in to comment', 'error');
+                            return;
+                        }
+                        const postId = e.currentTarget.dataset.postId;
+                        this.toggleComments(postId);
+                    });
+                });
+
+                // Save buttons
+                document.querySelectorAll('[data-action="save"]').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        if (!this.currentUser) {
+                            this.showNotification('Please sign in to save posts', 'error');
+                            return;
+                        }
+                        const postId = e.currentTarget.dataset.postId;
+                        this.handleSave(postId);
+                    });
+                });
+
+                // Share buttons
+                document.querySelectorAll('[data-action="share"]').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const postId = e.currentTarget.dataset.postId;
+                        this.handleShare(postId);
+                    });
+                });
+
+                // Comment submit buttons
+                document.querySelectorAll('.comment-submit').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const postId = e.currentTarget.dataset.postId;
+                        const input = document.querySelector(`input[data-post-id="${postId}"]`);
+                        this.handleComment(postId, input);
+                    });
+                });
+
+                // Comment input enter key
+                document.querySelectorAll('.comment-input input').forEach(input => {
+                    input.addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter') {
+                            const postId = e.currentTarget.dataset.postId;
+                            this.handleComment(postId, e.currentTarget);
+                        }
+                    });
+                });
+            }
+
+            handleLike(postId) {
+                const liked = this.postManager.toggleLike(postId, this.currentUser.id);
+                
+                // Update UI
+                const likeBtn = document.querySelector(`[data-post-id="${postId}"][data-action="like"]`);
+                const post = this.postManager.getPost(postId);
+                
+                likeBtn.classList.toggle('liked');
+                likeBtn.querySelector('.action-count').textContent = post.likes;
+                
+                this.showNotification(liked ? 'Post liked!' : 'Post unliked', 'success');
+            }
+
+            handleSave(postId) {
+                const saved = this.postManager.toggleSave(postId, this.currentUser.id);
+                
+                // Update UI
+                const saveBtn = document.querySelector(`[data-post-id="${postId}"][data-action="save"]`);
+                saveBtn.classList.toggle('saved');
+                
+                this.showNotification(saved ? 'Post saved!' : 'Post removed from saved', 'success');
+            }
+
+            toggleComments(postId) {
+                const commentsSection = document.getElementById(`comments-${postId}`);
+                commentsSection.classList.toggle('active');
+            }
+
+            handleComment(postId, inputElement) {
+                const content = inputElement.value.trim();
+                if (!content || !this.currentUser) return;
+
+                const comment = this.postManager.addComment(
+                    postId,
+                    content,
+                    { id: this.currentUser.id, name: this.currentUser.name },
+                    this.currentUser.avatar
+                );
+
+                // Clear input
+                inputElement.value = '';
+                
+                // Update comment count
+                const commentBtn = document.querySelector(`[data-post-id="${postId}"][data-action="comment"]`);
+                const post = this.postManager.getPost(postId);
+                commentBtn.querySelector('.action-count').textContent = post.comments;
+                
+                // Add comment to list
+                const commentsList = document.getElementById(`comments-list-${postId}`);
+                if (commentsList.querySelector('.no-comments')) {
+                    commentsList.innerHTML = '';
+                }
+                commentsList.insertAdjacentHTML('afterbegin', this.renderComment(comment));
+                
+                this.showNotification('Comment added!', 'success');
+            }
+
+            handleShare(postId) {
+                const post = this.postManager.getPost(postId);
+                if (!post) return;
+
+                const shareText = `Check out this post from THE SONGA: "${post.content.substring(0, 100)}..."`;
+                
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'THE SONGA Post',
+                        text: shareText,
+                        url: window.location.href
+                    });
+                } else {
+                    // Copy to clipboard as fallback
+                    navigator.clipboard.writeText(shareText)
+                        .then(() => this.showNotification('Post content copied to clipboard!', 'success'))
+                        .catch(() => this.showNotification('Error sharing post', 'error'));
+                }
+            }
+
+            exportData() {
+                const data = this.postManager.exportAllData();
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `the_songa_backup_${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                this.showNotification('Data exported successfully!', 'success');
+            }
+
+            clearLocalData() {
+                if (confirm('Are you sure you want to clear all local data? This cannot be undone.')) {
+                    this.postManager.clearAllData();
+                    localStorage.clear();
+                    this.currentUser = null;
+                    location.reload();
+                }
+            }
+
+            signOut() {
+                const storage = new LocalStorageManager();
+                storage.removeItem('currentUser');
+                this.currentUser = null;
+                
+                // Reset UI
+                document.getElementById('userProfile').style.display = 'none';
+                document.getElementById('createPostBtnHeader').style.display = 'none';
+                document.getElementById('signinModal').classList.add('active');
+                
+                this.showNotification('Signed out successfully', 'success');
+                this.loadPosts(); // Reload without user context
+            }
+
+            formatContent(content) {
                 // Convert URLs to links
                 let formatted = content.replace(
                     /(https?:\/\/[^\s]+)/g,
@@ -1673,19 +2036,13 @@
                     '<a href="#" class="hashtag">#$1</a>'
                 );
                 
-                // Convert mentions
-                formatted = formatted.replace(
-                    /@(\w+)/g,
-                    '<a href="#" class="mention">@$1</a>'
-                );
-                
                 // Convert newlines to <br>
                 formatted = formatted.replace(/\n/g, '<br>');
                 
                 return formatted;
             }
 
-            function getTimeAgo(dateString) {
+            formatTimeAgo(dateString) {
                 const date = new Date(dateString);
                 const now = new Date();
                 const seconds = Math.floor((now - date) / 1000);
@@ -1698,393 +2055,22 @@
                 return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
             }
 
-            async function handleLike(postId) {
-                if (!currentUser) {
-                    showNotification('Please sign in to like posts', 'error');
-                    return;
-                }
-
-                try {
-                    const postRef = ref(database, `communityPosts/${postId}`);
-                    const postSnapshot = await get(postRef);
-                    const post = postSnapshot.val();
-
-                    const isLiked = likedPosts.has(postId);
-                    const newLikes = isLiked ? (post.likes || 1) - 1 : (post.likes || 0) + 1;
-
-                    // Update post likes
-                    await update(postRef, { likes: newLikes });
-
-                    // Update user's liked posts
-                    const userRef = ref(database, `users/${currentUser.uid}/likedPosts`);
-                    if (isLiked) {
-                        likedPosts.delete(postId);
-                        // Remove from Firebase
-                        const userLikesSnapshot = await get(userRef);
-                        const userLikes = userLikesSnapshot.val() || [];
-                        const updatedLikes = userLikes.filter(id => id !== postId);
-                        await set(userRef, updatedLikes);
-                    } else {
-                        likedPosts.add(postId);
-                        // Add to Firebase
-                        const userLikesSnapshot = await get(userRef);
-                        const userLikes = userLikesSnapshot.val() || [];
-                        userLikes.push(postId);
-                        await set(userRef, userLikes);
-                    }
-
-                    // Update UI
-                    const likeBtn = document.querySelector(`[data-post-id="${postId}"] [data-action="like"]`);
-                    const likeCount = likeBtn.querySelector('.action-count');
-                    
-                    likeBtn.classList.toggle('liked');
-                    likeCount.textContent = newLikes;
-                    
-                    // Update stats
-                    const stats = likeBtn.closest('.post-card').querySelector('.post-stats');
-                    stats.querySelector('.post-stat:nth-child(1) span').textContent = `${newLikes} likes`;
-
-                    showNotification(isLiked ? 'Post unliked' : 'Post liked!', 'success');
-
-                } catch (error) {
-                    console.error('Error liking post:', error);
-                    showNotification('Error updating like', 'error');
-                }
-            }
-
-            async function handleRetweet(postId) {
-                if (!currentUser) {
-                    showNotification('Please sign in to retweet posts', 'error');
-                    return;
-                }
-
-                try {
-                    const postRef = ref(database, `communityPosts/${postId}`);
-                    const postSnapshot = await get(postRef);
-                    const post = postSnapshot.val();
-
-                    const isRetweeted = retweetedPosts.has(postId);
-                    const newRetweets = isRetweeted ? (post.retweets || 1) - 1 : (post.retweets || 0) + 1;
-
-                    // Update post retweets
-                    await update(postRef, { retweets: newRetweets });
-
-                    // Update user's retweeted posts
-                    const userRef = ref(database, `users/${currentUser.uid}/retweetedPosts`);
-                    if (isRetweeted) {
-                        retweetedPosts.delete(postId);
-                        const userRetweetsSnapshot = await get(userRef);
-                        const userRetweets = userRetweetsSnapshot.val() || [];
-                        const updatedRetweets = userRetweets.filter(id => id !== postId);
-                        await set(userRef, updatedRetweets);
-                    } else {
-                        retweetedPosts.add(postId);
-                        const userRetweetsSnapshot = await get(userRef);
-                        const userRetweets = userRetweetsSnapshot.val() || [];
-                        userRetweets.push(postId);
-                        await set(userRef, userRetweets);
-                    }
-
-                    // Update UI
-                    const retweetBtn = document.querySelector(`[data-post-id="${postId}"] [data-action="retweet"]`);
-                    const retweetCount = retweetBtn.querySelector('.action-count');
-                    
-                    retweetBtn.classList.toggle('retweeted');
-                    retweetCount.textContent = newRetweets;
-                    
-                    // Update stats
-                    const stats = retweetBtn.closest('.post-card').querySelector('.post-stats');
-                    stats.querySelector('.post-stat:nth-child(3) span').textContent = `${newRetweets} retweets`;
-
-                    showNotification(isRetweeted ? 'Retweet removed' : 'Post retweeted!', 'success');
-
-                } catch (error) {
-                    console.error('Error retweeting post:', error);
-                    showNotification('Error retweeting post', 'error');
-                }
-            }
-
-            async function handleSave(postId) {
-                if (!currentUser) {
-                    showNotification('Please sign in to save posts', 'error');
-                    return;
-                }
-
-                try {
-                    const isSaved = savedPosts.has(postId);
-
-                    // Update user's saved posts
-                    const userRef = ref(database, `users/${currentUser.uid}/savedPosts`);
-                    if (isSaved) {
-                        savedPosts.delete(postId);
-                        const userSavedSnapshot = await get(userRef);
-                        const userSaved = userSavedSnapshot.val() || [];
-                        const updatedSaved = userSaved.filter(id => id !== postId);
-                        await set(userRef, updatedSaved);
-                    } else {
-                        savedPosts.add(postId);
-                        const userSavedSnapshot = await get(userRef);
-                        const userSaved = userSavedSnapshot.val() || [];
-                        userSaved.push(postId);
-                        await set(userRef, userSaved);
-                    }
-
-                    // Update UI
-                    const saveBtn = document.querySelector(`[data-post-id="${postId}"] [data-action="save"]`);
-                    saveBtn.classList.toggle('saved');
-
-                    showNotification(isSaved ? 'Post removed from saved' : 'Post saved!', 'success');
-
-                } catch (error) {
-                    console.error('Error saving post:', error);
-                    showNotification('Error saving post', 'error');
-                }
-            }
-
-            function handleShare(postId) {
-                if (!currentUser) {
-                    showNotification('Please sign in to share posts', 'error');
-                    return;
-                }
-
-                const post = postsData[postId];
-                if (!post) return;
-
-                const shareUrl = `${window.location.origin}/post.html?id=${postId}`;
-                const shareText = `Check out this post from THE SONGA: "${post.content.substring(0, 100)}..."`;
-
-                if (navigator.share) {
-                    navigator.share({
-                        title: 'THE SONGA Post',
-                        text: shareText,
-                        url: shareUrl
-                    });
-                } else {
-                    // Fallback to clipboard
-                    navigator.clipboard.writeText(shareUrl)
-                        .then(() => showNotification('Link copied to clipboard!', 'success'))
-                        .catch(() => showNotification('Error copying link', 'error'));
-                }
-            }
-
-            function toggleComments(postId) {
-                if (!currentUser) {
-                    showNotification('Please sign in to comment', 'error');
-                    return;
-                }
-
-                const commentsSection = document.getElementById(`comments-${postId}`);
+            showNotification(message, type = 'info') {
+                const notification = document.getElementById('notification');
+                const messageElement = document.getElementById('notificationMessage');
                 
-                // Close other comment sections
-                if (activeComments && activeComments !== commentsSection) {
-                    activeComments.classList.remove('active');
-                }
-                
-                // Toggle current section
-                commentsSection.classList.toggle('active');
-                
-                if (commentsSection.classList.contains('active')) {
-                    activeComments = commentsSection;
-                    loadComments(postId);
-                } else {
-                    activeComments = null;
-                }
-            }
-
-            async function loadComments(postId) {
-                try {
-                    const commentsRef = ref(database, `comments/${postId}`);
-                    const snapshot = await get(commentsRef);
-                    const comments = snapshot.val() || {};
-
-                    const commentsList = document.getElementById(`comments-list-${postId}`);
-                    
-                    if (Object.keys(comments).length === 0) {
-                        commentsList.innerHTML = '<div class="no-comments">No comments yet. Be the first to comment!</div>';
-                        return;
-                    }
-
-                    const commentsArray = Object.entries(comments)
-                        .map(([id, comment]) => ({ id, ...comment }))
-                        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
-                    commentsList.innerHTML = commentsArray.map(comment => `
-                        <div class="comment-item">
-                            <div class="comment-avatar">
-                                <img src="${comment.authorAvatar || getDefaultAvatar()}" alt="${comment.authorName}">
-                            </div>
-                            <div class="comment-content">
-                                <div class="comment-author">${comment.authorName}</div>
-                                <div class="comment-text">${comment.content}</div>
-                                <div class="comment-time">${getTimeAgo(comment.createdAt)}</div>
-                                <div class="comment-actions">
-                                    <span class="comment-action like">Like</span>
-                                    <span class="comment-action reply">Reply</span>
-                                </div>
-                            </div>
-                        </div>
-                    `).join('');
-
-                } catch (error) {
-                    console.error('Error loading comments:', error);
-                }
-            }
-
-            async function handleComment(postId, inputElement) {
-                if (!currentUser) {
-                    showNotification('Please sign in to comment', 'error');
-                    return;
-                }
-
-                const content = inputElement.value.trim();
-                if (!content) return;
-
-                try {
-                    // Get user data
-                    const userRef = ref(database, `users/${currentUser.uid}`);
-                    const userSnapshot = await get(userRef);
-                    const userData = userSnapshot.val();
-
-                    const commentData = {
-                        authorId: currentUser.uid,
-                        authorName: userData?.firstName ? `${userData.firstName} ${userData.lastName || ''}`.trim() : 'Member',
-                        authorAvatar: userData?.profilePicture || getDefaultAvatar(),
-                        content: content,
-                        createdAt: new Date().toISOString(),
-                        likes: 0
-                    };
-
-                    // Save comment
-                    const commentRef = push(ref(database, `comments/${postId}`));
-                    await set(commentRef, { id: commentRef.key, ...commentData });
-
-                    // Update post comment count
-                    const postRef = ref(database, `communityPosts/${postId}`);
-                    const postSnapshot = await get(postRef);
-                    const post = postSnapshot.val();
-                    const newComments = (post.comments || 0) + 1;
-                    await update(postRef, { comments: newComments });
-
-                    // Update UI
-                    inputElement.value = '';
-                    
-                    // Update comment count in post
-                    const commentBtn = document.querySelector(`[data-post-id="${postId}"] [data-action="comment"]`);
-                    const commentCount = commentBtn.querySelector('.action-count');
-                    commentCount.textContent = newComments;
-                    
-                    // Update stats
-                    const stats = commentBtn.closest('.post-card').querySelector('.post-stats');
-                    stats.querySelector('.post-stat:nth-child(2) span').textContent = `${newComments} comments`;
-
-                    // Reload comments
-                    loadComments(postId);
-
-                    showNotification('Comment posted!', 'success');
-
-                } catch (error) {
-                    console.error('Error posting comment:', error);
-                    showNotification('Error posting comment', 'error');
-                }
-            }
-
-            function showNoPostsMessage() {
-                postsContainer.innerHTML = `
-                    <div class="no-posts">
-                        <div class="no-posts-icon">
-                            <i class="fas fa-comments"></i>
-                        </div>
-                        <h3>No posts yet</h3>
-                        <p>Be the first to share something with the community!</p>
-                        ${!currentUser ? '<p>Sign in to create your first post.</p>' : ''}
-                    </div>
-                `;
-            }
-
-            function showDefaultPosts() {
-                // Show default posts when not signed in
-                const defaultPosts = [
-                    {
-                        id: 'welcome',
-                        authorName: 'THE SONGA',
-                        authorAvatar: 'https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp',
-                        content: 'Welcome to THE SONGA community! This is your space to connect, learn, and grow with like-minded individuals. Sign in to join the conversation and share your thoughts.',
-                        likes: 24,
-                        comments: 8,
-                        retweets: 3,
-                        shares: 2,
-                        createdAt: new Date().toISOString(),
-                        type: 'announcement'
-                    },
-                    {
-                        id: 'event',
-                        authorName: 'THE SONGA',
-                        authorAvatar: 'https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp',
-                        content: 'Join us for our upcoming Wealth Building Workshop this Saturday! Learn practical strategies for financial growth and connect with fellow members. #Finance #Workshop',
-                        likes: 18,
-                        comments: 5,
-                        retweets: 2,
-                        shares: 1,
-                        createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-                        type: 'event'
-                    },
-                    {
-                        id: 'resource',
-                        authorName: 'THE SONGA',
-                        authorAvatar: 'https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp',
-                        content: 'New resource alert! We\'ve added "Atomic Habits" to our digital library. This book can help you build good habits and break bad ones. Check it out in our library section! #PersonalGrowth #Books',
-                        likes: 32,
-                        comments: 12,
-                        retweets: 5,
-                        shares: 3,
-                        createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-                        type: 'resource'
-                    }
-                ];
-
-                renderPosts(defaultPosts);
-            }
-
-            function showNotification(message, type = 'info') {
-                notificationMessage.textContent = message;
+                messageElement.textContent = message;
                 notification.className = `notification show ${type}`;
                 
                 setTimeout(() => {
                     notification.classList.remove('show');
                 }, 4000);
             }
+        }
 
-            // Google Sign-In Handler
-            window.handleGoogleSignIn = function(response) {
-                console.log('Google Sign-In response:', response);
-                
-                // In a real implementation, you would:
-                // 1. Send the credential to your backend
-                // 2. Create/update user in Firebase
-                // 3. Sign in the user
-                
-                // For now, show a success message
-                showNotification('Google sign-in successful! Loading your profile...', 'success');
-                
-                // Simulate authentication
-                setTimeout(() => {
-                    // This would be replaced with actual Firebase auth
-                    signinModal.classList.remove('active');
-                    showNotification('Welcome to THE SONGA!', 'success');
-                }, 1500);
-            };
-
-            // Close sign-in modal
-            document.getElementById('closeSigninModal').addEventListener('click', function() {
-                signinModal.classList.remove('active');
-            });
-
-            // Close modal when clicking outside
-            signinModal.addEventListener('click', function(e) {
-                if (e.target === signinModal) {
-                    signinModal.classList.remove('active');
-                }
-            });
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            window.theSongApp = new THE_SONGA_App();
         });
     </script>
 </body>
