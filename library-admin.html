@@ -1,0 +1,3390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>THE SONGA - Library Admin</title>
+    
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
+    
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #D4AF37;
+            --primary-light: #F5E6B3;
+            --primary-dark: #B8860B;
+            --secondary: #000000;
+            --secondary-light: #333333;
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-sidebar: #1e293b;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-light: #94a3b8;
+            --border: #e2e8f0;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --radius-sm: 0.375rem;
+            --radius: 0.5rem;
+            --radius-lg: 0.75rem;
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            background: var(--bg-sidebar);
+            color: white;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            z-index: 50;
+        }
+
+        .sidebar-header {
+            padding: 2rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 1.25rem;
+            letter-spacing: -0.025em;
+        }
+
+        .logo-subtext {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            opacity: 0.7;
+            margin-top: 0.125rem;
+        }
+
+        .nav-section {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: var(--text-light);
+            text-decoration: none;
+            border-radius: var(--radius);
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+        }
+
+        .nav-link.active {
+            background: var(--primary);
+            color: var(--secondary);
+            font-weight: 600;
+        }
+
+        .nav-link .material-icons-sharp {
+            font-size: 1.25rem;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: var(--secondary);
+        }
+
+        .user-info h4 {
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .user-info p {
+            font-size: 0.75rem;
+            color: var(--text-light);
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            padding: 2rem;
+            overflow-y: auto;
+            max-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header-title h1 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.025em;
+        }
+
+        .header-title p {
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            padding: 0.75rem 1rem 0.75rem 3rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            width: 300px;
+            font-size: 0.875rem;
+            transition: var(--transition);
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        }
+
+        .search-box .material-icons-sharp {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius);
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: var(--secondary);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-primary);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        /* ===== DASHBOARD OVERVIEW ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .stat-title {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-change {
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .stat-change.positive {
+            color: var(--success);
+        }
+
+        .stat-change.negative {
+            color: var(--danger);
+        }
+
+        /* ===== CHARTS ===== */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-card {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+
+        /* ===== DATA TABLES ===== */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .data-table-container {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            background: var(--bg-primary);
+            padding: 1rem 1.5rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .data-table td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.875rem;
+        }
+
+        .data-table tr:hover {
+            background: var(--bg-primary);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .status-active {
+            background: #d1fae5;
+            color: var(--success);
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: var(--warning);
+        }
+
+        .status-overdue {
+            background: #fee2e2;
+            color: var(--danger);
+        }
+
+        .status-available {
+            background: #d1fae5;
+            color: var(--success);
+        }
+
+        .status-borrowed {
+            background: #fef3c7;
+            color: var(--warning);
+        }
+
+        .status-reserved {
+            background: #e0f2fe;
+            color: var(--info);
+        }
+
+        .tier-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius);
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .tier-explorer {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .tier-scholar {
+            background: #f0f9ff;
+            color: #0c4a6e;
+        }
+
+        .tier-visionary {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+        }
+
+        .btn-icon:hover {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .btn-icon.edit:hover {
+            background: #dbeafe;
+            color: var(--info);
+        }
+
+        .btn-icon.delete:hover {
+            background: #fee2e2;
+            color: var(--danger);
+        }
+
+        /* ===== FORMS ===== */
+        .form-container {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+        }
+
+        .form-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 0.875rem;
+            transition: var(--transition);
+            background: var(--bg-primary);
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+
+        /* ===== MODALS ===== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-secondary);
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .modal-close:hover {
+            background: var(--bg-primary);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modal-footer {
+            padding: 1.5rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        /* ===== UTILITIES ===== */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state .material-icons-sharp {
+            font-size: 3rem;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+            color: var(--text-secondary);
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius);
+            margin-bottom: 1.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: var(--success);
+            border: 1px solid #a7f3d0;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: var(--danger);
+            border: 1px solid #fecaca;
+        }
+
+        .alert-warning {
+            background: #fef3c7;
+            color: var(--warning);
+            border: 1px solid #fde68a;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1200px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .search-box input {
+                width: 200px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-box input {
+                width: 100%;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .data-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+
+        /* ===== TABS ===== */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.875rem;
+            cursor: pointer;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .tab:hover {
+            color: var(--text-primary);
+        }
+
+        .tab.active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* ===== BOOK CARD ===== */
+        .book-card {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid var(--border);
+        }
+
+        .book-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+
+        .book-cover {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            color: var(--secondary);
+            font-size: 3rem;
+            overflow: hidden;
+        }
+
+        .book-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .book-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+
+        .book-author {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .book-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .book-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            color: var(--warning);
+        }
+
+        .book-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* ===== BOOK GRID ===== */
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        /* ===== CATEGORY BADGE ===== */
+        .category-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius);
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: var(--primary-light);
+            color: var(--primary-dark);
+        }
+
+        /* ===== FILTER BAR ===== */
+        .filter-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+
+        /* ===== DARK MODE SUPPORT ===== */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-primary: #0f172a;
+                --bg-secondary: #1e293b;
+                --text-primary: #f1f5f9;
+                --text-secondary: #cbd5e1;
+                --text-light: #64748b;
+                --border: #334155;
+            }
+            
+            .stat-card, .chart-card, .data-table-container, .form-container, .book-card {
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <div class="logo-icon">TS</div>
+                    <div>
+                        <div class="logo-text">THE SONGA</div>
+                        <div class="logo-subtext">Library Admin</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="nav-section">
+                <h3 class="nav-title">Library</h3>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#overview" class="nav-link active" data-section="overview">
+                            <span class="material-icons-sharp">dashboard</span>
+                            <span>Overview</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#books" class="nav-link" data-section="books">
+                            <span class="material-icons-sharp">library_books</span>
+                            <span>Books</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#borrow" class="nav-link" data-section="borrow">
+                            <span class="material-icons-sharp">bookmark</span>
+                            <span>Borrow</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#returns" class="nav-link" data-section="returns">
+                            <span class="material-icons-sharp">assignment_return</span>
+                            <span>Returns</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#categories" class="nav-link" data-section="categories">
+                            <span class="material-icons-sharp">category</span>
+                            <span>Categories</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="nav-section">
+                <h3 class="nav-title">Management</h3>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#users" class="nav-link" data-section="users">
+                            <span class="material-icons-sharp">people</span>
+                            <span>Users</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#reports" class="nav-link" data-section="reports">
+                            <span class="material-icons-sharp">analytics</span>
+                            <span>Reports</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#settings" class="nav-link" data-section="settings">
+                            <span class="material-icons-sharp">settings</span>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="user-avatar" id="adminAvatar">A</div>
+                    <div class="user-info">
+                        <h4 id="adminName">Library Admin</h4>
+                        <p id="adminEmail">admin@thesongawelfare.com</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-title">
+                    <h1 id="pageTitle">Library Overview</h1>
+                    <p id="pageSubtitle">Manage your library inventory and borrowings</p>
+                </div>
+                <div class="header-actions">
+                    <div class="search-box">
+                        <span class="material-icons-sharp">search</span>
+                        <input type="text" placeholder="Search books, users..." id="globalSearch">
+                    </div>
+                    <button class="btn btn-secondary" id="refreshBtn">
+                        <span class="material-icons-sharp">refresh</span>
+                        Refresh
+                    </button>
+                </div>
+            </header>
+
+            <!-- Alert Container -->
+            <div id="alertContainer"></div>
+
+            <!-- Content Container -->
+            <div id="contentContainer">
+                <!-- Content will be loaded here -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal-overlay" id="modalOverlay">
+        <!-- Modals will be injected here -->
+    </div>
+
+    <!-- Templates -->
+    <template id="overviewTemplate">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-title">Total Books</div>
+                        <div class="stat-value" id="totalBooks">0</div>
+                    </div>
+                    <div class="stat-icon">
+                        <span class="material-icons-sharp">library_books</span>
+                    </div>
+                </div>
+                <div class="stat-change positive">
+                    <span class="material-icons-sharp">trending_up</span>
+                    <span>12% from last month</span>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-title">Available Books</div>
+                        <div class="stat-value" id="availableBooks">0</div>
+                    </div>
+                    <div class="stat-icon">
+                        <span class="material-icons-sharp">check_circle</span>
+                    </div>
+                </div>
+                <div class="stat-change positive">
+                    <span class="material-icons-sharp">trending_up</span>
+                    <span>8% from last month</span>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-title">Borrowed Books</div>
+                        <div class="stat-value" id="borrowedBooks">0</div>
+                    </div>
+                    <div class="stat-icon">
+                        <span class="material-icons-sharp">bookmark</span>
+                    </div>
+                </div>
+                <div class="stat-change negative">
+                    <span class="material-icons-sharp">trending_down</span>
+                    <span>5 overdue returns</span>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-title">Active Users</div>
+                        <div class="stat-value" id="activeUsers">0</div>
+                    </div>
+                    <div class="stat-icon">
+                        <span class="material-icons-sharp">people</span>
+                    </div>
+                </div>
+                <div class="stat-change positive">
+                    <span class="material-icons-sharp">trending_up</span>
+                    <span>15% from last month</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="charts-grid">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">Borrowing Trends</h3>
+                    <select class="form-select" style="width: auto; padding: 0.5rem;" id="borrowingPeriod">
+                        <option value="7">Last 7 days</option>
+                        <option value="30" selected>Last 30 days</option>
+                        <option value="90">Last 90 days</option>
+                    </select>
+                </div>
+                <div class="chart-container">
+                    <canvas id="borrowingChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">Top Categories</h3>
+                </div>
+                <div class="chart-container">
+                    <canvas id="categoriesChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-header">
+            <h2 class="section-title">Recent Borrowings</h2>
+            <button class="btn btn-secondary" onclick="loadSection('borrow')">
+                View All
+            </button>
+        </div>
+        
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Book</th>
+                        <th>Borrower</th>
+                        <th>Borrowed Date</th>
+                        <th>Due Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="recentBorrowingsBody">
+                    <!-- Will be populated -->
+                </tbody>
+            </table>
+        </div>
+    </template>
+
+    <template id="booksTemplate">
+        <div class="section-header">
+            <h2 class="section-title">Book Management</h2>
+            <div class="header-actions">
+                <div class="search-box">
+                    <span class="material-icons-sharp">search</span>
+                    <input type="text" placeholder="Search books..." id="bookSearch">
+                </div>
+                <button class="btn btn-secondary" onclick="exportBooks()">
+                    <span class="material-icons-sharp">download</span>
+                    Export
+                </button>
+                <button class="btn btn-primary" onclick="showAddBookModal()">
+                    <span class="material-icons-sharp">add</span>
+                    Add Book
+                </button>
+            </div>
+        </div>
+
+        <div class="filter-bar">
+            <select class="form-select" id="bookFilter" style="width: 200px;">
+                <option value="all">All Books</option>
+                <option value="available">Available</option>
+                <option value="borrowed">Borrowed</option>
+                <option value="reserved">Reserved</option>
+                <option value="featured">Featured</option>
+            </select>
+            <select class="form-select" id="categoryFilter" style="width: 200px;">
+                <option value="all">All Categories</option>
+            </select>
+            <select class="form-select" id="sortFilter" style="width: 200px;">
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+                <option value="title">Title A-Z</option>
+                <option value="popular">Most Popular</option>
+            </select>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" data-tab="gridView">Grid View</button>
+            <button class="tab" data-tab="tableView">Table View</button>
+        </div>
+
+        <div class="tab-content active" id="gridView">
+            <div class="books-grid" id="booksGrid">
+                <!-- Will be populated -->
+            </div>
+        </div>
+
+        <div class="tab-content" id="tableView">
+            <div class="data-table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Book Details</th>
+                            <th>Category</th>
+                            <th>Copies</th>
+                            <th>Available</th>
+                            <th>Borrow Count</th>
+                            <th>Rating</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="booksTableBody">
+                        <!-- Will be populated -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </template>
+
+    <template id="bookCardTemplate">
+        <div class="book-card" data-book-id="{id}">
+            <div class="book-cover">
+                {coverImage ? '<img src="{coverImage}" alt="{title}">' : '<span class="material-icons-sharp">menu_book</span>'}
+            </div>
+            <h3 class="book-title">{title}</h3>
+            <p class="book-author">{author}</p>
+            <div class="book-meta">
+                <div class="book-rating">
+                    <span class="material-icons-sharp">star</span>
+                    <span>{rating}</span>
+                </div>
+                <span class="category-badge">{category}</span>
+            </div>
+            <div class="book-meta">
+                <span>Copies: {availableCopies}/{totalCopies}</span>
+                <span class="book-status status-{availability}">{availability}</span>
+            </div>
+            <div class="action-buttons">
+                <button class="btn-icon edit" onclick="editBook('{id}')" title="Edit">
+                    <span class="material-icons-sharp">edit</span>
+                </button>
+                <button class="btn-icon" onclick="viewBook('{id}')" title="View">
+                    <span class="material-icons-sharp">visibility</span>
+                </button>
+                <button class="btn-icon delete" onclick="deleteBook('{id}')" title="Delete">
+                    <span class="material-icons-sharp">delete</span>
+                </button>
+            </div>
+        </div>
+    </template>
+
+    <template id="borrowTemplate">
+        <div class="section-header">
+            <h2 class="section-title">Borrow Management</h2>
+            <div class="header-actions">
+                <button class="btn btn-primary" onclick="showBorrowBookModal()">
+                    <span class="material-icons-sharp">add</span>
+                    New Borrow
+                </button>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" data-tab="activeBorrows">Active Borrows</button>
+            <button class="tab" data-tab="overdueBorrows">Overdue</button>
+            <button class="tab" data-tab="borrowHistory">History</button>
+        </div>
+
+        <div class="tab-content active" id="activeBorrows">
+            <div class="data-table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Book</th>
+                            <th>Borrower</th>
+                            <th>Borrow Date</th>
+                            <th>Due Date</th>
+                            <th>Days Left</th>
+                            <th>Fine</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="activeBorrowsBody">
+                        <!-- Will be populated -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="tab-content" id="overdueBorrows">
+            <div class="data-table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Book</th>
+                            <th>Borrower</th>
+                            <th>Due Date</th>
+                            <th>Days Overdue</th>
+                            <th>Fine Amount</th>
+                            <th>Contact</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="overdueBorrowsBody">
+                        <!-- Will be populated -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="tab-content" id="borrowHistory">
+            <div class="data-table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Book</th>
+                            <th>Borrower</th>
+                            <th>Borrow Date</th>
+                            <th>Return Date</th>
+                            <th>Duration</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="borrowHistoryBody">
+                        <!-- Will be populated -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </template>
+
+    <template id="returnsTemplate">
+        <div class="section-header">
+            <h2 class="section-title">Returns & Fines</h2>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-title">Pending Returns</div>
+                        <div class="stat-value" id="pendingReturns">0</div>
+                    </div>
+                    <div class="stat-icon">
+                        <span class="material-icons-sharp">pending</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-title">Total Fines</div>
+                        <div class="stat-value" id="totalFines">KSh 0</div>
+                    </div>
+                    <div class="stat-icon">
+                        <span class="material-icons-sharp">monetization_on</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-title">Paid Fines</div>
+                        <div class="stat-value" id="paidFines">KSh 0</div>
+                    </div>
+                    <div class="stat-icon">
+                        <span class="material-icons-sharp">check_circle</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Book</th>
+                        <th>Due Date</th>
+                        <th>Return Date</th>
+                        <th>Days Overdue</th>
+                        <th>Fine Amount</th>
+                        <th>Payment Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="returnsTableBody">
+                    <!-- Will be populated -->
+                </tbody>
+            </table>
+        </div>
+    </template>
+
+    <template id="categoriesTemplate">
+        <div class="section-header">
+            <h2 class="section-title">Categories</h2>
+            <button class="btn btn-primary" onclick="showAddCategoryModal()">
+                <span class="material-icons-sharp">add</span>
+                Add Category
+            </button>
+        </div>
+
+        <div class="books-grid" id="categoriesGrid">
+            <!-- Will be populated -->
+        </div>
+    </template>
+
+    <template id="usersTemplate">
+        <div class="section-header">
+            <h2 class="section-title">Library Users</h2>
+            <div class="header-actions">
+                <div class="search-box">
+                    <span class="material-icons-sharp">search</span>
+                    <input type="text" placeholder="Search users..." id="userSearch">
+                </div>
+            </div>
+        </div>
+
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Membership</th>
+                        <th>Borrowed Books</th>
+                        <th>Overdue</th>
+                        <th>Total Fines</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="libraryUsersBody">
+                    <!-- Will be populated -->
+                </tbody>
+            </table>
+        </div>
+    </template>
+
+    <template id="reportsTemplate">
+        <div class="section-header">
+            <h2 class="section-title">Library Reports</h2>
+            <div class="header-actions">
+                <button class="btn btn-secondary" onclick="generateReport('monthly')">
+                    <span class="material-icons-sharp">download</span>
+                    Monthly Report
+                </button>
+                <button class="btn btn-primary" onclick="generateReport('full')">
+                    <span class="material-icons-sharp">description</span>
+                    Full Report
+                </button>
+            </div>
+        </div>
+
+        <div class="charts-grid">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">Monthly Activity</h3>
+                    <select class="form-select" style="width: auto; padding: 0.5rem;" id="reportMonth">
+                        <option value="1">January</option>
+                        <option value="2">February</option>
+                        <option value="3">March</option>
+                        <option value="4" selected>April</option>
+                        <option value="5">May</option>
+                        <option value="6">June</option>
+                        <option value="7">July</option>
+                        <option value="8">August</option>
+                        <option value="9">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+                    </select>
+                </div>
+                <div class="chart-container">
+                    <canvas id="monthlyActivityChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">Top Borrowers</h3>
+                </div>
+                <div class="chart-container">
+                    <canvas id="topBorrowersChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-header">
+            <h3 class="section-title">Detailed Statistics</h3>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-title">Most Borrowed Book</div>
+                        <div class="stat-value" id="mostBorrowedBook">-</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-title">Average Borrow Duration</div>
+                        <div class="stat-value" id="avgBorrowDuration">0 days</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-title">Busiest Day</div>
+                        <div class="stat-value" id="busiestDay">-</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="settingsTemplate">
+        <div class="form-container">
+            <div class="form-section">
+                <h3 class="form-title">Library Settings</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Default Borrow Duration (days)</label>
+                        <input type="number" class="form-input" id="borrowDuration" value="14" min="1" max="90">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Daily Fine Amount (KSh)</label>
+                        <input type="number" class="form-input" id="dailyFine" value="50" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Max Renewals Allowed</label>
+                        <input type="number" class="form-input" id="maxRenewals" value="2" min="0" max="10">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Max Books Per User</label>
+                        <input type="number" class="form-input" id="maxBooksPerUser" value="5" min="1" max="20">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3 class="form-title">Email Notifications</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <input type="checkbox" id="dueDateReminders" checked>
+                            Send due date reminders
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">
+                            <input type="checkbox" id="overdueNotifications" checked>
+                            Send overdue notifications
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">
+                            <input type="checkbox" id="reservationNotifications" checked>
+                            Send reservation notifications
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button class="btn btn-secondary" onclick="resetSettings()">Reset</button>
+                <button class="btn btn-primary" onclick="saveLibrarySettings()">Save Settings</button>
+            </div>
+        </div>
+    </template>
+
+    <!-- Modal Templates -->
+    <template id="addBookModalTemplate">
+        <div class="modal" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Add New Book</h3>
+                <button class="modal-close" onclick="closeModal()">
+                    <span class="material-icons-sharp">close</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addBookForm">
+                    <div class="form-group">
+                        <label class="form-label">Title *</label>
+                        <input type="text" class="form-input" id="bookTitle" required>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Author *</label>
+                            <input type="text" class="form-input" id="bookAuthor" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">ISBN</label>
+                            <input type="text" class="form-input" id="bookISBN">
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Category *</label>
+                            <select class="form-select" id="bookCategory" required>
+                                <option value="">Select Category</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Published Year</label>
+                            <input type="number" class="form-input" id="bookYear" min="1800" max="2024">
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Total Copies *</label>
+                            <input type="number" class="form-input" id="bookCopies" value="1" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Available Copies *</label>
+                            <input type="number" class="form-input" id="bookAvailableCopies" value="1" min="0" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-textarea" id="bookDescription" rows="4"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Cover Image URL</label>
+                        <input type="url" class="form-input" id="bookCoverImage" placeholder="https://example.com/cover.jpg">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="createBook()">Add Book</button>
+            </div>
+        </div>
+    </template>
+
+    <template id="borrowBookModalTemplate">
+        <div class="modal" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Borrow Book</h3>
+                <button class="modal-close" onclick="closeModal()">
+                    <span class="material-icons-sharp">close</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="borrowBookForm">
+                    <div class="form-group">
+                        <label class="form-label">Select Book *</label>
+                        <select class="form-select" id="borrowBookSelect" required>
+                            <option value="">Select a book</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Select User *</label>
+                        <select class="form-select" id="borrowUserSelect" required>
+                            <option value="">Select a user</option>
+                        </select>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Borrow Date</label>
+                            <input type="date" class="form-input" id="borrowDate" value="{today}">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Due Date *</label>
+                            <input type="date" class="form-input" id="dueDate" required>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="processBorrow()">Process Borrow</button>
+            </div>
+        </div>
+    </template>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBDZicoo7dFLtSmgRPvQE_gdm-tNOyCTXA",
+            authDomain: "the-songa-77b1b.firebaseapp.com",
+            databaseURL: "https://the-songa-77b1b-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "the-songa-77b1b",
+            storageBucket: "the-songa-77b1b.firebasestorage.app",
+            messagingSenderId: "123922889572",
+            appId: "1:123922889572:web:482b2a624930baaf92d871"
+        };
+
+        // Initialize Firebase
+        let database;
+        let auth;
+        try {
+            firebase.initializeApp(firebaseConfig);
+            database = firebase.database();
+            auth = firebase.auth();
+            console.log("Firebase initialized successfully for library admin");
+        } catch (error) {
+            console.error("Firebase initialization error:", error);
+            showAlert("Failed to connect to database. Please refresh the page.", "error");
+        }
+
+        // Global State
+        let currentUser = null;
+        let books = [];
+        let categories = [];
+        let borrowRecords = [];
+        let libraryUsers = [];
+        let currentSection = 'overview';
+        let currentModal = null;
+        let currentEditBookId = null;
+
+        // Chart Instances
+        let borrowingChart = null;
+        let categoriesChart = null;
+
+        // DOM Elements
+        const contentContainer = document.getElementById('contentContainer');
+        const alertContainer = document.getElementById('alertContainer');
+        const modalOverlay = document.getElementById('modalOverlay');
+
+        // Initialize Library Admin
+        async function initializeLibraryAdmin() {
+            // Check authentication
+            await checkAdminAuth();
+            
+            // Load initial section
+            loadSection('overview');
+            
+            // Setup event listeners
+            setupEventListeners();
+            
+            // Start real-time updates
+            startRealtimeUpdates();
+        }
+
+        // Check Admin Authentication
+        async function checkAdminAuth() {
+            // For demo purposes, we'll use localStorage
+            const adminData = localStorage.getItem('the_songa_library_admin');
+            
+            if (!adminData) {
+                showLoginModal();
+                return;
+            }
+            
+            try {
+                const admin = JSON.parse(adminData);
+                if (admin.isAdmin) {
+                    currentUser = admin;
+                    updateAdminUI();
+                } else {
+                    showLoginModal();
+                }
+            } catch (error) {
+                showLoginModal();
+            }
+        }
+
+        // Show Login Modal
+        function showLoginModal() {
+            const modalHTML = `
+                <div class="modal" style="max-width: 400px;">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Library Admin Login</h3>
+                    </div>
+                    <div class="modal-body">
+                        <form id="loginForm">
+                            <div class="form-group">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-input" id="loginEmail" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Password</label>
+                                <input type="password" class="form-input" id="loginPassword" required>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" onclick="attemptLogin()">Login</button>
+                    </div>
+                </div>
+            `;
+            
+            showModal(modalHTML);
+        }
+
+        // Attempt Login
+        async function attemptLogin() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            // Demo credentials
+            if (email === 'admin@thesongawelfare.com' && password === 'admin123') {
+                const adminData = {
+                    uid: 'library_admin_001',
+                    email: email,
+                    firstName: 'Library',
+                    lastName: 'Admin',
+                    isAdmin: true
+                };
+                
+                localStorage.setItem('the_songa_library_admin', JSON.stringify(adminData));
+                currentUser = adminData;
+                updateAdminUI();
+                closeModal();
+                showAlert('Login successful!', 'success');
+                loadSection('overview');
+            } else {
+                showAlert('Invalid credentials', 'error');
+            }
+        }
+
+        // Update Admin UI
+        function updateAdminUI() {
+            if (currentUser) {
+                document.getElementById('adminName').textContent = 
+                    `${currentUser.firstName} ${currentUser.lastName}`;
+                document.getElementById('adminEmail').textContent = currentUser.email;
+                document.getElementById('adminAvatar').textContent = 
+                    currentUser.firstName.charAt(0) + currentUser.lastName.charAt(0);
+                document.getElementById('pageSubtitle').textContent = 
+                    `Welcome back, ${currentUser.firstName}`;
+            }
+        }
+
+        // Setup Event Listeners
+        function setupEventListeners() {
+            // Navigation
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const section = link.dataset.section;
+                    loadSection(section);
+                    
+                    // Update active state
+                    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+                });
+            });
+
+            // Tabs
+            document.addEventListener('click', (e) => {
+                if (e.target.classList.contains('tab')) {
+                    const tabId = e.target.dataset.tab;
+                    
+                    // Update tab states
+                    document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+                    e.target.classList.add('active');
+                    
+                    // Show corresponding content
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    document.getElementById(tabId).classList.add('active');
+                }
+            });
+
+            // Refresh button
+            document.getElementById('refreshBtn').addEventListener('click', () => {
+                loadSection(currentSection);
+                showAlert('Data refreshed', 'success');
+            });
+
+            // Global search
+            document.getElementById('globalSearch').addEventListener('input', debounce((e) => {
+                const query = e.target.value.toLowerCase();
+                searchLibraryData(query);
+            }, 300));
+
+            // Close modal on overlay click
+            modalOverlay.addEventListener('click', (e) => {
+                if (e.target === modalOverlay) {
+                    closeModal();
+                }
+            });
+        }
+
+        // Load Section
+        async function loadSection(section) {
+            currentSection = section;
+            
+            // Update page title
+            const pageTitle = document.getElementById('pageTitle');
+            const titles = {
+                overview: 'Library Overview',
+                books: 'Book Management',
+                borrow: 'Borrow Management',
+                returns: 'Returns & Fines',
+                categories: 'Categories',
+                users: 'Library Users',
+                reports: 'Reports & Analytics',
+                settings: 'Library Settings'
+            };
+            pageTitle.textContent = titles[section] || 'Library Overview';
+            
+            // Show loading
+            contentContainer.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                </div>
+            `;
+            
+            // Load section content
+            try {
+                switch(section) {
+                    case 'overview':
+                        await loadOverview();
+                        break;
+                    case 'books':
+                        await loadBooks();
+                        break;
+                    case 'borrow':
+                        await loadBorrow();
+                        break;
+                    case 'returns':
+                        await loadReturns();
+                        break;
+                    case 'categories':
+                        await loadCategories();
+                        break;
+                    case 'users':
+                        await loadLibraryUsers();
+                        break;
+                    case 'reports':
+                        await loadReports();
+                        break;
+                    case 'settings':
+                        await loadSettings();
+                        break;
+                    default:
+                        await loadOverview();
+                }
+            } catch (error) {
+                console.error(`Error loading ${section}:`, error);
+                showAlert(`Failed to load ${section} data`, 'error');
+                contentContainer.innerHTML = `
+                    <div class="empty-state">
+                        <span class="material-icons-sharp">error</span>
+                        <h3>Failed to load data</h3>
+                        <p>Please try again or contact support if the problem persists.</p>
+                        <button class="btn btn-secondary" onclick="loadSection('${section}')" style="margin-top: 1rem;">
+                            Retry
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        // Load Overview
+        async function loadOverview() {
+            const template = document.getElementById('overviewTemplate');
+            contentContainer.innerHTML = template.innerHTML;
+            
+            // Fetch data
+            await fetchLibraryData();
+            
+            // Update stats
+            updateOverviewStats();
+            
+            // Initialize charts
+            initBorrowingChart();
+            initCategoriesChart();
+            
+            // Load recent borrowings
+            loadRecentBorrowings();
+        }
+
+        // Fetch Library Data
+        async function fetchLibraryData() {
+            try {
+                // Fetch books
+                const booksSnapshot = await database.ref('libraryBooks').once('value');
+                books = booksSnapshot.exists() ? Object.entries(booksSnapshot.val()).map(([id, data]) => ({ id, ...data })) : [];
+                
+                // Fetch borrow records
+                const borrowSnapshot = await database.ref('borrowRecords').once('value');
+                borrowRecords = borrowSnapshot.exists() ? Object.values(borrowSnapshot.val()) : [];
+                
+                // Fetch users
+                const usersSnapshot = await database.ref('users').once('value');
+                libraryUsers = usersSnapshot.exists() ? Object.values(usersSnapshot.val()) : [];
+                
+                // Fetch categories (extract from books)
+                categories = [...new Set(books.map(book => book.category).filter(Boolean))];
+                
+            } catch (error) {
+                console.error('Error fetching library data:', error);
+                throw error;
+            }
+        }
+
+        // Update Overview Stats
+        function updateOverviewStats() {
+            // Total Books
+            document.getElementById('totalBooks').textContent = books.length;
+            
+            // Available Books
+            const availableBooks = books.filter(book => book.availability === 'available').length;
+            document.getElementById('availableBooks').textContent = availableBooks;
+            
+            // Borrowed Books
+            const borrowedBooks = books.filter(book => book.availability === 'borrowed').length;
+            document.getElementById('borrowedBooks').textContent = borrowedBooks;
+            
+            // Active Users (users who have borrowed books)
+            const activeUsers = [...new Set(borrowRecords.map(record => record.userId))].length;
+            document.getElementById('activeUsers').textContent = activeUsers;
+        }
+
+        // Initialize Borrowing Chart
+        function initBorrowingChart() {
+            const ctx = document.getElementById('borrowingChart').getContext('2d');
+            
+            // Sample data
+            const data = {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'Books Borrowed',
+                    data: [12, 19, 8, 15, 22, 10, 5],
+                    borderColor: 'rgb(212, 175, 55)',
+                    backgroundColor: 'rgba(212, 175, 55, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            };
+            
+            borrowingChart = new Chart(ctx, {
+                type: 'line',
+                data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                drawBorder: false
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize Categories Chart
+        function initCategoriesChart() {
+            const ctx = document.getElementById('categoriesChart').getContext('2d');
+            
+            // Calculate category distribution
+            const categoryCounts = {};
+            books.forEach(book => {
+                if (book.category) {
+                    categoryCounts[book.category] = (categoryCounts[book.category] || 0) + 1;
+                }
+            });
+            
+            const labels = Object.keys(categoryCounts);
+            const data = Object.values(categoryCounts);
+            
+            const chartData = {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    backgroundColor: [
+                        'rgb(212, 175, 55)',
+                        'rgb(59, 130, 246)',
+                        'rgb(16, 185, 129)',
+                        'rgb(245, 158, 11)',
+                        'rgb(239, 68, 68)'
+                    ],
+                    borderWidth: 1
+                }]
+            };
+            
+            categoriesChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: chartData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Load Recent Borrowings
+        function loadRecentBorrowings() {
+            const tableBody = document.getElementById('recentBorrowingsBody');
+            tableBody.innerHTML = '';
+            
+            // Get recent borrowings (last 5)
+            const recentBorrowings = borrowRecords
+                .sort((a, b) => new Date(b.borrowDate) - new Date(a.borrowDate))
+                .slice(0, 5);
+            
+            recentBorrowings.forEach(record => {
+                const book = books.find(b => b.id === record.bookId);
+                const user = libraryUsers.find(u => u.uid === record.userId);
+                
+                if (book && user) {
+                    const row = document.createElement('tr');
+                    const dueDate = new Date(record.dueDate);
+                    const today = new Date();
+                    const daysLeft = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
+                    const statusClass = daysLeft < 0 ? 'overdue' : daysLeft <= 3 ? 'pending' : 'active';
+                    
+                    row.innerHTML = `
+                        <td>
+                            <div style="font-weight: 600;">${book.title}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary);">${book.author}</div>
+                        </td>
+                        <td>
+                            <div style="font-weight: 500;">${user.firstName} ${user.lastName}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary);">${user.email}</div>
+                        </td>
+                        <td>${formatDate(record.borrowDate)}</td>
+                        <td>${formatDate(record.dueDate)}</td>
+                        <td>
+                            <span class="status-badge status-${statusClass}">
+                                ${daysLeft < 0 ? `${Math.abs(daysLeft)} days overdue` : daysLeft === 0 ? 'Due today' : `${daysLeft} days left`}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-icon" onclick="viewBorrowRecord('${record.id}')" title="View">
+                                    <span class="material-icons-sharp">visibility</span>
+                                </button>
+                                <button class="btn-icon" onclick="returnBook('${record.id}')" title="Return">
+                                    <span class="material-icons-sharp">assignment_return</span>
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                }
+            });
+        }
+
+        // Load Books
+        async function loadBooks() {
+            const template = document.getElementById('booksTemplate');
+            contentContainer.innerHTML = template.innerHTML;
+            
+            await fetchLibraryData();
+            
+            // Populate category filter
+            const categoryFilter = document.getElementById('categoryFilter');
+            categories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category;
+                option.textContent = category;
+                categoryFilter.appendChild(option);
+            });
+            
+            // Render books
+            renderBooks();
+            
+            // Setup filter event listeners
+            setupBookFilters();
+        }
+
+        // Render Books
+        function renderBooks() {
+            const booksGrid = document.getElementById('booksGrid');
+            const booksTableBody = document.getElementById('booksTableBody');
+            
+            booksGrid.innerHTML = '';
+            booksTableBody.innerHTML = '';
+            
+            books.forEach(book => {
+                // Grid view
+                const cardTemplate = document.getElementById('bookCardTemplate');
+                const cardHTML = cardTemplate.innerHTML
+                    .replace(/{id}/g, book.id)
+                    .replace(/{title}/g, book.title || 'Untitled')
+                    .replace(/{author}/g, book.author || 'Unknown')
+                    .replace(/{coverImage}/g, book.coverImage || '')
+                    .replace(/{rating}/g, book.rating || 'N/A')
+                    .replace(/{category}/g, book.category || 'Uncategorized')
+                    .replace(/{availableCopies}/g, book.availableCopies || 0)
+                    .replace(/{totalCopies}/g, book.totalCopies || 1)
+                    .replace(/{availability}/g, book.availability || 'available');
+                
+                const cardDiv = document.createElement('div');
+                cardDiv.innerHTML = cardHTML;
+                booksGrid.appendChild(cardDiv.firstElementChild);
+                
+                // Table view
+                const row = document.createElement('tr');
+                const statusClass = `status-${book.availability || 'available'}`;
+                
+                row.innerHTML = `
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <div style="width: 40px; height: 60px; background: var(--primary-light); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; color: var(--primary);">
+                                <span class="material-icons-sharp">menu_book</span>
+                            </div>
+                            <div>
+                                <div style="font-weight: 600;">${book.title || 'Untitled'}</div>
+                                <div style="font-size: 0.875rem; color: var(--text-secondary);">${book.author || 'Unknown'}</div>
+                                <div style="font-size: 0.75rem; color: var(--text-light);">ISBN: ${book.isbn || 'N/A'}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td><span class="category-badge">${book.category || 'Uncategorized'}</span></td>
+                    <td>${book.totalCopies || 1}</td>
+                    <td>${book.availableCopies || 0}</td>
+                    <td>${book.borrowCount || 0}</td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 0.25rem; color: var(--warning);">
+                            <span class="material-icons-sharp" style="font-size: 1rem;">star</span>
+                            <span>${book.rating || 'N/A'}</span>
+                        </div>
+                    </td>
+                    <td><span class="status-badge ${statusClass}">${book.availability || 'available'}</span></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-icon edit" onclick="editBook('${book.id}')" title="Edit">
+                                <span class="material-icons-sharp">edit</span>
+                            </button>
+                            <button class="btn-icon" onclick="viewBook('${book.id}')" title="View">
+                                <span class="material-icons-sharp">visibility</span>
+                            </button>
+                            <button class="btn-icon delete" onclick="deleteBook('${book.id}')" title="Delete">
+                                <span class="material-icons-sharp">delete</span>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                booksTableBody.appendChild(row);
+            });
+        }
+
+        // Setup Book Filters
+        function setupBookFilters() {
+            document.getElementById('bookFilter').addEventListener('change', filterBooks);
+            document.getElementById('categoryFilter').addEventListener('change', filterBooks);
+            document.getElementById('sortFilter').addEventListener('change', filterBooks);
+            document.getElementById('bookSearch').addEventListener('input', debounce(filterBooks, 300));
+        }
+
+        // Filter Books
+        function filterBooks() {
+            const filter = document.getElementById('bookFilter').value;
+            const category = document.getElementById('categoryFilter').value;
+            const sort = document.getElementById('sortFilter').value;
+            const search = document.getElementById('bookSearch').value.toLowerCase();
+            
+            let filteredBooks = [...books];
+            
+            // Apply search
+            if (search) {
+                filteredBooks = filteredBooks.filter(book => 
+                    book.title?.toLowerCase().includes(search) ||
+                    book.author?.toLowerCase().includes(search) ||
+                    book.isbn?.toLowerCase().includes(search)
+                );
+            }
+            
+            // Apply category filter
+            if (category !== 'all') {
+                filteredBooks = filteredBooks.filter(book => book.category === category);
+            }
+            
+            // Apply status filter
+            if (filter !== 'all') {
+                filteredBooks = filteredBooks.filter(book => book.availability === filter);
+            }
+            
+            // Apply sorting
+            filteredBooks.sort((a, b) => {
+                switch(sort) {
+                    case 'newest':
+                        return new Date(b.addedDate || 0) - new Date(a.addedDate || 0);
+                    case 'oldest':
+                        return new Date(a.addedDate || 0) - new Date(b.addedDate || 0);
+                    case 'title':
+                        return (a.title || '').localeCompare(b.title || '');
+                    case 'popular':
+                        return (b.borrowCount || 0) - (a.borrowCount || 0);
+                    default:
+                        return 0;
+                }
+            });
+            
+            // Re-render with filtered books
+            renderFilteredBooks(filteredBooks);
+        }
+
+        // Render Filtered Books
+        function renderFilteredBooks(filteredBooks) {
+            // Update grid view
+            const booksGrid = document.getElementById('booksGrid');
+            booksGrid.innerHTML = '';
+            
+            filteredBooks.forEach(book => {
+                const cardTemplate = document.getElementById('bookCardTemplate');
+                const cardHTML = cardTemplate.innerHTML
+                    .replace(/{id}/g, book.id)
+                    .replace(/{title}/g, book.title || 'Untitled')
+                    .replace(/{author}/g, book.author || 'Unknown')
+                    .replace(/{coverImage}/g, book.coverImage || '')
+                    .replace(/{rating}/g, book.rating || 'N/A')
+                    .replace(/{category}/g, book.category || 'Uncategorized')
+                    .replace(/{availableCopies}/g, book.availableCopies || 0)
+                    .replace(/{totalCopies}/g, book.totalCopies || 1)
+                    .replace(/{availability}/g, book.availability || 'available');
+                
+                const cardDiv = document.createElement('div');
+                cardDiv.innerHTML = cardHTML;
+                booksGrid.appendChild(cardDiv.firstElementChild);
+            });
+            
+            // Update table view
+            const booksTableBody = document.getElementById('booksTableBody');
+            booksTableBody.innerHTML = '';
+            
+            filteredBooks.forEach(book => {
+                const row = document.createElement('tr');
+                const statusClass = `status-${book.availability || 'available'}`;
+                
+                row.innerHTML = `
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <div style="width: 40px; height: 60px; background: var(--primary-light); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; color: var(--primary);">
+                                <span class="material-icons-sharp">menu_book</span>
+                            </div>
+                            <div>
+                                <div style="font-weight: 600;">${book.title || 'Untitled'}</div>
+                                <div style="font-size: 0.875rem; color: var(--text-secondary);">${book.author || 'Unknown'}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td><span class="category-badge">${book.category || 'Uncategorized'}</span></td>
+                    <td>${book.totalCopies || 1}</td>
+                    <td>${book.availableCopies || 0}</td>
+                    <td>${book.borrowCount || 0}</td>
+                    <td>${book.rating || 'N/A'}</td>
+                    <td><span class="status-badge ${statusClass}">${book.availability || 'available'}</span></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-icon edit" onclick="editBook('${book.id}')">
+                                <span class="material-icons-sharp">edit</span>
+                            </button>
+                            <button class="btn-icon delete" onclick="deleteBook('${book.id}')">
+                                <span class="material-icons-sharp">delete</span>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                booksTableBody.appendChild(row);
+            });
+        }
+
+        // Show Add Book Modal
+        function showAddBookModal() {
+            const template = document.getElementById('addBookModalTemplate');
+            showModal(template.innerHTML);
+            
+            // Populate categories dropdown
+            setTimeout(() => {
+                const categorySelect = document.getElementById('bookCategory');
+                categorySelect.innerHTML = '<option value="">Select Category</option>';
+                categories.forEach(category => {
+                    const option = document.createElement('option');
+                    option.value = category;
+                    option.textContent = category;
+                    categorySelect.appendChild(option);
+                });
+            }, 100);
+        }
+
+        // Create Book
+        async function createBook() {
+            const title = document.getElementById('bookTitle').value;
+            const author = document.getElementById('bookAuthor').value;
+            const isbn = document.getElementById('bookISBN').value;
+            const category = document.getElementById('bookCategory').value;
+            const year = document.getElementById('bookYear').value;
+            const copies = parseInt(document.getElementById('bookCopies').value);
+            const availableCopies = parseInt(document.getElementById('bookAvailableCopies').value);
+            const description = document.getElementById('bookDescription').value;
+            const coverImage = document.getElementById('bookCoverImage').value;
+            
+            if (!title || !author || !category) {
+                showAlert('Please fill in required fields', 'error');
+                return;
+            }
+            
+            if (availableCopies > copies) {
+                showAlert('Available copies cannot exceed total copies', 'error');
+                return;
+            }
+            
+            try {
+                const bookId = `book_${Date.now()}`;
+                const bookData = {
+                    id: bookId,
+                    title: title,
+                    author: author,
+                    isbn: isbn,
+                    category: category,
+                    publishedYear: year || null,
+                    description: description,
+                    coverImage: coverImage || null,
+                    totalCopies: copies,
+                    availableCopies: availableCopies,
+                    borrowCount: 0,
+                    rating: 0,
+                    availability: availableCopies > 0 ? 'available' : 'unavailable',
+                    addedDate: new Date().toISOString(),
+                    featured: false,
+                    tags: [],
+                    location: 'Shelf A-' + Math.floor(Math.random() * 20 + 1)
+                };
+                
+                await database.ref(`libraryBooks/${bookId}`).set(bookData);
+                showAlert('Book added successfully', 'success');
+                closeModal();
+                loadBooks();
+            } catch (error) {
+                console.error('Error creating book:', error);
+                showAlert('Failed to add book', 'error');
+            }
+        }
+
+        // Edit Book
+        async function editBook(bookId) {
+            const book = books.find(b => b.id === bookId);
+            if (!book) {
+                showAlert('Book not found', 'error');
+                return;
+            }
+            
+            currentEditBookId = bookId;
+            
+            const modalHTML = `
+                <div class="modal" style="max-width: 600px;">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Edit Book</h3>
+                        <button class="modal-close" onclick="closeModal()">
+                            <span class="material-icons-sharp">close</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editBookForm">
+                            <div class="form-group">
+                                <label class="form-label">Title</label>
+                                <input type="text" class="form-input" id="editBookTitle" value="${book.title || ''}">
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Author</label>
+                                    <input type="text" class="form-input" id="editBookAuthor" value="${book.author || ''}">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">ISBN</label>
+                                    <input type="text" class="form-input" id="editBookISBN" value="${book.isbn || ''}">
+                                </div>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Category</label>
+                                    <select class="form-select" id="editBookCategory">
+                                        <option value="">Select Category</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Published Year</label>
+                                    <input type="number" class="form-input" id="editBookYear" value="${book.publishedYear || ''}">
+                                </div>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Total Copies</label>
+                                    <input type="number" class="form-input" id="editBookCopies" value="${book.totalCopies || 1}" min="1">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Available Copies</label>
+                                    <input type="number" class="form-input" id="editBookAvailableCopies" value="${book.availableCopies || 0}" min="0">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Description</label>
+                                <textarea class="form-textarea" id="editBookDescription" rows="4">${book.description || ''}</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <input type="checkbox" id="editBookFeatured" ${book.featured ? 'checked' : ''}>
+                                    Featured Book
+                                </label>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-danger" onclick="deleteBook('${bookId}')">Delete Book</button>
+                        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                        <button class="btn btn-primary" onclick="updateBook()">Save Changes</button>
+                    </div>
+                </div>
+            `;
+            
+            showModal(modalHTML);
+            
+            // Populate categories dropdown
+            setTimeout(() => {
+                const categorySelect = document.getElementById('editBookCategory');
+                categories.forEach(cat => {
+                    const option = document.createElement('option');
+                    option.value = cat;
+                    option.textContent = cat;
+                    option.selected = cat === book.category;
+                    categorySelect.appendChild(option);
+                });
+            }, 100);
+        }
+
+        // Update Book
+        async function updateBook() {
+            if (!currentEditBookId) return;
+            
+            const updates = {
+                title: document.getElementById('editBookTitle').value,
+                author: document.getElementById('editBookAuthor').value,
+                isbn: document.getElementById('editBookISBN').value,
+                category: document.getElementById('editBookCategory').value,
+                publishedYear: document.getElementById('editBookYear').value || null,
+                description: document.getElementById('editBookDescription').value,
+                totalCopies: parseInt(document.getElementById('editBookCopies').value),
+                availableCopies: parseInt(document.getElementById('editBookAvailableCopies').value),
+                featured: document.getElementById('editBookFeatured').checked,
+                updatedDate: new Date().toISOString(),
+                availability: document.getElementById('editBookAvailableCopies').value > 0 ? 'available' : 'unavailable'
+            };
+            
+            try {
+                await database.ref(`libraryBooks/${currentEditBookId}`).update(updates);
+                showAlert('Book updated successfully', 'success');
+                closeModal();
+                loadBooks();
+            } catch (error) {
+                console.error('Error updating book:', error);
+                showAlert('Failed to update book', 'error');
+            }
+        }
+
+        // Delete Book
+        async function deleteBook(bookId) {
+            if (!confirm('Are you sure you want to delete this book? This action cannot be undone.')) {
+                return;
+            }
+            
+            try {
+                await database.ref(`libraryBooks/${bookId}`).remove();
+                showAlert('Book deleted successfully', 'success');
+                closeModal();
+                loadBooks();
+            } catch (error) {
+                console.error('Error deleting book:', error);
+                showAlert('Failed to delete book', 'error');
+            }
+        }
+
+        // View Book Details
+        async function viewBook(bookId) {
+            const book = books.find(b => b.id === bookId);
+            if (!book) {
+                showAlert('Book not found', 'error');
+                return;
+            }
+            
+            const modalHTML = `
+                <div class="modal" style="max-width: 500px;">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Book Details</h3>
+                        <button class="modal-close" onclick="closeModal()">
+                            <span class="material-icons-sharp">close</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div style="text-align: center; margin-bottom: 1.5rem;">
+                            <div style="width: 120px; height: 180px; background: var(--primary-light); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; color: var(--primary); font-size: 3rem;">
+                                <span class="material-icons-sharp">menu_book</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 1.5rem;">
+                            <h4 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem;">${book.title}</h4>
+                            <p style="color: var(--text-secondary); margin-bottom: 0.5rem;"><strong>Author:</strong> ${book.author || 'Unknown'}</p>
+                            <p style="color: var(--text-secondary); margin-bottom: 0.5rem;"><strong>Category:</strong> ${book.category || 'Uncategorized'}</p>
+                            <p style="color: var(--text-secondary); margin-bottom: 0.5rem;"><strong>ISBN:</strong> ${book.isbn || 'N/A'}</p>
+                            <p style="color: var(--text-secondary); margin-bottom: 0.5rem;"><strong>Published:</strong> ${book.publishedYear || 'N/A'}</p>
+                            <p style="color: var(--text-secondary); margin-bottom: 0.5rem;"><strong>Copies:</strong> ${book.availableCopies || 0} available / ${book.totalCopies || 1} total</p>
+                            <p style="color: var(--text-secondary); margin-bottom: 0.5rem;"><strong>Location:</strong> ${book.location || 'N/A'}</p>
+                            <p style="color: var(--text-secondary); margin-bottom: 0.5rem;"><strong>Borrow Count:</strong> ${book.borrowCount || 0}</p>
+                            <p style="color: var(--text-secondary); margin-bottom: 0.5rem;"><strong>Rating:</strong> ${book.rating || 'N/A'}</p>
+                        </div>
+                        ${book.description ? `<div style="margin-bottom: 1.5rem;">
+                            <h5 style="font-weight: 600; margin-bottom: 0.5rem;">Description</h5>
+                            <p style="color: var(--text-secondary); line-height: 1.6;">${book.description}</p>
+                        </div>` : ''}
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+                        <button class="btn btn-primary" onclick="editBook('${bookId}')">Edit Book</button>
+                    </div>
+                </div>
+            `;
+            
+            showModal(modalHTML);
+        }
+
+        // Load Borrow Management
+        async function loadBorrow() {
+            const template = document.getElementById('borrowTemplate');
+            contentContainer.innerHTML = template.innerHTML;
+            
+            await fetchLibraryData();
+            
+            // Load active borrows
+            loadActiveBorrows();
+            
+            // Load overdue borrows
+            loadOverdueBorrows();
+            
+            // Load borrow history
+            loadBorrowHistory();
+        }
+
+        // Load Active Borrows
+        function loadActiveBorrows() {
+            const tableBody = document.getElementById('activeBorrowsBody');
+            tableBody.innerHTML = '';
+            
+            const activeBorrows = borrowRecords.filter(record => !record.returnDate);
+            
+            activeBorrows.forEach(record => {
+                const book = books.find(b => b.id === record.bookId);
+                const user = libraryUsers.find(u => u.uid === record.userId);
+                
+                if (book && user) {
+                    const dueDate = new Date(record.dueDate);
+                    const today = new Date();
+                    const daysLeft = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
+                    const fine = daysLeft < 0 ? Math.abs(daysLeft) * 50 : 0;
+                    
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>
+                            <div style="font-weight: 600;">${book.title}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary);">${book.author}</div>
+                        </td>
+                        <td>
+                            <div style="font-weight: 500;">${user.firstName} ${user.lastName}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary);">${user.email}</div>
+                        </td>
+                        <td>${formatDate(record.borrowDate)}</td>
+                        <td>${formatDate(record.dueDate)}</td>
+                        <td>
+                            <span style="color: ${daysLeft < 0 ? 'var(--danger)' : daysLeft <= 3 ? 'var(--warning)' : 'var(--success)'}; font-weight: 600;">
+                                ${daysLeft < 0 ? `Overdue by ${Math.abs(daysLeft)} days` : `${daysLeft} days left`}
+                            </span>
+                        </td>
+                        <td>${fine > 0 ? `KSh ${fine}` : 'No fine'}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-icon" onclick="returnBook('${record.id}')" title="Return">
+                                    <span class="material-icons-sharp">assignment_return</span>
+                                </button>
+                                <button class="btn-icon" onclick="renewBook('${record.id}')" title="Renew">
+                                    <span class="material-icons-sharp">autorenew</span>
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                }
+            });
+        }
+
+        // Show Borrow Book Modal
+        function showBorrowBookModal() {
+            const today = new Date().toISOString().split('T')[0];
+            const dueDate = new Date();
+            dueDate.setDate(dueDate.getDate() + 14);
+            const dueDateStr = dueDate.toISOString().split('T')[0];
+            
+            const template = document.getElementById('borrowBookModalTemplate');
+            const modalHTML = template.innerHTML.replace(/{today}/g, today);
+            showModal(modalHTML);
+            
+            // Populate books dropdown
+            setTimeout(() => {
+                const bookSelect = document.getElementById('borrowBookSelect');
+                bookSelect.innerHTML = '<option value="">Select a book</option>';
+                books
+                    .filter(book => book.availableCopies > 0)
+                    .forEach(book => {
+                        const option = document.createElement('option');
+                        option.value = book.id;
+                        option.textContent = `${book.title} by ${book.author} (${book.availableCopies} available)`;
+                        bookSelect.appendChild(option);
+                    });
+                
+                // Populate users dropdown
+                const userSelect = document.getElementById('borrowUserSelect');
+                userSelect.innerHTML = '<option value="">Select a user</option>';
+                libraryUsers.forEach(user => {
+                    const option = document.createElement('option');
+                    option.value = user.uid;
+                    option.textContent = `${user.firstName} ${user.lastName} (${user.email})`;
+                    userSelect.appendChild(option);
+                });
+                
+                // Set due date
+                document.getElementById('dueDate').value = dueDateStr;
+            }, 100);
+        }
+
+        // Process Borrow
+        async function processBorrow() {
+            const bookId = document.getElementById('borrowBookSelect').value;
+            const userId = document.getElementById('borrowUserSelect').value;
+            const borrowDate = document.getElementById('borrowDate').value;
+            const dueDate = document.getElementById('dueDate').value;
+            
+            if (!bookId || !userId || !dueDate) {
+                showAlert('Please fill in all required fields', 'error');
+                return;
+            }
+            
+            const book = books.find(b => b.id === bookId);
+            const user = libraryUsers.find(u => u.uid === userId);
+            
+            if (!book || !user) {
+                showAlert('Invalid book or user selected', 'error');
+                return;
+            }
+            
+            if (book.availableCopies < 1) {
+                showAlert('This book is not available for borrowing', 'error');
+                return;
+            }
+            
+            try {
+                const borrowId = `borrow_${Date.now()}`;
+                
+                // Create borrow record
+                const borrowData = {
+                    id: borrowId,
+                    bookId: bookId,
+                    userId: userId,
+                    bookTitle: book.title,
+                    userName: `${user.firstName} ${user.lastName}`,
+                    borrowDate: borrowDate || new Date().toISOString(),
+                    dueDate: dueDate,
+                    returnDate: null,
+                    status: 'borrowed',
+                    renewals: 0,
+                    fineAmount: 0,
+                    paid: false
+                };
+                
+                // Update book availability
+                const bookUpdates = {
+                    availableCopies: book.availableCopies - 1,
+                    borrowCount: (book.borrowCount || 0) + 1,
+                    availability: (book.availableCopies - 1) > 0 ? 'available' : 'borrowed'
+                };
+                
+                // Update user's borrowed books
+                const userBorrowedBooks = user.borrowedBooks || [];
+                userBorrowedBooks.push(bookId);
+                
+                await database.ref(`borrowRecords/${borrowId}`).set(borrowData);
+                await database.ref(`libraryBooks/${bookId}`).update(bookUpdates);
+                await database.ref(`users/${userId}/borrowedBooks`).set(userBorrowedBooks);
+                
+                showAlert('Book borrowed successfully', 'success');
+                closeModal();
+                loadBorrow();
+            } catch (error) {
+                console.error('Error processing borrow:', error);
+                showAlert('Failed to process borrow', 'error');
+            }
+        }
+
+        // Return Book
+        async function returnBook(borrowId) {
+            const record = borrowRecords.find(r => r.id === borrowId);
+            if (!record) {
+                showAlert('Borrow record not found', 'error');
+                return;
+            }
+            
+            const book = books.find(b => b.id === record.bookId);
+            const user = libraryUsers.find(u => u.uid === record.userId);
+            
+            if (!book || !user) {
+                showAlert('Invalid borrow record', 'error');
+                return;
+            }
+            
+            // Calculate fine if overdue
+            const dueDate = new Date(record.dueDate);
+            const today = new Date();
+            const daysOverdue = Math.ceil((today - dueDate) / (1000 * 60 * 60 * 24));
+            const fine = daysOverdue > 0 ? daysOverdue * 50 : 0;
+            
+            const fineMessage = fine > 0 ? `Fine: KSh ${fine}` : 'No fine';
+            
+            if (!confirm(`Return book: ${book.title}\nBorrower: ${user.firstName} ${user.lastName}\n${fineMessage}\n\nConfirm return?`)) {
+                return;
+            }
+            
+            try {
+                const returnDate = new Date().toISOString();
+                
+                // Update borrow record
+                await database.ref(`borrowRecords/${borrowId}`).update({
+                    returnDate: returnDate,
+                    fineAmount: fine,
+                    status: 'returned'
+                });
+                
+                // Update book availability
+                await database.ref(`libraryBooks/${record.bookId}`).update({
+                    availableCopies: book.availableCopies + 1,
+                    availability: (book.availableCopies + 1) > 0 ? 'available' : 'unavailable'
+                });
+                
+                // Remove from user's borrowed books
+                const userBorrowedBooks = user.borrowedBooks || [];
+                const updatedBorrowedBooks = userBorrowedBooks.filter(id => id !== record.bookId);
+                await database.ref(`users/${record.userId}/borrowedBooks`).set(updatedBorrowedBooks);
+                
+                showAlert('Book returned successfully', 'success');
+                loadBorrow();
+            } catch (error) {
+                console.error('Error returning book:', error);
+                showAlert('Failed to return book', 'error');
+            }
+        }
+
+        // Load Returns
+        async function loadReturns() {
+            const template = document.getElementById('returnsTemplate');
+            contentContainer.innerHTML = template.innerHTML;
+            
+            await fetchLibraryData();
+            
+            // Calculate return stats
+            const returnedRecords = borrowRecords.filter(record => record.returnDate);
+            const pendingReturns = borrowRecords.filter(record => !record.returnDate);
+            const totalFines = returnedRecords.reduce((sum, record) => sum + (record.fineAmount || 0), 0);
+            const paidFines = returnedRecords.reduce((sum, record) => sum + (record.paid ? (record.fineAmount || 0) : 0), 0);
+            
+            document.getElementById('pendingReturns').textContent = pendingReturns.length;
+            document.getElementById('totalFines').textContent = `KSh ${totalFines}`;
+            document.getElementById('paidFines').textContent = `KSh ${paidFines}`;
+            
+            // Load returns table
+            loadReturnsTable();
+        }
+
+        // Load Returns Table
+        function loadReturnsTable() {
+            const tableBody = document.getElementById('returnsTableBody');
+            tableBody.innerHTML = '';
+            
+            const returnedRecords = borrowRecords
+                .filter(record => record.returnDate)
+                .sort((a, b) => new Date(b.returnDate) - new Date(a.returnDate));
+            
+            returnedRecords.forEach(record => {
+                const book = books.find(b => b.id === record.bookId);
+                const user = libraryUsers.find(u => u.uid === record.userId);
+                
+                if (book && user) {
+                    const dueDate = new Date(record.dueDate);
+                    const returnDate = new Date(record.returnDate);
+                    const daysOverdue = Math.ceil((returnDate - dueDate) / (1000 * 60 * 60 * 24));
+                    const fine = record.fineAmount || 0;
+                    
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>
+                            <div style="font-weight: 500;">${user.firstName} ${user.lastName}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary);">${user.email}</div>
+                        </td>
+                        <td>
+                            <div style="font-weight: 600;">${book.title}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary);">${book.author}</div>
+                        </td>
+                        <td>${formatDate(record.dueDate)}</td>
+                        <td>${formatDate(record.returnDate)}</td>
+                        <td>${daysOverdue > 0 ? daysOverdue : 'On time'}</td>
+                        <td><strong>KSh ${fine}</strong></td>
+                        <td>
+                            <span class="status-badge ${record.paid ? 'status-active' : 'status-pending'}">
+                                ${record.paid ? 'Paid' : 'Pending'}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                ${!record.paid && fine > 0 ? `
+                                <button class="btn-icon" onclick="markFinePaid('${record.id}')" title="Mark as Paid">
+                                    <span class="material-icons-sharp">check_circle</span>
+                                </button>
+                                ` : ''}
+                            </div>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                }
+            });
+        }
+
+        // Mark Fine as Paid
+        async function markFinePaid(borrowId) {
+            try {
+                await database.ref(`borrowRecords/${borrowId}`).update({
+                    paid: true
+                });
+                showAlert('Fine marked as paid', 'success');
+                loadReturns();
+            } catch (error) {
+                console.error('Error updating fine:', error);
+                showAlert('Failed to update fine status', 'error');
+            }
+        }
+
+        // Load Categories
+        async function loadCategories() {
+            const template = document.getElementById('categoriesTemplate');
+            contentContainer.innerHTML = template.innerHTML;
+            
+            await fetchLibraryData();
+            
+            // Render categories
+            renderCategories();
+        }
+
+        // Render Categories
+        function renderCategories() {
+            const categoriesGrid = document.getElementById('categoriesGrid');
+            categoriesGrid.innerHTML = '';
+            
+            const categoryStats = {};
+            books.forEach(book => {
+                if (book.category) {
+                    if (!categoryStats[book.category]) {
+                        categoryStats[book.category] = {
+                            count: 0,
+                            available: 0,
+                            borrowed: 0
+                        };
+                    }
+                    categoryStats[book.category].count++;
+                    categoryStats[book.category].available += book.availableCopies || 0;
+                    categoryStats[book.category].borrowed += (book.totalCopies || 1) - (book.availableCopies || 0);
+                }
+            });
+            
+            Object.entries(categoryStats).forEach(([category, stats]) => {
+                const card = document.createElement('div');
+                card.className = 'book-card';
+                card.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                        <div style="width: 60px; height: 60px; background: var(--primary); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; color: var(--secondary); font-size: 1.5rem;">
+                            <span class="material-icons-sharp">category</span>
+                        </div>
+                        <div>
+                            <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.25rem;">${category}</h3>
+                            <p style="color: var(--text-secondary); font-size: 0.875rem;">${stats.count} books</p>
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; text-align: center;">
+                        <div>
+                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary);">${stats.count}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary);">Total</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--success);">${stats.available}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary);">Available</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--warning);">${stats.borrowed}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary);">Borrowed</div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <button class="btn btn-secondary" style="width: 100%;" onclick="viewCategoryBooks('${category}')">
+                            View Books
+                        </button>
+                    </div>
+                `;
+                categoriesGrid.appendChild(card);
+            });
+        }
+
+        // View Category Books
+        function viewCategoryBooks(category) {
+            // Set category filter and switch to books tab
+            loadSection('books');
+            setTimeout(() => {
+                document.getElementById('categoryFilter').value = category;
+                filterBooks();
+            }, 100);
+        }
+
+        // Load Library Users
+        async function loadLibraryUsers() {
+            const template = document.getElementById('usersTemplate');
+            contentContainer.innerHTML = template.innerHTML;
+            
+            await fetchLibraryData();
+            
+            // Render library users
+            renderLibraryUsers();
+        }
+
+        // Render Library Users
+        function renderLibraryUsers() {
+            const tableBody = document.getElementById('libraryUsersBody');
+            tableBody.innerHTML = '';
+            
+            libraryUsers.forEach(user => {
+                // Count user's borrowed books
+                const userBorrowedBooks = borrowRecords.filter(record => 
+                    record.userId === user.uid && !record.returnDate
+                );
+                const overdueBooks = userBorrowedBooks.filter(record => {
+                    const dueDate = new Date(record.dueDate);
+                    const today = new Date();
+                    return dueDate < today;
+                });
+                
+                // Calculate total fines
+                const totalFines = borrowRecords
+                    .filter(record => record.userId === user.uid && record.fineAmount && !record.paid)
+                    .reduce((sum, record) => sum + (record.fineAmount || 0), 0);
+                
+                const row = document.createElement('tr');
+                const tierClass = `tier-${user.membershipTier || 'explorer'}`;
+                
+                row.innerHTML = `
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 600; color: var(--secondary);">
+                                ${(user.firstName?.charAt(0) || '') + (user.lastName?.charAt(0) || '')}
+                            </div>
+                            <div>
+                                <div style="font-weight: 600;">${user.firstName || ''} ${user.lastName || ''}</div>
+                                <div style="font-size: 0.75rem; color: var(--text-secondary);">${user.email || 'N/A'}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td><span class="tier-badge ${tierClass}">${user.membershipTier || 'explorer'}</span></td>
+                    <td>${userBorrowedBooks.length}</td>
+                    <td>${overdueBooks.length}</td>
+                    <td>KSh ${totalFines}</td>
+                    <td><span class="status-badge ${user.membershipStatus === 'active' ? 'status-active' : 'status-pending'}">${user.membershipStatus || 'active'}</span></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-icon" onclick="viewUserBorrowings('${user.uid}')" title="View Borrowings">
+                                <span class="material-icons-sharp">visibility</span>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Load Reports
+        async function loadReports() {
+            const template = document.getElementById('reportsTemplate');
+            contentContainer.innerHTML = template.innerHTML;
+            
+            await fetchLibraryData();
+            
+            // Initialize report charts
+            initMonthlyActivityChart();
+            initTopBorrowersChart();
+            
+            // Calculate detailed statistics
+            calculateReportStats();
+        }
+
+        // Load Settings
+        async function loadSettings() {
+            const template = document.getElementById('settingsTemplate');
+            contentContainer.innerHTML = template.innerHTML;
+            
+            // Load saved settings
+            await loadLibrarySettings();
+        }
+
+        // Load Library Settings
+        async function loadLibrarySettings() {
+            try {
+                const settingsSnapshot = await database.ref('systemSettings/library').once('value');
+                if (settingsSnapshot.exists()) {
+                    const settings = settingsSnapshot.val();
+                    if (settings.borrowDuration) document.getElementById('borrowDuration').value = settings.borrowDuration;
+                    if (settings.dailyFine) document.getElementById('dailyFine').value = settings.dailyFine;
+                    if (settings.maxRenewals) document.getElementById('maxRenewals').value = settings.maxRenewals;
+                    if (settings.maxBooksPerUser) document.getElementById('maxBooksPerUser').value = settings.maxBooksPerUser;
+                    if (settings.dueDateReminders) document.getElementById('dueDateReminders').checked = settings.dueDateReminders;
+                    if (settings.overdueNotifications) document.getElementById('overdueNotifications').checked = settings.overdueNotifications;
+                    if (settings.reservationNotifications) document.getElementById('reservationNotifications').checked = settings.reservationNotifications;
+                }
+            } catch (error) {
+                console.error('Error loading settings:', error);
+            }
+        }
+
+        // Save Library Settings
+        async function saveLibrarySettings() {
+            const settings = {
+                borrowDuration: parseInt(document.getElementById('borrowDuration').value),
+                dailyFine: parseInt(document.getElementById('dailyFine').value),
+                maxRenewals: parseInt(document.getElementById('maxRenewals').value),
+                maxBooksPerUser: parseInt(document.getElementById('maxBooksPerUser').value),
+                dueDateReminders: document.getElementById('dueDateReminders').checked,
+                overdueNotifications: document.getElementById('overdueNotifications').checked,
+                reservationNotifications: document.getElementById('reservationNotifications').checked,
+                updatedAt: new Date().toISOString()
+            };
+            
+            try {
+                await database.ref('systemSettings/library').update(settings);
+                showAlert('Settings saved successfully', 'success');
+            } catch (error) {
+                console.error('Error saving settings:', error);
+                showAlert('Failed to save settings', 'error');
+            }
+        }
+
+        // Start Real-time Updates
+        function startRealtimeUpdates() {
+            // Listen for book changes
+            database.ref('libraryBooks').on('value', (snapshot) => {
+                if (snapshot.exists()) {
+                    books = Object.entries(snapshot.val()).map(([id, data]) => ({ id, ...data }));
+                    
+                    // Update UI if on books section
+                    if (currentSection === 'books') {
+                        renderBooks();
+                    }
+                    
+                    // Update categories
+                    categories = [...new Set(books.map(book => book.category).filter(Boolean))];
+                }
+            });
+            
+            // Listen for borrow record changes
+            database.ref('borrowRecords').on('value', (snapshot) => {
+                if (snapshot.exists()) {
+                    borrowRecords = Object.values(snapshot.val());
+                    
+                    // Update UI if on borrow or returns section
+                    if (currentSection === 'borrow') {
+                        loadActiveBorrows();
+                        loadOverdueBorrows();
+                        loadBorrowHistory();
+                    }
+                    if (currentSection === 'returns') {
+                        loadReturns();
+                    }
+                }
+            });
+        }
+
+        // Show Modal
+        function showModal(content) {
+            modalOverlay.innerHTML = content;
+            modalOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close Modal
+        function closeModal() {
+            modalOverlay.classList.remove('active');
+            modalOverlay.innerHTML = '';
+            document.body.style.overflow = '';
+            currentEditBookId = null;
+        }
+
+        // Show Alert
+        function showAlert(message, type = 'info') {
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.innerHTML = `
+                <span class="material-icons-sharp" style="vertical-align: middle; margin-right: 0.5rem;">
+                    ${type === 'success' ? 'check_circle' : type === 'error' ? 'error' : 'info'}
+                </span>
+                ${message}
+            `;
+            
+            alertContainer.appendChild(alert);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                alert.remove();
+            }, 5000);
+        }
+
+        // Format Date
+        function formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        // Debounce Function
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Search Library Data
+        function searchLibraryData(query) {
+            if (!query.trim()) {
+                loadSection(currentSection);
+                return;
+            }
+            
+            // Implement search based on current section
+            switch(currentSection) {
+                case 'books':
+                    document.getElementById('bookSearch').value = query;
+                    filterBooks();
+                    break;
+                case 'users':
+                    document.getElementById('userSearch').value = query;
+                    // Filter users table
+                    break;
+            }
+        }
+
+        // Export Books
+        function exportBooks() {
+            const dataStr = JSON.stringify(books, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = `the_songa_books_${new Date().toISOString().split('T')[0]}.json`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+            
+            showAlert('Books exported successfully', 'success');
+        }
+
+        // Initialize Library Admin
+        document.addEventListener('DOMContentLoaded', initializeLibraryAdmin);
+    </script>
+</body>
+</html>
