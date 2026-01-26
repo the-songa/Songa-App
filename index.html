@@ -100,6 +100,34 @@
             font-size: 1.5rem;
         }
 
+        /* Session Status Indicator */
+        .session-status {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            background: var(--gold);
+            color: var(--black);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 999;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+            animation: slideIn 0.3s ease;
+        }
+        
+        .session-status.visible {
+            display: flex;
+        }
+        
+        .session-status.restored {
+            background: #2ecc71;
+            color: white;
+        }
+
         /* BOTTOM NAVIGATION - Enhanced */
         .bottom-nav {
             position: fixed;
@@ -2218,6 +2246,13 @@
                 margin-top: 10px;
                 justify-content: flex-start;
             }
+            
+            .session-status {
+                top: 60px;
+                right: 10px;
+                font-size: 0.75rem;
+                padding: 6px 12px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -2271,6 +2306,13 @@
                 width: 250px;
                 right: -40px;
             }
+            
+            .session-status {
+                top: 55px;
+                right: 5px;
+                font-size: 0.7rem;
+                padding: 4px 10px;
+            }
         }
 
         /* SCROLLBAR STYLING */
@@ -2317,6 +2359,12 @@
     </style>
 </head>
 <body>
+    <!-- Session Status Indicator -->
+    <div class="session-status" id="sessionStatus">
+        <i class="fas fa-check-circle"></i>
+        <span>Session restored</span>
+    </div>
+
     <!-- Back to Top Button -->
     <button class="back-to-top" id="backToTop" onclick="scrollToTop()">
         <i class="fas fa-arrow-up"></i>
@@ -2783,6 +2831,7 @@
         const notificationsDropdown = document.getElementById('notificationsDropdown');
         const notificationBadge = document.getElementById('notificationBadge');
         const notificationsList = document.getElementById('notificationsList');
+        const sessionStatus = document.getElementById('sessionStatus');
 
         // Club data
         const clubs = {
@@ -2820,6 +2869,21 @@
             setTimeout(() => {
                 notification.classList.remove('show');
             }, duration);
+        }
+
+        // Show session status
+        function showSessionStatus(message, type = 'restored') {
+            if (sessionStatus) {
+                sessionStatus.innerHTML = `
+                    <i class="fas fa-${type === 'restored' ? 'check-circle' : 'sync'}"></i>
+                    <span>${message}</span>
+                `;
+                sessionStatus.className = `session-status visible ${type}`;
+                
+                setTimeout(() => {
+                    sessionStatus.classList.remove('visible');
+                }, 3000);
+            }
         }
 
         // Scroll handling for bottom navigation and back-to-top button
@@ -3367,32 +3431,92 @@
             }).join('');
         }
 
-        // Check authentication status
+        // Enhanced Check Authentication Status with Persistent Storage
         function checkAuthStatus() {
             const storedUser = localStorage.getItem('the_songa_welfare_user');
-            if (storedUser) {
+            const storedToken = localStorage.getItem('the_songa_welfare_token');
+            const sessionTime = localStorage.getItem('the_songa_welfare_session_time');
+            
+            // Check if session is still valid (24 hours)
+            const isSessionValid = sessionTime && (Date.now() - parseInt(sessionTime)) < (24 * 60 * 60 * 1000);
+            
+            if (storedUser && storedToken && isSessionValid) {
                 try {
                     currentUser = JSON.parse(storedUser);
+                    showSessionStatus('Session restored', 'restored');
+                    
+                    // Update UI immediately
                     updateUIForMember();
+                    
+                    // Hide signin modal
                     signinModal.classList.remove('active');
                     document.body.classList.remove('modal-open');
+                    
+                    // Fetch fresh user data from database
                     fetchUserData(currentUser.uid);
+                    
+                    // Setup real-time features
                     setupRealtimePosts();
                     setupRealtimeNotifications();
                     setupPostClickTracking();
+                    
+                    showNotification(`Welcome back, ${currentUser.firstName}!`, 'success');
+                    
+                    return true;
                 } catch (error) {
                     console.error("Error parsing stored user:", error);
-                    localStorage.removeItem('the_songa_welfare_user');
+                    clearUserSession();
                     showSigninModal();
+                    return false;
                 }
             } else {
+                // Session expired or doesn't exist
+                clearUserSession();
                 showSigninModal();
+                return false;
             }
+        }
+
+        // Store user session
+        function storeUserSession(user, token) {
+            localStorage.setItem('the_songa_welfare_user', JSON.stringify(user));
+            localStorage.setItem('the_songa_welfare_token', token);
+            localStorage.setItem('the_songa_welfare_session_time', Date.now().toString());
+            localStorage.setItem('the_songa_welfare_selected_clubs', JSON.stringify(selectedClubs));
+        }
+
+        // Clear user session
+        function clearUserSession() {
+            localStorage.removeItem('the_songa_welfare_user');
+            localStorage.removeItem('the_songa_welfare_token');
+            localStorage.removeItem('the_songa_welfare_session_time');
+            localStorage.removeItem('the_songa_welfare_selected_clubs');
         }
 
         function showSigninModal() {
             signinModal.classList.add('active');
             document.body.classList.add('modal-open');
+            
+            // Try to restore selected clubs from localStorage
+            const storedClubs = localStorage.getItem('the_songa_welfare_selected_clubs');
+            if (storedClubs) {
+                try {
+                    selectedClubs = JSON.parse(storedClubs);
+                    selectedClubs.forEach(clubId => {
+                        const clubCard = document.querySelector(`.club-card[data-club="${clubId}"]`);
+                        if (clubCard) {
+                            clubCard.classList.add('selected');
+                        }
+                    });
+                    if (continueBtn && selectedClubs.length > 0) {
+                        continueBtn.disabled = false;
+                    }
+                } catch (error) {
+                    console.error("Error parsing stored clubs:", error);
+                }
+            }
+            
+            // Setup real-time posts for guests
             setupRealtimePosts();
         }
 
@@ -3426,7 +3550,8 @@
                     emailVerified: userData.email_verified
                 };
                 
-                localStorage.setItem('the_songa_welfare_user', JSON.stringify(currentUser));
+                // Store session
+                storeUserSession(currentUser, response.credential);
                 
                 const userRef = database.ref(`users/${currentUser.uid}`);
                 const snapshot = await userRef.once('value');
@@ -3471,13 +3596,29 @@
                         'https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp'
                     );
                 } else {
-                    // Existing user - update last login
-                    await userRef.update({ 
-                        lastLogin: new Date().toISOString(),
-                        // Update clubs if they selected new ones
-                        ...(selectedClubs.length > 0 && { selectedClubs: selectedClubs })
-                    });
+                    // Existing user - update last login and clubs
+                    const updates = { 
+                        lastLogin: new Date().toISOString()
+                    };
+                    
+                    // Update clubs if they selected new ones
+                    if (selectedClubs.length > 0) {
+                        updates.selectedClubs = selectedClubs;
+                    }
+                    
+                    await userRef.update(updates);
                     currentUserData = snapshot.val();
+                    
+                    // Merge clubs if needed
+                    if (selectedClubs.length > 0) {
+                        const existingClubs = currentUserData.selectedClubs || [];
+                        const mergedClubs = [...new Set([...existingClubs, ...selectedClubs])];
+                        if (mergedClubs.length > existingClubs.length) {
+                            await userRef.update({ selectedClubs: mergedClubs });
+                            currentUserData.selectedClubs = mergedClubs;
+                        }
+                    }
+                    
                     showNotification(`Welcome back, ${currentUser.firstName}!`, 'success');
                 }
                 
@@ -4674,12 +4815,9 @@
             if (notificationsDropdown) notificationsDropdown.classList.remove('active');
         }
 
-        // Sign out user
+        // Enhanced Sign out user with session cleanup
         function signOut() {
-            currentUser = null;
-            currentUserData = null;
-            localStorage.removeItem('the_songa_welfare_user');
-            
+            // Clear Firebase listeners
             if (realtimeListener && database) {
                 database.ref('communityPosts').off('value', realtimeListener);
                 realtimeListener = null;
@@ -4696,20 +4834,30 @@
             });
             replyListeners = {};
             
+            // Clear localStorage session
+            clearUserSession();
+            
+            // Reset user data
+            currentUser = null;
+            currentUserData = null;
+            selectedClubs = [];
+            
+            // Close all modals
             closeDropdown();
             closeDeleteConfirmModal();
             closeImageModal();
             closeCreatePostModal();
+            
+            // Show signin modal
             signinModal.classList.add('active');
             document.body.classList.add('modal-open');
-            showNotification('Signed out successfully', 'success');
             
-            // Hide create post button
+            // Update UI
+            if (userProfile) userProfile.style.display = 'none';
             createPostBtn.style.display = 'none';
             notificationBtn.style.display = 'none';
             
             // Reset onboarding
-            selectedClubs = [];
             currentStep = 1;
             document.querySelectorAll('.onboarding-slide').forEach((slide, index) => {
                 slide.classList.toggle('active', index === 0);
@@ -4747,6 +4895,9 @@
                     </div>
                 </div>
             `;
+            
+            showNotification('Signed out successfully', 'success');
+            showSessionStatus('Signed out', 'restored');
         }
 
         // Search by tag
@@ -4758,7 +4909,8 @@
 
         // Initialize the page
         function initializePage() {
-            checkAuthStatus();
+            // Check authentication first
+            const isAuthenticated = checkAuthStatus();
             
             // Load sample posts if empty
             if (database) {
@@ -4773,6 +4925,15 @@
             
             // Initialize scroll handling
             window.addEventListener('scroll', handleScroll, { passive: true });
+            
+            // Show appropriate UI based on auth status
+            if (!isAuthenticated) {
+                // Show signin modal after a brief delay
+                setTimeout(() => {
+                    signinModal.classList.add('active');
+                    document.body.classList.add('modal-open');
+                }, 500);
+            }
         }
 
         // Load sample posts
