@@ -483,7 +483,16 @@
             color: var(--dark-gray);
         }
 
-        /* FOLLOW BUTTON */
+        /* FOLLOW BUTTON with follower count */
+        .follow-btn-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: absolute;
+            top: 0;
+            right: 40px;
+        }
+
         .follow-btn {
             background: linear-gradient(135deg, var(--gold), var(--gold-dark));
             color: var(--black);
@@ -497,6 +506,7 @@
             display: flex;
             align-items: center;
             gap: 6px;
+            white-space: nowrap;
         }
 
         .follow-btn:hover {
@@ -514,7 +524,19 @@
             color: white;
         }
 
-        /* NOTIFICATIONS DROPDOWN */
+        .follower-count {
+            background: var(--gold-light);
+            color: var(--gold-dark);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* NOTIFICATIONS DROPDOWN - Enhanced */
         .notifications-dropdown {
             position: absolute;
             top: 100%;
@@ -522,7 +544,7 @@
             background: white;
             border-radius: 16px;
             box-shadow: 0 10px 40px var(--shadow);
-            width: 320px;
+            width: 350px;
             max-height: 400px;
             overflow-y: auto;
             z-index: 1000;
@@ -542,6 +564,10 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 1;
         }
 
         .notifications-title {
@@ -576,6 +602,9 @@
             border-bottom: 1px solid var(--light-gray);
             cursor: pointer;
             transition: background 0.3s ease;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
         }
 
         .notification-item:hover {
@@ -590,15 +619,65 @@
             background: rgba(212, 175, 55, 0.1);
         }
 
+        .notification-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+            border: 2px solid var(--gold-light);
+        }
+
+        .notification-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
         .notification-content {
-            font-size: 0.95rem;
+            flex: 1;
+            font-size: 0.9rem;
             color: var(--dark-gray);
+        }
+
+        .notification-text {
             margin-bottom: 4px;
+            line-height: 1.4;
+        }
+
+        .notification-type {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        .notification-type.like {
+            background: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+        }
+
+        .notification-type.comment {
+            background: rgba(52, 152, 219, 0.1);
+            color: #3498db;
+        }
+
+        .notification-type.follow {
+            background: rgba(46, 204, 113, 0.1);
+            color: #2ecc71;
+        }
+
+        .notification-type.post {
+            background: var(--gold-light);
+            color: var(--gold-dark);
         }
 
         .notification-time {
             font-size: 0.8rem;
             color: #999;
+            margin-top: 4px;
         }
 
         .notification-dot {
@@ -609,6 +688,18 @@
             border-radius: 50%;
             margin-right: 8px;
             vertical-align: middle;
+        }
+
+        .no-notifications {
+            padding: 3rem 2rem;
+            text-align: center;
+            color: var(--dark-gray);
+        }
+
+        .no-notifications i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--light-gray);
         }
 
         /* SIGNIN MODAL - Enhanced for Inner Circle */
@@ -1221,11 +1312,17 @@
             position: absolute;
             top: 4px;
             right: 4px;
-            width: 8px;
-            height: 8px;
+            width: 20px;
+            height: 20px;
             background: #e74c3c;
             border-radius: 50%;
             border: 2px solid var(--white);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .user-profile {
@@ -2113,6 +2210,14 @@
                 width: 56px;
                 height: 56px;
             }
+            
+            .follow-btn-container {
+                position: relative;
+                top: auto;
+                right: auto;
+                margin-top: 10px;
+                justify-content: flex-start;
+            }
         }
 
         @media (max-width: 480px) {
@@ -2203,6 +2308,11 @@
         
         .hidden {
             display: none !important;
+        }
+        
+        .view-tracker {
+            opacity: 0;
+            pointer-events: none;
         }
     </style>
 </head>
@@ -2479,13 +2589,7 @@
                         <button class="mark-all-read" onclick="markAllNotificationsAsRead()">Mark all as read</button>
                     </div>
                     <div class="notifications-list" id="notificationsList">
-                        <div class="notification-item unread">
-                            <div class="notification-content">
-                                <span class="notification-dot"></span>
-                                Welcome to THE SONGA Inner Circle!
-                            </div>
-                            <div class="notification-time">2 hours ago</div>
-                        </div>
+                        <!-- Notifications will be loaded here -->
                     </div>
                 </div>
                 
@@ -2652,6 +2756,10 @@
         
         // Current filter
         let currentFilter = 'all';
+        
+        // View tracking variables
+        let viewObserver = null;
+        let viewedPosts = new Set();
 
         // DOM Elements
         const signinModal = document.getElementById('signinModal');
@@ -2674,6 +2782,7 @@
         const notificationBtn = document.getElementById('notificationBtn');
         const notificationsDropdown = document.getElementById('notificationsDropdown');
         const notificationBadge = document.getElementById('notificationBadge');
+        const notificationsList = document.getElementById('notificationsList');
 
         // Club data
         const clubs = {
@@ -2796,15 +2905,178 @@
         }
 
         // Mark all notifications as read
-        function markAllNotificationsAsRead() {
-            // Implementation for Firebase
-            if (currentUser) {
-                database.ref(`users/${currentUser.uid}/notifications`).update({
-                    read: true
-                }).then(() => {
+        async function markAllNotificationsAsRead() {
+            if (!currentUser) return;
+            
+            try {
+                const notificationsRef = database.ref(`users/${currentUser.uid}/notifications`);
+                const snapshot = await notificationsRef.once('value');
+                
+                if (snapshot.exists()) {
+                    const updates = {};
+                    snapshot.forEach(child => {
+                        updates[`${child.key}/read`] = true;
+                    });
+                    
+                    await notificationsRef.update(updates);
                     notificationBadge.classList.add('hidden');
                     showNotification('All notifications marked as read', 'success');
+                }
+            } catch (error) {
+                console.error('Error marking all notifications as read:', error);
+            }
+        }
+
+        // Mark single notification as read
+        async function markNotificationAsRead(notificationId) {
+            if (!currentUser || !database) return;
+            
+            try {
+                await database.ref(`users/${currentUser.uid}/notifications/${notificationId}`).update({
+                    read: true
                 });
+            } catch (error) {
+                console.error('Error marking notification as read:', error);
+            }
+        }
+
+        // Setup real-time notifications
+        function setupRealtimeNotifications() {
+            if (!currentUser || !database) return;
+            
+            database.ref(`users/${currentUser.uid}/notifications`).on('value', (snapshot) => {
+                if (snapshot.exists()) {
+                    const notifications = Object.keys(snapshot.val()).map(key => ({
+                        id: key,
+                        ...snapshot.val()[key]
+                    }));
+                    
+                    const unreadCount = notifications.filter(n => !n.read).length;
+                    
+                    // Update badge
+                    if (unreadCount > 0) {
+                        notificationBadge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+                        notificationBadge.classList.remove('hidden');
+                    } else {
+                        notificationBadge.classList.add('hidden');
+                    }
+                    
+                    // Update notifications list
+                    renderNotifications(notifications);
+                } else {
+                    // No notifications
+                    notificationBadge.classList.add('hidden');
+                    renderNotifications([]);
+                }
+            });
+        }
+
+        // Render notifications
+        function renderNotifications(notifications) {
+            if (!notificationsList) return;
+            
+            notifications.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            
+            if (notifications.length === 0) {
+                notificationsList.innerHTML = `
+                    <div class="no-notifications">
+                        <i class="fas fa-bell-slash"></i>
+                        <p>No notifications yet</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            notificationsList.innerHTML = notifications.slice(0, 10).map(notification => {
+                const isUnread = !notification.read;
+                const notificationType = notification.type || 'info';
+                const timeAgo = formatTime(notification.createdAt);
+                
+                let icon = 'fas fa-info-circle';
+                let typeClass = 'info';
+                
+                switch(notificationType) {
+                    case 'like':
+                        icon = 'fas fa-heart';
+                        typeClass = 'like';
+                        break;
+                    case 'comment':
+                        icon = 'fas fa-comment';
+                        typeClass = 'comment';
+                        break;
+                    case 'follow':
+                        icon = 'fas fa-user-plus';
+                        typeClass = 'follow';
+                        break;
+                    case 'post':
+                        icon = 'fas fa-newspaper';
+                        typeClass = 'post';
+                        break;
+                }
+                
+                return `
+                    <div class="notification-item ${isUnread ? 'unread' : ''}" onclick="handleNotificationClick('${notification.id}', '${notificationType}')">
+                        <div class="notification-avatar">
+                            <img src="${notification.senderAvatar || 'https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp'}" alt="${notification.senderName || 'User'}">
+                        </div>
+                        <div class="notification-content">
+                            <div class="notification-text">
+                                ${isUnread ? '<span class="notification-dot"></span>' : ''}
+                                <strong>${notification.senderName || 'Someone'}</strong> ${notification.message}
+                            </div>
+                            <div class="notification-type ${typeClass}">
+                                <i class="${icon}"></i> ${notificationType.charAt(0).toUpperCase() + notificationType.slice(1)}
+                            </div>
+                            <div class="notification-time">${timeAgo}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Handle notification click
+        async function handleNotificationClick(notificationId, type) {
+            // Mark as read
+            await markNotificationAsRead(notificationId);
+            
+            // Close dropdown
+            notificationsDropdown.classList.remove('active');
+            
+            // Handle different notification types
+            switch(type) {
+                case 'like':
+                    showNotification('Liked your post', 'success');
+                    break;
+                case 'comment':
+                    showNotification('Commented on your post', 'success');
+                    break;
+                case 'follow':
+                    showNotification('Started following you', 'success');
+                    break;
+            }
+        }
+
+        // Create notification for likes, comments, follows
+        async function createNotification(userId, type, message, senderName = null, senderAvatar = null, postId = null) {
+            if (!currentUser || !database) return;
+            
+            try {
+                const notificationRef = database.ref(`users/${userId}/notifications`).push();
+                const notification = {
+                    id: notificationRef.key,
+                    type: type,
+                    message: message,
+                    senderId: currentUser.uid,
+                    senderName: senderName || currentUser.firstName,
+                    senderAvatar: senderAvatar || currentUser.picture,
+                    postId: postId,
+                    read: false,
+                    createdAt: new Date().toISOString()
+                };
+                
+                await notificationRef.set(notification);
+            } catch (error) {
+                console.error('Error creating notification:', error);
             }
         }
 
@@ -2900,6 +3172,7 @@
                     shares: 0,
                     bookmarks: 0,
                     views: 0,
+                    followersCount: 0,
                     createdAt: new Date().toISOString(),
                     updatedAt: new Date().toISOString(),
                     isPinned: isPinned,
@@ -2927,6 +3200,102 @@
                 console.error('Error creating post:', error);
                 showNotification('Error creating post. Please try again.', 'error');
             }
+        }
+
+        // Track post view
+        async function trackPostView(postId) {
+            if (!currentUser) return;
+            
+            // Check if user has already viewed this post in this session
+            if (viewedPosts.has(postId)) return;
+            
+            // Add to viewed posts set
+            viewedPosts.add(postId);
+            
+            try {
+                const postRef = database.ref(`communityPosts/${postId}`);
+                
+                // Increment view count
+                postRef.transaction(post => {
+                    if (post) {
+                        post.views = (post.views || 0) + 1;
+                        post.updatedAt = new Date().toISOString();
+                    }
+                    return post;
+                });
+                
+                // Update the view count display if the post is visible
+                setTimeout(() => {
+                    const postElement = document.querySelector(`.post-card[data-post-id="${postId}"]`);
+                    if (postElement) {
+                        const timeElement = postElement.querySelector('.post-time');
+                        if (timeElement) {
+                            // Extract current views and increment
+                            const currentText = timeElement.textContent;
+                            const viewsMatch = currentText.match(/👁️ (\d+) views/);
+                            if (viewsMatch) {
+                                const currentViews = parseInt(viewsMatch[1]);
+                                timeElement.innerHTML = currentText.replace(
+                                    /👁️ \d+ views/,
+                                    `👁️ ${currentViews + 1} views`
+                                );
+                            }
+                        }
+                    }
+                }, 100);
+                
+            } catch (error) {
+                console.error('Error tracking post view:', error);
+            }
+        }
+
+        // Setup view tracking with Intersection Observer
+        function setupViewTracking() {
+            if (!('IntersectionObserver' in window)) {
+                // Fallback for browsers without IntersectionObserver
+                console.log('IntersectionObserver not supported');
+                return;
+            }
+            
+            // Stop previous observer if it exists
+            if (viewObserver) {
+                viewObserver.disconnect();
+            }
+            
+            // Create new observer
+            viewObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const postElement = entry.target;
+                        const postId = postElement.dataset.postId;
+                        
+                        if (postId) {
+                            trackPostView(postId);
+                        }
+                    }
+                });
+            }, {
+                threshold: 0.3, // 30% of post visible
+                rootMargin: '0px 0px -50px 0px' // Ignore bottom 50px
+            });
+            
+            // Observe all post cards
+            document.querySelectorAll('.post-card').forEach(card => {
+                viewObserver.observe(card);
+            });
+        }
+
+        // Also track views on click interactions
+        function setupPostClickTracking() {
+            postsContainer.addEventListener('click', (e) => {
+                const postCard = e.target.closest('.post-card');
+                if (postCard) {
+                    const postId = postCard.dataset.postId;
+                    if (postId) {
+                        trackPostView(postId);
+                    }
+                }
+            });
         }
 
         // Onboarding functions
@@ -3010,6 +3379,7 @@
                     fetchUserData(currentUser.uid);
                     setupRealtimePosts();
                     setupRealtimeNotifications();
+                    setupPostClickTracking();
                 } catch (error) {
                     console.error("Error parsing stored user:", error);
                     localStorage.removeItem('the_songa_welfare_user');
@@ -3078,6 +3448,7 @@
                         bookmarkedPosts: [],
                         followers: [],
                         following: [],
+                        followersCount: 0,
                         posts: [],
                         notifications: [],
                         isAdmin: false,
@@ -3092,12 +3463,13 @@
                     showNotification(`You've joined: ${selectedClubs.map(c => clubs[c].name).join(', ')}`, 'success', 5000);
                     
                     // Create welcome notification
-                    await database.ref(`users/${currentUser.uid}/notifications`).push().set({
-                        type: 'welcome',
-                        message: 'Welcome to THE SONGA Inner Circle!',
-                        read: false,
-                        createdAt: new Date().toISOString()
-                    });
+                    await createNotification(
+                        currentUser.uid,
+                        'post',
+                        'Welcome to THE SONGA Inner Circle! Start exploring and connecting with other members.',
+                        'THE SONGA Team',
+                        'https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp'
+                    );
                 } else {
                     // Existing user - update last login
                     await userRef.update({ 
@@ -3123,68 +3495,11 @@
                 
                 setupRealtimePosts();
                 setupRealtimeNotifications();
+                setupPostClickTracking();
                 
             } catch (error) {
                 console.error('Error in Google Sign-In:', error);
                 showNotification('Error signing in. Please try again.', 'error');
-            }
-        }
-
-        // Setup real-time notifications
-        function setupRealtimeNotifications() {
-            if (!currentUser || !database) return;
-            
-            database.ref(`users/${currentUser.uid}/notifications`).on('value', (snapshot) => {
-                if (snapshot.exists()) {
-                    const notifications = Object.keys(snapshot.val()).map(key => ({
-                        id: key,
-                        ...snapshot.val()[key]
-                    }));
-                    
-                    const unreadCount = notifications.filter(n => !n.read).length;
-                    
-                    // Update badge
-                    if (unreadCount > 0) {
-                        notificationBadge.textContent = unreadCount > 9 ? '9+' : unreadCount;
-                        notificationBadge.classList.remove('hidden');
-                    } else {
-                        notificationBadge.classList.add('hidden');
-                    }
-                    
-                    // Update notifications list
-                    renderNotifications(notifications);
-                }
-            });
-        }
-
-        // Render notifications
-        function renderNotifications(notifications) {
-            const notificationsList = document.getElementById('notificationsList');
-            if (!notificationsList) return;
-            
-            notifications.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-            
-            notificationsList.innerHTML = notifications.slice(0, 10).map(notification => `
-                <div class="notification-item ${notification.read ? '' : 'unread'}" onclick="markNotificationAsRead('${notification.id}')">
-                    <div class="notification-content">
-                        ${!notification.read ? '<span class="notification-dot"></span>' : ''}
-                        ${notification.message}
-                    </div>
-                    <div class="notification-time">${formatTime(notification.createdAt)}</div>
-                </div>
-            `).join('');
-        }
-
-        // Mark notification as read
-        async function markNotificationAsRead(notificationId) {
-            if (!currentUser || !database) return;
-            
-            try {
-                await database.ref(`users/${currentUser.uid}/notifications/${notificationId}`).update({
-                    read: true
-                });
-            } catch (error) {
-                console.error('Error marking notification as read:', error);
             }
         }
 
@@ -3229,6 +3544,22 @@
                 }
             } catch (error) {
                 console.error('Error fetching user data:', error);
+            }
+        }
+
+        // Get user's follower count
+        async function getUserFollowerCount(userId) {
+            try {
+                const userRef = database.ref(`users/${userId}`);
+                const snapshot = await userRef.once('value');
+                if (snapshot.exists()) {
+                    const userData = snapshot.val();
+                    return userData.followers ? userData.followers.length : 0;
+                }
+                return 0;
+            } catch (error) {
+                console.error('Error getting follower count:', error);
+                return 0;
             }
         }
 
@@ -3277,6 +3608,9 @@
                     
                     lastFetchTime = new Date();
                     renderPosts(filteredPosts);
+                    
+                    // Setup view tracking after posts are rendered
+                    setTimeout(setupViewTracking, 100);
                     
                     filteredPosts.forEach(post => {
                         setupRealtimeComments(post.id);
@@ -3409,8 +3743,8 @@
             return currentUserData.following.includes(authorId);
         }
 
-        // Render posts
-        function renderPosts(postsArray) {
+        // Render posts with follower count
+        async function renderPosts(postsArray) {
             if (!postsContainer) return;
             
             if (!postsArray || postsArray.length === 0) {
@@ -3425,7 +3759,13 @@
                 return;
             }
 
-            postsContainer.innerHTML = postsArray.map(post => {
+            // Get follower counts for all authors
+            const postsWithFollowerCounts = await Promise.all(postsArray.map(async post => {
+                const followerCount = await getUserFollowerCount(post.authorId);
+                return { ...post, followerCount };
+            }));
+
+            postsContainer.innerHTML = postsWithFollowerCounts.map(post => {
                 const likes = post.likes || 0;
                 const comments = post.comments || 0;
                 const shares = post.shares || 0;
@@ -3438,6 +3778,7 @@
                 const hasBookmarked = hasUserBookmarkedPost(post.id);
                 const isPostOwner = currentUser && post.authorId === currentUser.uid;
                 const isFollowing = isUserFollowingAuthor(post.authorId);
+                const followerCount = post.followerCount || 0;
                 
                 const tagsHtml = post.tags && post.tags.length > 0 ? `
                     <div class="post-tags">
@@ -3465,12 +3806,25 @@
                     }
                 }
                 
-                // Follow button (only for non-own posts)
-                const followButton = !isPostOwner && currentUser ? `
-                    <button class="follow-btn ${isFollowing ? 'following' : ''}" onclick="toggleFollow('${post.authorId}', event)" style="position: absolute; top: 0; right: 40px;">
-                        <i class="fas fa-${isFollowing ? 'user-check' : 'user-plus'}"></i>
-                        <span>${isFollowing ? 'Following' : 'Follow'}</span>
-                    </button>
+                // Follow button with follower count (only for non-own posts)
+                const followSection = !isPostOwner && currentUser ? `
+                    <div class="follow-btn-container">
+                        <div class="follower-count">
+                            <i class="fas fa-users"></i>
+                            <span>${followerCount}</span>
+                        </div>
+                        <button class="follow-btn ${isFollowing ? 'following' : ''}" onclick="toggleFollow('${post.authorId}', event)">
+                            <i class="fas fa-${isFollowing ? 'user-check' : 'user-plus'}"></i>
+                            <span>${isFollowing ? 'Following' : 'Follow'}</span>
+                        </button>
+                    </div>
+                ` : isPostOwner && followerCount > 0 ? `
+                    <div class="follow-btn-container">
+                        <div class="follower-count">
+                            <i class="fas fa-users"></i>
+                            <span>${followerCount} followers</span>
+                        </div>
+                    </div>
                 ` : '';
                 
                 // Only show options if user owns the post
@@ -3512,7 +3866,7 @@
                                 </div>
                                 <div class="post-time">${formatTime(post.createdAt)} • 👁️ ${views} views</div>
                             </div>
-                            ${followButton}
+                            ${followSection}
                             ${optionsHtml}
                         </div>
                         <div class="post-content">
@@ -3573,7 +3927,7 @@
             }).join('');
         }
 
-        // Toggle follow status
+        // Toggle follow status with notifications
         async function toggleFollow(authorId, event) {
             event.stopPropagation();
             
@@ -3606,7 +3960,10 @@
                     
                     await Promise.all([
                         userRef.update({ following: userFollowing }),
-                        authorRef.update({ followers: authorFollowers })
+                        authorRef.update({ 
+                            followers: authorFollowers,
+                            followersCount: authorFollowers.length
+                        })
                     ]);
                     
                     showNotification('Unfollowed', 'success', 2000);
@@ -3619,6 +3976,16 @@
                         <span>Follow</span>
                     `;
                     
+                    // Update follower count display
+                    const followerCountElement = button.previousElementSibling;
+                    if (followerCountElement && followerCountElement.classList.contains('follower-count')) {
+                        const newCount = Math.max(authorFollowers.length, 0);
+                        followerCountElement.innerHTML = `
+                            <i class="fas fa-users"></i>
+                            <span>${newCount}</span>
+                        `;
+                    }
+                    
                 } else {
                     // Follow
                     userFollowing.push(authorId);
@@ -3626,18 +3993,22 @@
                     
                     await Promise.all([
                         userRef.update({ following: userFollowing }),
-                        authorRef.update({ followers: authorFollowers })
+                        authorRef.update({ 
+                            followers: authorFollowers,
+                            followersCount: authorFollowers.length
+                        })
                     ]);
                     
                     showNotification('Followed!', 'success', 2000);
                     
                     // Create notification for the author
-                    await database.ref(`users/${authorId}/notifications`).push().set({
-                        type: 'follow',
-                        message: `${currentUser.firstName} started following you`,
-                        read: false,
-                        createdAt: new Date().toISOString()
-                    });
+                    await createNotification(
+                        authorId,
+                        'follow',
+                        'started following you',
+                        currentUser.firstName,
+                        currentUser.picture
+                    );
                     
                     // Update button
                     const button = event.target.closest('.follow-btn');
@@ -3646,6 +4017,15 @@
                         <i class="fas fa-user-check"></i>
                         <span>Following</span>
                     `;
+                    
+                    // Update follower count display
+                    const followerCountElement = button.previousElementSibling;
+                    if (followerCountElement && followerCountElement.classList.contains('follower-count')) {
+                        followerCountElement.innerHTML = `
+                            <i class="fas fa-users"></i>
+                            <span>${authorFollowers.length}</span>
+                        `;
+                    }
                 }
                 
                 // Update current user data
@@ -3890,7 +4270,7 @@
             replyingToCommentId = commentId;
         }
 
-        // Handle comment submission
+        // Handle comment submission with notification
         async function submitComment(postId) {
             if (!currentUser) {
                 showNotification('Please join the Inner Circle to comment', 'error');
@@ -3933,6 +4313,21 @@
                 
                 commentInput.value = '';
                 showNotification('Comment posted!', 'success');
+                
+                // Create notification for post author if not commenting on own post
+                const postSnapshot = await postRef.once('value');
+                const post = postSnapshot.val();
+                
+                if (post && post.authorId !== currentUser.uid) {
+                    await createNotification(
+                        post.authorId,
+                        'comment',
+                        'commented on your post',
+                        currentUser.firstName,
+                        currentUser.picture,
+                        postId
+                    );
+                }
                 
             } catch (error) {
                 console.error('Error posting comment:', error);
@@ -3981,7 +4376,7 @@
             }
         }
 
-        // Handle comment like
+        // Handle comment like with notification
         async function handleCommentLike(postId, commentId) {
             if (!currentUser) {
                 showNotification('Join the Inner Circle to like comments', 'error');
@@ -4004,6 +4399,18 @@
                     likedBy.push(currentUser.uid);
                     likes++;
                     showNotification('Comment liked!', 'success', 2000);
+                    
+                    // Create notification for comment author if not liking own comment
+                    if (comment.authorId !== currentUser.uid) {
+                        await createNotification(
+                            comment.authorId,
+                            'like',
+                            'liked your comment',
+                            currentUser.firstName,
+                            currentUser.picture,
+                            postId
+                        );
+                    }
                 }
                 
                 await commentRef.update({
@@ -4018,21 +4425,7 @@
             }
         }
 
-        // Handle Enter key for comment submission
-        function handleCommentKeypress(event, postId) {
-            if (event.key === 'Enter') {
-                submitComment(postId);
-            }
-        }
-
-        // Handle Enter key for reply submission
-        function handleReplyKeypress(event, postId, commentId) {
-            if (event.key === 'Enter') {
-                submitReply(postId, commentId);
-            }
-        }
-
-        // Handle post actions
+        // Handle post actions with notifications
         async function handlePostAction(postId, action) {
             if (!currentUser) {
                 showNotification('Join the Inner Circle to interact with posts', 'error');
@@ -4043,6 +4436,9 @@
             
             switch(action) {
                 case 'like':
+                    // Track view when liking
+                    trackPostView(postId);
+                    
                     const snapshot = await postRef.once('value');
                     const post = snapshot.val();
                     let likedBy = post.likedBy || [];
@@ -4056,6 +4452,18 @@
                         likedBy.push(currentUser.uid);
                         likes++;
                         showNotification('Post liked!', 'success', 2000);
+                        
+                        // Create notification for post author if not liking own post
+                        if (post.authorId !== currentUser.uid) {
+                            await createNotification(
+                                post.authorId,
+                                'like',
+                                'liked your post',
+                                currentUser.firstName,
+                                currentUser.picture,
+                                postId
+                            );
+                        }
                     }
                     
                     await postRef.update({
@@ -4066,10 +4474,15 @@
                     break;
                     
                 case 'comment':
+                    // Track view when opening comments
+                    trackPostView(postId);
                     toggleComments(postId);
                     break;
                     
                 case 'share':
+                    // Track view when sharing
+                    trackPostView(postId);
+                    
                     postRef.transaction(post => {
                         if (post) {
                             post.shares = (post.shares || 0) + 1;
@@ -4085,6 +4498,9 @@
                     break;
                     
                 case 'save':
+                    // Track view when bookmarking
+                    trackPostView(postId);
+                    
                     const userRef = database.ref(`users/${currentUser.uid}`);
                     const userSnapshot = await userRef.once('value');
                     const userData = userSnapshot.val();
@@ -4115,6 +4531,20 @@
                     
                     await fetchUserData(currentUser.uid);
                     break;
+            }
+        }
+
+        // Handle Enter key for comment submission
+        function handleCommentKeypress(event, postId) {
+            if (event.key === 'Enter') {
+                submitComment(postId);
+            }
+        }
+
+        // Handle Enter key for reply submission
+        function handleReplyKeypress(event, postId, commentId) {
+            if (event.key === 'Enter') {
+                submitReply(postId, commentId);
             }
         }
 
@@ -4292,6 +4722,13 @@
             });
             if (continueBtn) continueBtn.disabled = true;
             
+            // Clear view tracking
+            viewedPosts.clear();
+            if (viewObserver) {
+                viewObserver.disconnect();
+                viewObserver = null;
+            }
+            
             // Show skeleton loading
             postsContainer.innerHTML = `
                 <div class="post-card">
@@ -4363,6 +4800,7 @@
                             shares: 3,
                             bookmarks: 15,
                             views: 156,
+                            followersCount: 45,
                             createdAt: new Date().toISOString(),
                             isPinned: true,
                             status: "published"
@@ -4382,6 +4820,7 @@
                             shares: 2,
                             bookmarks: 8,
                             views: 89,
+                            followersCount: 32,
                             createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
                             isPinned: false,
                             status: "published"
@@ -4401,6 +4840,7 @@
                             shares: 1,
                             bookmarks: 5,
                             views: 45,
+                            followersCount: 28,
                             createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
                             isPinned: false,
                             status: "published"
@@ -4610,9 +5050,11 @@
         window.toggleNotifications = toggleNotifications;
         window.markAllNotificationsAsRead = markAllNotificationsAsRead;
         window.markNotificationAsRead = markNotificationAsRead;
+        window.handleNotificationClick = handleNotificationClick;
         window.handleTagInput = handleTagInput;
         window.addTag = addTag;
         window.removeTag = removeTag;
+        window.trackPostView = trackPostView;
     </script>
 </body>
 </html>
