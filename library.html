@@ -44,6 +44,9 @@
             --business: #1abc9c;
             --shadow: rgba(0, 0, 0, 0.1);
             --modal-overlay: rgba(0, 0, 0, 0.85);
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+            --hover-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            --background: #fafafa;
         }
 
         html {
@@ -51,15 +54,50 @@
         }
 
         body {
-            background-color: var(--white);
+            background-color: var(--background);
             color: var(--black);
             line-height: 1.6;
             padding-bottom: 80px;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
         body.modal-open {
             overflow: hidden;
+        }
+
+        /* BACK TO TOP BUTTON */
+        .back-to-top {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--black);
+            cursor: pointer;
+            z-index: 99;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            visibility: hidden;
+            border: none;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            transform: translateY(0);
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-3px) scale(1.1);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
         }
 
         /* BOOK DETAILS MODAL */
@@ -75,6 +113,7 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
+            backdrop-filter: blur(5px);
         }
 
         .book-modal.active {
@@ -83,7 +122,7 @@
 
         .book-modal-content {
             background-color: white;
-            border-radius: 16px;
+            border-radius: 20px;
             width: 100%;
             max-width: 900px;
             max-height: 90vh;
@@ -109,6 +148,7 @@
             color: var(--black);
             padding: 1.8rem 2rem;
             position: relative;
+            border-radius: 20px 20px 0 0;
         }
 
         .book-modal-header h2 {
@@ -222,6 +262,7 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
+            border: none;
         }
 
         .book-tag:hover {
@@ -332,6 +373,109 @@
             transform: translateY(-2px);
         }
 
+        /* BOOK SOCIAL ACTIONS */
+        .book-social-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--light-gray);
+        }
+
+        .social-action-btn {
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            justify-content: center;
+            background: var(--gray);
+            color: var(--dark-gray);
+            border: 1px solid var(--light-gray);
+        }
+
+        .social-action-btn:hover {
+            background: var(--light-gray);
+            transform: translateY(-2px);
+        }
+
+        .social-action-btn.liked {
+            background: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+            border-color: rgba(231, 76, 60, 0.2);
+        }
+
+        .social-action-btn.saved {
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--gold-dark);
+            border-color: rgba(212, 175, 55, 0.2);
+        }
+
+        /* BOOK REVIEWS */
+        .book-reviews {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--light-gray);
+        }
+
+        .review-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: var(--card-shadow);
+            border-left: 4px solid var(--gold);
+        }
+
+        .review-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1rem;
+        }
+
+        .review-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        .review-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .review-meta {
+            flex: 1;
+        }
+
+        .review-author {
+            font-weight: 700;
+            color: var(--black);
+        }
+
+        .review-date {
+            font-size: 0.85rem;
+            color: var(--dark-gray);
+        }
+
+        .review-stars {
+            color: var(--gold);
+        }
+
+        .review-text {
+            color: var(--dark-gray);
+            line-height: 1.6;
+        }
+
         /* BORROW MODAL */
         .borrow-modal {
             display: none;
@@ -345,6 +489,7 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
+            backdrop-filter: blur(5px);
         }
 
         .borrow-modal.active {
@@ -473,6 +618,7 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
+            backdrop-filter: blur(5px);
         }
 
         .signin-modal.active {
@@ -512,9 +658,9 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            border-bottom: 1px solid var(--light-gray);
-            height: 60px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+            border-bottom: none;
+            height: 64px;
             backdrop-filter: blur(10px);
         }
 
@@ -523,18 +669,21 @@
             justify-content: space-between;
             align-items: center;
             height: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             cursor: pointer;
         }
 
         .logo img {
-            height: 40px;
+            height: 44px;
             width: auto;
+            border-radius: 12px;
         }
 
         .brand-info {
@@ -543,36 +692,45 @@
         }
 
         .brand-name {
-            font-weight: bold;
-            font-size: 1.2rem;
+            font-weight: 800;
+            font-size: 1.3rem;
             color: var(--gold-dark);
+            letter-spacing: -0.5px;
         }
 
         .brand-subtitle {
             font-size: 0.7rem;
             color: var(--dark-gray);
             font-style: italic;
+            letter-spacing: 1px;
         }
 
         /* SEARCH BAR */
         .search-container {
             flex: 1;
             max-width: 400px;
-            margin: 0 20px;
+            margin: 0 30px;
         }
 
         .search-box {
             display: flex;
             align-items: center;
-            background: var(--gray);
-            border-radius: 20px;
-            padding: 8px 15px;
+            background: var(--background);
+            border-radius: 24px;
+            padding: 10px 20px;
             border: 1px solid var(--light-gray);
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus-within {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
         }
 
         .search-box i {
             color: var(--dark-gray);
-            margin-right: 10px;
+            margin-right: 12px;
+            font-size: 1rem;
         }
 
         .search-box input {
@@ -580,70 +738,91 @@
             background: transparent;
             outline: none;
             width: 100%;
-            font-size: 0.9rem;
-        }
-
-        /* USER PROFILE */
-        .auth-section {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            position: relative;
-        }
-
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 5px 10px;
-            border-radius: 20px;
-            background: var(--gold-light);
-            cursor: pointer;
-            position: relative;
-            transition: all 0.3s ease;
-        }
-
-        .user-profile:hover {
-            background: var(--gold);
-        }
-
-        .user-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            overflow: hidden;
-        }
-
-        .user-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .user-name {
-            font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             color: var(--black);
         }
 
-        .user-dropdown {
+        .search-box input::placeholder {
+            color: #999;
+        }
+
+        /* USER PROFILE - Enhanced */
+        .auth-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+        }
+
+        .notification-btn {
+            position: relative;
+            background: none;
+            border: none;
+            color: var(--dark-gray);
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 8px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .notification-btn:hover {
+            background: var(--gray);
+            color: var(--gold-dark);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 8px;
+            height: 8px;
+            background: #e74c3c;
+            border-radius: 50%;
+            border: 2px solid var(--white);
+        }
+
+        .notification-badge.hidden {
+            display: none;
+        }
+
+        .notification-badge.count {
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            top: 0;
+            right: 0;
+        }
+
+        /* NOTIFICATIONS DROPDOWN */
+        .notifications-dropdown {
             position: absolute;
             top: 100%;
             right: 0;
             background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 20px var(--shadow);
-            min-width: 200px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px var(--shadow);
+            width: 320px;
+            max-height: 400px;
+            overflow-y: auto;
             z-index: 1000;
             display: none;
-            margin-top: 5px;
-            overflow: hidden;
+            margin-top: 8px;
             border: 1px solid var(--light-gray);
         }
 
-        .user-dropdown.active {
+        .notifications-dropdown.active {
             display: block;
-            animation: slideDown 0.2s ease-out;
+            animation: slideDown 0.2s ease;
         }
 
         @keyframes slideDown {
@@ -657,14 +836,176 @@
             }
         }
 
-        .dropdown-item {
-            padding: 12px 16px;
+        .notifications-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--light-gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notifications-title {
+            font-weight: 700;
+            color: var(--black);
+            font-size: 1.1rem;
+        }
+
+        .mark-all-read {
+            background: none;
+            border: none;
+            color: var(--gold-dark);
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.9rem;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: background 0.3s ease;
+        }
+
+        .mark-all-read:hover {
+            background: var(--gold-light);
+        }
+
+        .notifications-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .notification-item {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--light-gray);
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .notification-item:hover {
+            background: var(--gray);
+        }
+
+        .notification-item.unread {
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        .notification-item.unread:hover {
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        .notification-content {
+            font-size: 0.95rem;
+            color: var(--dark-gray);
+            margin-bottom: 4px;
+        }
+
+        .notification-time {
+            font-size: 0.8rem;
+            color: #999;
+        }
+
+        .notification-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--gold);
+            border-radius: 50%;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        .user-profile {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            padding: 8px 16px;
+            border-radius: 24px;
+            background: var(--gold-light);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .user-profile:hover {
+            background: var(--gold);
+            border-color: var(--gold-dark);
+            transform: translateY(-2px);
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid var(--gold);
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--black);
+        }
+
+        /* ENHANCED USER DROPDOWN */
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px var(--shadow);
+            min-width: 240px;
+            z-index: 1000;
+            display: none;
+            margin-top: 8px;
+            overflow: hidden;
+            border: 1px solid var(--light-gray);
+            animation: slideDown 0.2s ease;
+        }
+
+        .user-dropdown.active {
+            display: block;
+        }
+
+        .dropdown-stats {
+            display: flex;
+            justify-content: space-around;
+            padding: 1rem;
+            background: var(--gray);
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .dropdown-stat {
+            text-align: center;
+        }
+
+        .dropdown-stat-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--gold-dark);
+            display: block;
+        }
+
+        .dropdown-stat-label {
+            font-size: 0.8rem;
+            color: var(--dark-gray);
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
             cursor: pointer;
             transition: background-color 0.2s;
             border-bottom: 1px solid var(--light-gray);
+            color: var(--dark-gray);
+            font-size: 0.95rem;
         }
 
         .dropdown-item:last-child {
@@ -673,19 +1014,21 @@
 
         .dropdown-item:hover {
             background-color: var(--gold-light);
+            color: var(--black);
         }
 
         .dropdown-item i {
             width: 20px;
             text-align: center;
             color: var(--gold-dark);
+            font-size: 1rem;
         }
 
         /* MAIN CONTENT */
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 1rem;
+            padding: 1.5rem;
         }
 
         /* LIBRARY HEADER */
@@ -723,6 +1066,86 @@
             margin-left: auto;
             margin-right: auto;
             line-height: 1.7;
+        }
+
+        /* READING STATS */
+        .reading-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .reading-stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--light-gray);
+            transition: all 0.3s ease;
+        }
+
+        .reading-stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .reading-stat-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gold-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.3rem;
+            color: var(--gold-dark);
+        }
+
+        .reading-stat-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--gold-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .reading-stat-label {
+            font-size: 0.9rem;
+            color: var(--dark-gray);
+        }
+
+        /* READING PROGRESS */
+        .reading-progress {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--card-shadow);
+            display: none;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--light-gray);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--gold), var(--gold-dark));
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--dark-gray);
         }
 
         /* MEMBERSHIP INFO */
@@ -826,13 +1249,49 @@
             box-shadow: 0 8px 20px rgba(212, 175, 55, 0.3);
         }
 
+        /* CATEGORY BADGES */
+        .category-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 2rem;
+        }
+
+        .category-badge {
+            padding: 10px 20px;
+            border-radius: 25px;
+            background: var(--gray);
+            color: var(--dark-gray);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+        }
+
+        .category-badge.active {
+            background: var(--gold);
+            color: var(--black);
+        }
+
+        .category-badge:hover:not(.active) {
+            background: var(--light-gray);
+            transform: translateY(-2px);
+        }
+
+        .category-badge i {
+            font-size: 1rem;
+        }
+
         /* FILTERS SECTION */
         .filters-section {
             background: white;
             border-radius: 16px;
             padding: 1.5rem;
             margin-bottom: 2rem;
-            box-shadow: 0 4px 15px var(--shadow);
+            box-shadow: var(--card-shadow);
             border: 1px solid var(--light-gray);
         }
 
@@ -854,6 +1313,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            border: none;
         }
 
         .filter-tab.active {
@@ -900,6 +1360,225 @@
             box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
         }
 
+        /* READING GROUPS */
+        .reading-groups {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            box-shadow: var(--card-shadow);
+        }
+
+        .groups-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .group-card {
+            background: var(--background);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            border: 1px solid var(--light-gray);
+        }
+
+        .group-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .group-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gold-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+            color: var(--gold-dark);
+        }
+
+        .join-group-btn {
+            background: var(--gold);
+            color: var(--black);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .join-group-btn:hover {
+            background: var(--gold-dark);
+            transform: translateY(-2px);
+        }
+
+        /* BOOK RECOMMENDATIONS */
+        .recommendations-section {
+            margin: 3rem 0;
+        }
+
+        .recommendations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .recommendation-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            border: 1px solid var(--light-gray);
+        }
+
+        .recommendation-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .recommendation-cover {
+            width: 120px;
+            height: 160px;
+            margin: 0 auto 1rem;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .recommendation-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* MY BOOKS SECTION */
+        .my-books-section {
+            margin: 3rem 0;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--gold-dark);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .view-all-btn {
+            background: var(--gold-light);
+            color: var(--gold-dark);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .view-all-btn:hover {
+            background: var(--gold);
+            transform: translateY(-2px);
+        }
+
+        .borrowed-books {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .borrowed-book-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 2px solid var(--gold-light);
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            box-shadow: var(--card-shadow);
+        }
+
+        .borrowed-book-cover {
+            width: 80px;
+            height: 100px;
+            border-radius: 8px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .borrowed-book-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .borrowed-book-info {
+            flex: 1;
+        }
+
+        .borrowed-book-title {
+            font-weight: 700;
+            color: var(--gold-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .due-date {
+            color: var(--borrowed);
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .borrowed-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .renew-btn {
+            background: var(--gold-light);
+            color: var(--gold-dark);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .renew-btn:hover:not(:disabled) {
+            background: var(--gold);
+            transform: translateY(-2px);
+        }
+
+        .renew-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
         /* LIBRARY GRID */
         .library-grid {
             display: grid;
@@ -914,7 +1593,7 @@
             border: 1px solid var(--light-gray);
             border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 4px 15px var(--shadow);
+            box-shadow: var(--card-shadow);
             transition: all 0.3s ease;
             position: relative;
             height: 100%;
@@ -924,7 +1603,7 @@
 
         .book-card:hover {
             transform: translateY(-6px);
-            box-shadow: 0 12px 25px var(--shadow);
+            box-shadow: var(--hover-shadow);
         }
 
         .book-card.featured {
@@ -1075,6 +1754,50 @@
             color: var(--dark-gray);
         }
 
+        /* SOCIAL ACTIONS IN BOOK CARD */
+        .book-social-actions-small {
+            display: flex;
+            gap: 10px;
+            margin-top: auto;
+            padding-top: 1rem;
+            border-top: 1px solid var(--light-gray);
+        }
+
+        .social-action-btn-small {
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex: 1;
+            justify-content: center;
+            background: var(--gray);
+            color: var(--dark-gray);
+            border: 1px solid var(--light-gray);
+        }
+
+        .social-action-btn-small:hover {
+            background: var(--light-gray);
+            transform: translateY(-2px);
+        }
+
+        .social-action-btn-small.liked {
+            background: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+            border-color: rgba(231, 76, 60, 0.2);
+        }
+
+        .social-action-btn-small.saved {
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--gold-dark);
+            border-color: rgba(212, 175, 55, 0.2);
+        }
+
         .book-actions {
             display: flex;
             gap: 10px;
@@ -1124,120 +1847,52 @@
             transform: translateY(-2px);
         }
 
-        /* MY BOOKS SECTION */
-        .my-books-section {
-            margin: 3rem 0;
-        }
-
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .section-title {
-            font-size: 1.5rem;
-            color: var(--gold-dark);
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .view-all-btn {
-            background: var(--gold-light);
-            color: var(--gold-dark);
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .view-all-btn:hover {
-            background: var(--gold);
-            transform: translateY(-2px);
-        }
-
-        .borrowed-books {
+        /* QUICK STATS */
+        .quick-stats {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
         }
 
-        .borrowed-book-card {
+        .stat-card {
             background: white;
             border-radius: 12px;
             padding: 1.5rem;
-            border: 2px solid var(--gold-light);
+            text-align: center;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--light-gray);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gold-light);
+            border-radius: 50%;
             display: flex;
-            gap: 1rem;
             align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+            color: var(--gold-dark);
         }
 
-        .borrowed-book-cover {
-            width: 80px;
-            height: 100px;
-            border-radius: 8px;
-            overflow: hidden;
-            flex-shrink: 0;
-        }
-
-        .borrowed-book-cover img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .borrowed-book-info {
-            flex: 1;
-        }
-
-        .borrowed-book-title {
-            font-weight: 700;
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
             color: var(--gold-dark);
             margin-bottom: 0.5rem;
         }
 
-        .due-date {
-            color: var(--borrowed);
-            font-weight: 600;
+        .stat-text {
+            color: var(--dark-gray);
             font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .borrowed-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .renew-btn {
-            background: var(--gold-light);
-            color: var(--gold-dark);
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 0.85rem;
-            transition: all 0.3s ease;
-        }
-
-        .renew-btn:hover:not(:disabled) {
-            background: var(--gold);
-            transform: translateY(-2px);
-        }
-
-        .renew-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
         }
 
         /* ARTICLES SECTION */
@@ -1255,13 +1910,13 @@
             background: white;
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 4px 15px var(--shadow);
+            box-shadow: var(--card-shadow);
             transition: all 0.3s ease;
         }
 
         .article-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 12px 25px var(--shadow);
+            box-shadow: var(--hover-shadow);
         }
 
         .article-image {
@@ -1395,7 +2050,7 @@
             background: #3498db;
         }
 
-        /* BOTTOM NAVIGATION */
+        /* ENHANCED BOTTOM NAVIGATION */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -1408,7 +2063,12 @@
             z-index: 100;
             border-top: 1px solid var(--light-gray);
             backdrop-filter: blur(10px);
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 -2px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+        }
+
+        .bottom-nav.hidden {
+            transform: translateY(100%);
         }
 
         .nav-item {
@@ -1440,6 +2100,22 @@
             transform: translateY(-3px);
         }
 
+        .nav-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #e74c3c;
+            color: white;
+            font-size: 0.7rem;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
         /* RESPONSIVE DESIGN */
         @media (max-width: 992px) {
             .library-grid {
@@ -1447,7 +2123,9 @@
             }
             
             .borrowed-books,
-            .articles-grid {
+            .articles-grid,
+            .groups-grid,
+            .recommendations-grid {
                 grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             }
             
@@ -1468,6 +2146,10 @@
             
             .user-name {
                 display: none;
+            }
+            
+            .user-profile {
+                padding: 8px;
             }
             
             .filter-tabs {
@@ -1510,6 +2192,19 @@
             .borrowed-actions {
                 justify-content: center;
             }
+            
+            .notifications-dropdown {
+                width: 280px;
+                right: -20px;
+            }
+            
+            .reading-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .quick-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
 
         @media (max-width: 480px) {
@@ -1551,112 +2246,47 @@
             .nav-icon {
                 font-size: 1.2rem;
             }
+            
+            .reading-stats,
+            .quick-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .category-badges {
+                justify-content: center;
+            }
         }
 
         /* SCROLLBAR STYLING */
         ::-webkit-scrollbar {
-            width: 10px;
+            width: 8px;
         }
 
         ::-webkit-scrollbar-track {
-            background: var(--light-gray);
-            border-radius: 5px;
+            background: transparent;
         }
 
         ::-webkit-scrollbar-thumb {
             background: var(--gold);
-            border-radius: 5px;
+            border-radius: 4px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
             background: var(--gold-dark);
         }
 
-        /* QUICK STATS */
-        .quick-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            text-align: center;
-            box-shadow: 0 4px 12px var(--shadow);
-            border: 1px solid var(--light-gray);
-            transition: all 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 20px var(--shadow);
-        }
-
-        .stat-icon {
-            width: 60px;
-            height: 60px;
-            background: var(--gold-light);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1rem;
-            font-size: 1.5rem;
-            color: var(--gold-dark);
-        }
-
-        .stat-number {
-            font-size: 2rem;
-            font-weight: 800;
-            color: var(--gold-dark);
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-text {
-            color: var(--dark-gray);
-            font-size: 0.9rem;
-        }
-
-        /* CATEGORY BADGES */
-        .category-badges {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 2rem;
-        }
-
-        .category-badge {
-            padding: 10px 20px;
-            border-radius: 25px;
-            background: var(--gray);
-            color: var(--dark-gray);
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .category-badge.active {
-            background: var(--gold);
-            color: var(--black);
-        }
-
-        .category-badge:hover:not(.active) {
-            background: var(--light-gray);
-            transform: translateY(-2px);
-        }
-
-        .category-badge i {
-            font-size: 1rem;
+        /* UTILITY CLASSES */
+        .hidden {
+            display: none !important;
         }
     </style>
 </head>
 <body>
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
     <!-- Notification -->
     <div class="notification" id="notification"></div>
 
@@ -1664,12 +2294,12 @@
     <div class="signin-modal" id="signinModal">
         <div class="signin-content">
             <div class="signin-header">
-                <h2>Welcome to THE SONGA</h2>
+                <h2>Welcome to THE SONGA Library</h2>
                 <p>UNBOUND | UNBENT | UNBROKEN</p>
                 <button class="close-signin-modal" id="closeSigninModal">&times;</button>
             </div>
             <div class="signin-body">
-                <p>Sign in to access our library, borrow books, and read exclusive articles.</p>
+                <p>Sign in to access our library, borrow books, track your reading, and join reading groups.</p>
                 
                 <div class="google-signin-container">
                     <div id="g_id_onload"
@@ -1757,6 +2387,40 @@
                             <i class="fas fa-heart"></i> Wishlist
                         </button>
                     </div>
+                    
+                    <div class="book-social-actions">
+                        <button class="social-action-btn" id="likeBookBtn">
+                            <i class="far fa-heart"></i> Like
+                        </button>
+                        <button class="social-action-btn" id="saveBookBtn">
+                            <i class="far fa-bookmark"></i> Save
+                        </button>
+                        <button class="social-action-btn" id="shareBookBtn">
+                            <i class="fas fa-share-alt"></i> Share
+                        </button>
+                    </div>
+                    
+                    <div class="book-reviews" id="bookReviews">
+                        <div class="section-header">
+                            <h4 class="section-title">
+                                <i class="fas fa-star"></i> Member Reviews
+                            </h4>
+                        </div>
+                        <div id="reviewsList">
+                            <!-- Reviews will be populated here -->
+                        </div>
+                        <div class="add-review" style="display: none;" id="addReviewSection">
+                            <textarea id="reviewText" placeholder="Write your review..." class="post-form-input post-form-textarea" rows="3"></textarea>
+                            <div class="star-rating">
+                                <i class="far fa-star" data-rating="1"></i>
+                                <i class="far fa-star" data-rating="2"></i>
+                                <i class="far fa-star" data-rating="3"></i>
+                                <i class="far fa-star" data-rating="4"></i>
+                                <i class="far fa-star" data-rating="5"></i>
+                            </div>
+                            <button onclick="submitReview()" class="book-action-btn borrow-btn">Submit Review</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1832,15 +2496,61 @@
             </div>
             
             <div class="auth-section">
+                <!-- Notifications Button -->
+                <div class="notification-btn" id="notificationBtn" onclick="toggleNotifications()">
+                    <i class="fas fa-bell"></i>
+                    <div class="notification-badge count hidden" id="notificationBadge">0</div>
+                </div>
+                
+                <!-- Notifications Dropdown -->
+                <div class="notifications-dropdown" id="notificationsDropdown">
+                    <div class="notifications-header">
+                        <h4 class="notifications-title">Notifications</h4>
+                        <button class="mark-all-read" onclick="markAllNotificationsAsRead()">Mark all as read</button>
+                    </div>
+                    <div class="notifications-list" id="notificationsList">
+                        <div class="notification-item unread">
+                            <div class="notification-content">
+                                <span class="notification-dot"></span>
+                                Welcome to THE SONGA Library!
+                            </div>
+                            <div class="notification-time">2 hours ago</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- User Profile -->
                 <div id="userProfile" class="user-profile" style="display: none;">
                     <div class="user-avatar">
                         <img id="userAvatar" src="" alt="User Avatar">
                     </div>
                     <div class="user-name" id="userDisplayName"></div>
                     <div class="user-dropdown" id="userDropdown">
+                        <div class="dropdown-stats">
+                            <div class="dropdown-stat">
+                                <span class="dropdown-stat-value" id="dropdownBooksBorrowed">0</span>
+                                <span class="dropdown-stat-label">Books</span>
+                            </div>
+                            <div class="dropdown-stat">
+                                <span class="dropdown-stat-value" id="dropdownReadingTime">0h</span>
+                                <span class="dropdown-stat-label">Reading</span>
+                            </div>
+                        </div>
                         <div class="dropdown-item" onclick="window.location.href='profile.html'">
                             <i class="fas fa-user"></i>
                             <span>My Profile</span>
+                        </div>
+                        <div class="dropdown-item" onclick="showMyBooks()">
+                            <i class="fas fa-book"></i>
+                            <span>My Books</span>
+                        </div>
+                        <div class="dropdown-item" onclick="showWishlist()">
+                            <i class="fas fa-heart"></i>
+                            <span>Wishlist</span>
+                        </div>
+                        <div class="dropdown-item" onclick="showReadingStats()">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Reading Stats</span>
                         </div>
                         <div class="dropdown-item" id="signOutOption">
                             <i class="fas fa-sign-out-alt"></i>
@@ -1860,6 +2570,50 @@
                 Access our curated collection of books and articles on personal growth, business, 
                 finance, and spirituality. Expand your knowledge with THE SONGA.
             </p>
+        </div>
+
+        <!-- Reading Stats -->
+        <div class="reading-stats" id="readingStats" style="display: none;">
+            <div class="reading-stat-card">
+                <div class="reading-stat-icon">
+                    <i class="fas fa-book-reader"></i>
+                </div>
+                <div class="reading-stat-value" id="totalReadingTime">0h</div>
+                <div class="reading-stat-label">Total Reading</div>
+            </div>
+            <div class="reading-stat-card">
+                <div class="reading-stat-icon">
+                    <i class="fas fa-fire"></i>
+                </div>
+                <div class="reading-stat-value" id="currentStreak">0</div>
+                <div class="reading-stat-label">Day Streak</div>
+            </div>
+            <div class="reading-stat-card">
+                <div class="reading-stat-icon">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <div class="reading-stat-value" id="booksCompleted">0</div>
+                <div class="reading-stat-label">Books Read</div>
+            </div>
+            <div class="reading-stat-card">
+                <div class="reading-stat-icon">
+                    <i class="fas fa-award"></i>
+                </div>
+                <div class="reading-stat-value" id="achievements">0</div>
+                <div class="reading-stat-label">Achievements</div>
+            </div>
+        </div>
+
+        <!-- Reading Progress -->
+        <div class="reading-progress" id="currentReadingProgress" style="display: none;">
+            <div class="section-header">
+                <h3 class="section-title">
+                    <i class="fas fa-spinner"></i> Currently Reading
+                </h3>
+            </div>
+            <div id="currentBookProgress">
+                <!-- Will be populated by JavaScript -->
+            </div>
         </div>
 
         <!-- Quick Stats -->
@@ -2003,6 +2757,21 @@
             </div>
         </div>
 
+        <!-- Reading Groups -->
+        <div class="reading-groups">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-users"></i> Reading Groups
+                </h2>
+                <button class="view-all-btn" onclick="showAllGroups()">
+                    View All <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+            <div class="groups-grid" id="readingGroups">
+                <!-- Groups will be populated here -->
+            </div>
+        </div>
+
         <!-- My Books Section -->
         <div class="my-books-section" id="myBooksSection" style="display: none;">
             <div class="section-header">
@@ -2024,6 +2793,21 @@
             <div class="loading">
                 <div class="loading-spinner"></div>
                 <p>Loading library books...</p>
+            </div>
+        </div>
+
+        <!-- Book Recommendations -->
+        <div class="recommendations-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-lightbulb"></i> Recommended For You
+                </h2>
+                <button class="view-all-btn" onclick="refreshRecommendations()">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+            </div>
+            <div class="recommendations-grid" id="bookRecommendations">
+                <!-- Recommendations will be populated here -->
             </div>
         </div>
 
@@ -2054,7 +2838,7 @@
     </main>
 
     <!-- Bottom Navigation -->
-    <nav class="bottom-nav">
+    <nav class="bottom-nav" id="bottomNav">
         <a href="index.html" class="nav-item">
             <i class="fas fa-home nav-icon"></i>
             <span>Feed</span>
@@ -2066,6 +2850,7 @@
         <a href="library.html" class="nav-item active">
             <i class="fas fa-book nav-icon"></i>
             <span>Library</span>
+            <span class="nav-badge" id="libraryBadge" style="display: none;">3</span>
         </a>
         <a href="profile.html" class="nav-item">
             <i class="fas fa-user nav-icon"></i>
@@ -2080,7 +2865,7 @@
     <script src="https://accounts.google.com/gsi/client" async></script>
 
     <script>
-        // Firebase configuration (same as other pages)
+        // Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBDZicoo7dFLtSmgRPvQE_gdm-tNOyCTXA",
             authDomain: "the-songa-77b1b.firebaseapp.com",
@@ -2116,8 +2901,19 @@
         let filteredBooks = [];
         let selectedBook = null;
         let userBorrowedBooks = [];
+        let userNotifications = [];
+        let userReadingStats = {};
+        let likedBooks = [];
+        let savedBooks = [];
+        let readingGroups = [];
+        let bookRecommendations = [];
         let dropdownOpen = false;
         let subscriptionPlans = {};
+        
+        // Scroll handling variables
+        let lastScrollTop = 0;
+        let isBottomNavVisible = true;
+        let isBackToTopVisible = false;
 
         // DOM Elements
         const signinModal = document.getElementById('signinModal');
@@ -2132,6 +2928,12 @@
         const myBooksSection = document.getElementById('myBooksSection');
         const articlesGrid = document.getElementById('articlesGrid');
         const quickStats = document.getElementById('quickStats');
+        const backToTop = document.getElementById('backToTop');
+        const bottomNav = document.getElementById('bottomNav');
+        const notificationBtn = document.getElementById('notificationBtn');
+        const notificationsDropdown = document.getElementById('notificationsDropdown');
+        const notificationBadge = document.getElementById('notificationBadge');
+        const libraryBadge = document.getElementById('libraryBadge');
 
         // Show notification
         function showNotification(message, type = 'success', duration = 4000) {
@@ -2143,899 +2945,146 @@
             }, duration);
         }
 
-        // Check authentication status
-        function checkAuthStatus() {
-            libraryGrid.innerHTML = `
-                <div class="loading">
-                    <div class="loading-spinner"></div>
-                    <p>Loading library books...</p>
-                </div>
-            `;
-
-            const storedUser = localStorage.getItem('the_songa_welfare_user');
-            if (storedUser) {
-                try {
-                    currentUser = JSON.parse(storedUser);
-                    updateUIForMember();
-                    signinModal.classList.remove('active');
-                    fetchUserData(currentUser.uid);
-                    setupRealtimeData();
-                } catch (error) {
-                    console.error("Error parsing stored user:", error);
-                    localStorage.removeItem('the_songa_welfare_user');
-                    signinModal.classList.add('active');
+        // Scroll handling
+        function handleScroll() {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            // Show/hide back to top button
+            if (scrollTop > 300) {
+                if (!isBackToTopVisible) {
+                    backToTop.classList.add('visible');
+                    isBackToTopVisible = true;
                 }
             } else {
-                signinModal.classList.add('active');
-                setupRealtimeData();
-            }
-        }
-
-        // Parse JWT token
-        function parseJwt(token) {
-            try {
-                const base64Url = token.split('.')[1];
-                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-                const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => 
-                    '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
-                ).join(''));
-                return JSON.parse(jsonPayload);
-            } catch (error) {
-                console.error('Error parsing JWT:', error);
-                return {};
-            }
-        }
-
-        // Google Sign-In Handler
-        async function handleGoogleSignIn(response) {
-            try {
-                const userData = parseJwt(response.credential);
-                
-                currentUser = {
-                    uid: userData.sub,
-                    email: userData.email,
-                    firstName: userData.given_name,
-                    lastName: userData.family_name,
-                    fullName: userData.name,
-                    picture: userData.picture,
-                    emailVerified: userData.email_verified
-                };
-                
-                localStorage.setItem('the_songa_welfare_user', JSON.stringify(currentUser));
-                
-                const userRef = database.ref(`users/${currentUser.uid}`);
-                const snapshot = await userRef.once('value');
-                
-                if (!snapshot.exists()) {
-                    const newUser = {
-                        uid: currentUser.uid,
-                        email: currentUser.email,
-                        firstName: currentUser.firstName,
-                        lastName: currentUser.lastName,
-                        profilePicture: currentUser.picture,
-                        joinedDate: new Date().toISOString(),
-                        lastLogin: new Date().toISOString(),
-                        membershipStatus: "active",
-                        membershipTier: "explorer",
-                        borrowedBooks: [],
-                        readingPreferences: ["personal-growth", "business"],
-                        isAdmin: false,
-                        status: "active"
-                    };
-                    
-                    await userRef.set(newUser);
-                    currentUserData = newUser;
-                    showNotification(`Welcome to THE SONGA Library, ${currentUser.firstName}!`, 'success');
-                } else {
-                    await userRef.update({ lastLogin: new Date().toISOString() });
-                    currentUserData = snapshot.val();
-                    showNotification(`Welcome back, ${currentUser.firstName}!`, 'success');
+                if (isBackToTopVisible) {
+                    backToTop.classList.remove('visible');
+                    isBackToTopVisible = false;
                 }
-                
-                updateUIForMember();
-                signinModal.classList.remove('active');
-                setupRealtimeData();
-                
-            } catch (error) {
-                console.error('Error in Google Sign-In:', error);
-                showNotification('Error signing in. Please try again.', 'error');
             }
-        }
-
-        // Update UI for signed-in members
-        function updateUIForMember() {
-            if (userProfile && currentUser) {
-                userProfile.style.display = 'flex';
-                userAvatar.src = currentUser.picture;
-                userDisplayName.textContent = currentUser.firstName;
-            }
-        }
-
-        // Fetch user data
-        async function fetchUserData(userId) {
-            try {
-                const userRef = database.ref(`users/${userId}`);
-                const snapshot = await userRef.once('value');
-                if (snapshot.exists()) {
-                    currentUserData = snapshot.val();
-                    updateMembershipInfo();
-                    loadUserBorrowedBooks();
-                }
-            } catch (error) {
-                console.error('Error fetching user data:', error);
-            }
-        }
-
-        // Update membership info display
-        function updateMembershipInfo() {
-            if (!currentUserData) return;
             
-            const tier = currentUserData.membershipTier || 'explorer';
-            const borrowedBooks = currentUserData.borrowedBooks || [];
-            
-            // Get subscription plan details
-            fetchSubscriptionPlans().then(plans => {
-                const plan = plans[`${tier}_plan`];
-                
-                document.getElementById('membershipInfo').style.display = 'flex';
-                document.getElementById('tierBadge').textContent = tier.toUpperCase();
-                document.getElementById('tierName').textContent = plan ? plan.name : `${tier.charAt(0).toUpperCase() + tier.slice(1)} Plan`;
-                document.getElementById('tierDescription').textContent = plan ? plan.description : '';
-                
-                document.getElementById('booksBorrowed').textContent = borrowedBooks.length;
-                
-                if (plan) {
-                    document.getElementById('booksLimit').textContent = plan.maxBooks;
-                    document.getElementById('renewalsLeft').textContent = plan.renewalsAllowed;
+            // Hide/show bottom nav based on scroll direction
+            if (scrollTop > lastScrollTop && scrollTop > 100) {
+                // Scrolling down
+                if (isBottomNavVisible) {
+                    bottomNav.classList.add('hidden');
+                    isBottomNavVisible = false;
                 }
+            } else {
+                // Scrolling up
+                if (!isBottomNavVisible) {
+                    bottomNav.classList.remove('hidden');
+                    isBottomNavVisible = true;
+                }
+            }
+            
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+        }
+
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
             });
         }
 
-        // Fetch subscription plans
-        async function fetchSubscriptionPlans() {
-            try {
-                const plansRef = database.ref('subscriptionPlans');
-                const snapshot = await plansRef.once('value');
-                if (snapshot.exists()) {
-                    subscriptionPlans = snapshot.val();
-                }
-                return subscriptionPlans;
-            } catch (error) {
-                console.error('Error fetching subscription plans:', error);
-                return {};
-            }
+        // Notifications functions
+        function toggleNotifications() {
+            notificationsDropdown.classList.toggle('active');
+            closeDropdown();
         }
 
-        // Setup real-time data listeners
-        function setupRealtimeData() {
-            if (!database) {
-                console.error("Database not initialized");
-                showNotification("Database connection error", "error");
-                return;
-            }
-            
-            // Listen for books
-            database.ref('libraryBooks').on('value', (snapshot) => {
-                if (snapshot.exists()) {
-                    const booksData = snapshot.val();
-                    books = Object.keys(booksData).map(key => ({
-                        id: key,
-                        ...booksData[key]
-                    }));
-                    
-                    updateBookCounts();
-                    updateQuickStats();
-                    filterAndRenderBooks();
-                } else {
-                    books = [];
-                    renderBooks([]);
-                }
-            });
-            
-            // Listen for articles
-            database.ref('libraryArticles').on('value', (snapshot) => {
-                if (snapshot.exists()) {
-                    const articlesData = snapshot.val();
-                    articles = Object.keys(articlesData).map(key => ({
-                        id: key,
-                        ...articlesData[key]
-                    }));
-                    
-                    renderArticles();
-                } else {
-                    articles = [];
-                    renderArticles([]);
-                }
-            });
-            
-            // Listen for user's borrowed books if signed in
-            if (currentUser) {
-                loadUserBorrowedBooks();
-            }
-        }
-
-        // Load user's borrowed books
-        async function loadUserBorrowedBooks() {
+        async function markAllNotificationsAsRead() {
             if (!currentUser || !database) return;
             
             try {
-                const borrowRef = database.ref('borrowRecords');
-                const snapshot = await borrowRef.once('value');
+                const updates = {};
+                userNotifications.forEach(notification => {
+                    updates[`users/${currentUser.uid}/notifications/${notification.id}/read`] = true;
+                });
                 
+                await database.ref().update(updates);
+                showNotification('All notifications marked as read', 'success');
+            } catch (error) {
+                console.error('Error marking notifications as read:', error);
+            }
+        }
+
+        async function setupNotifications() {
+            if (!currentUser || !database) return;
+            
+            // Listen for notifications
+            database.ref(`users/${currentUser.uid}/notifications`).on('value', (snapshot) => {
                 if (snapshot.exists()) {
-                    const allBorrows = snapshot.val();
-                    userBorrowedBooks = [];
+                    userNotifications = Object.keys(snapshot.val()).map(key => ({
+                        id: key,
+                        ...snapshot.val()[key]
+                    }));
                     
-                    for (const recordId in allBorrows) {
-                        const record = allBorrows[recordId];
-                        if (record.userId === currentUser.uid && record.status === 'borrowed') {
-                            userBorrowedBooks.push(record);
-                        }
-                    }
-                    
-                    displayBorrowedBooks();
-                }
-            } catch (error) {
-                console.error('Error loading borrowed books:', error);
-            }
-        }
-
-        // Display borrowed books
-        function displayBorrowedBooks() {
-            const borrowedBooksList = document.getElementById('borrowedBooksList');
-            const myBooksSection = document.getElementById('myBooksSection');
-            
-            if (!borrowedBooksList || !myBooksSection) return;
-            
-            if (userBorrowedBooks.length === 0) {
-                myBooksSection.style.display = 'none';
-                return;
-            }
-            
-            myBooksSection.style.display = 'block';
-            
-            // Show only first 3 borrowed books
-            const displayBooks = userBorrowedBooks.slice(0, 3);
-            
-            borrowedBooksList.innerHTML = displayBooks.map(record => {
-                const dueDate = new Date(record.dueDate);
-                const now = new Date();
-                const daysLeft = Math.ceil((dueDate - now) / (1000 * 60 * 60 * 24));
-                const isOverdue = daysLeft < 0;
-                
-                return `
-                    <div class="borrowed-book-card">
-                        <div class="borrowed-book-cover">
-                            <img src="https://images.unsplash.com/photo-1544716278-e513176f20b5?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="${record.bookTitle}">
-                        </div>
-                        <div class="borrowed-book-info">
-                            <h4 class="borrowed-book-title">${record.bookTitle}</h4>
-                            <div class="due-date ${isOverdue ? 'overdue' : ''}">
-                                <i class="far fa-calendar ${isOverdue ? 'fa-exclamation-circle' : ''}"></i>
-                                ${isOverdue ? 'OVERDUE' : `Due in ${daysLeft} days`}
-                            </div>
-                        </div>
-                        <div class="borrowed-actions">
-                            <button class="renew-btn" onclick="renewBook('${record.id}')" ${record.renewals >= record.maxRenewals ? 'disabled' : ''}>
-                                <i class="fas fa-redo"></i> Renew
-                            </button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        // Update quick stats
-        async function updateQuickStats() {
-            if (!database) return;
-            
-            try {
-                // Total books
-                document.getElementById('totalBooks').textContent = books.length;
-                
-                // Total borrows
-                const borrowRef = database.ref('borrowRecords');
-                const borrowSnapshot = await borrowRef.once('value');
-                const totalBorrows = borrowSnapshot.exists() ? Object.keys(borrowSnapshot.val()).length : 0;
-                document.getElementById('totalBorrows').textContent = totalBorrows;
-                
-                // Total articles
-                document.getElementById('totalArticles').textContent = articles.length;
-                
-                // Active readers (users with borrowed books in last 30 days)
-                const usersRef = database.ref('users');
-                const usersSnapshot = await usersRef.once('value');
-                let activeReaders = 0;
-                
-                if (usersSnapshot.exists()) {
-                    const users = usersSnapshot.val();
-                    const thirtyDaysAgo = new Date();
-                    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-                    
-                    for (const userId in users) {
-                        const user = users[userId];
-                        if (user.lastLogin && new Date(user.lastLogin) > thirtyDaysAgo) {
-                            activeReaders++;
-                        }
-                    }
-                }
-                
-                document.getElementById('activeReaders').textContent = activeReaders;
-                
-            } catch (error) {
-                console.error('Error updating quick stats:', error);
-            }
-        }
-
-        // Update book count badges
-        function updateBookCounts() {
-            const availableBooks = books.filter(book => book.availability === 'available');
-            const featuredBooks = books.filter(book => book.featured);
-            const digitalBooks = books.filter(book => book.digitalLink);
-            
-            document.getElementById('countAll').textContent = books.length;
-            document.getElementById('countAvailable').textContent = availableBooks.length;
-            document.getElementById('countFeatured').textContent = featuredBooks.length;
-            document.getElementById('countDigital').textContent = digitalBooks.length;
-        }
-
-        // Get book category class
-        function getBookCategoryClass(category) {
-            switch(category?.toLowerCase()) {
-                case 'fiction': return 'fiction';
-                case 'non-fiction': return 'non-fiction';
-                case 'business': return 'business';
-                case 'personal growth': return 'personal-growth';
-                case 'finance': return 'finance';
-                default: return 'non-fiction';
-            }
-        }
-
-        // Get category display name
-        function getCategoryDisplayName(category) {
-            switch(category?.toLowerCase()) {
-                case 'fiction': return 'Fiction';
-                case 'non-fiction': return 'Non-Fiction';
-                case 'business': return 'Business';
-                case 'personal growth': return 'Personal Growth';
-                case 'finance': return 'Finance';
-                default: return category || 'General';
-            }
-        }
-
-        // Get availability status
-        function getAvailabilityStatus(book) {
-            if (book.digitalLink) return 'digital-only';
-            if (book.availability === 'available') return 'available';
-            if (book.availability === 'borrowed') return 'borrowed';
-            if (book.availability === 'reserved') return 'reserved';
-            return 'available';
-        }
-
-        // Get availability text
-        function getAvailabilityText(book) {
-            if (book.digitalLink) return 'Digital Access';
-            if (book.availability === 'available') return 'Available';
-            if (book.availability === 'borrowed') return 'Borrowed';
-            if (book.availability === 'reserved') return 'Reserved';
-            return 'Available';
-        }
-
-        // Check if user can borrow more books
-        function canUserBorrowMore() {
-            if (!currentUserData) return false;
-            
-            const tier = currentUserData.membershipTier || 'explorer';
-            const plan = subscriptionPlans[`${tier}_plan`];
-            const borrowedCount = currentUserData.borrowedBooks ? currentUserData.borrowedBooks.length : 0;
-            
-            if (!plan) return borrowedCount < 5; // Default limit
-            
-            return borrowedCount < plan.maxBooks;
-        }
-
-        // Check if user already borrowed this book
-        function hasUserBorrowedBook(bookId) {
-            if (!currentUserData || !currentUserData.borrowedBooks) return false;
-            return currentUserData.borrowedBooks.includes(bookId);
-        }
-
-        // Filter and render books
-        function filterAndRenderBooks() {
-            const activeFilter = document.querySelector('.filter-tab.active')?.dataset.filter || 'all';
-            const activeCategory = document.querySelector('.category-badge.active')?.dataset.category || 'all';
-            const sortFilter = document.getElementById('sortFilter').value;
-            const availabilityFilter = document.getElementById('availabilityFilter').value;
-            const formatFilter = document.getElementById('formatFilter').value;
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            
-            filteredBooks = books.filter(book => {
-                // Filter by tab
-                let filterMatch = true;
-                switch(activeFilter) {
-                    case 'available':
-                        filterMatch = book.availability === 'available';
-                        break;
-                    case 'featured':
-                        filterMatch = book.featured === true;
-                        break;
-                    case 'digital':
-                        filterMatch = !!book.digitalLink;
-                        break;
-                }
-                
-                // Filter by category
-                const categoryMatch = activeCategory === 'all' || 
-                    (book.category && book.category.toLowerCase() === activeCategory) ||
-                    (book.genre && book.genre.some(g => g.toLowerCase() === activeCategory));
-                
-                // Filter by availability
-                let availabilityMatch = true;
-                switch(availabilityFilter) {
-                    case 'available':
-                        availabilityMatch = book.availability === 'available';
-                        break;
-                    case 'borrowed':
-                        availabilityMatch = book.availability === 'borrowed';
-                        break;
-                    case 'digital':
-                        availabilityMatch = !!book.digitalLink;
-                        break;
-                }
-                
-                // Filter by format
-                let formatMatch = true;
-                switch(formatFilter) {
-                    case 'physical':
-                        formatMatch = !book.digitalLink;
-                        break;
-                    case 'digital':
-                        formatMatch = !!book.digitalLink;
-                        break;
-                }
-                
-                // Filter by search term
-                const searchMatch = searchTerm === '' || 
-                    book.title.toLowerCase().includes(searchTerm) ||
-                    book.author.toLowerCase().includes(searchTerm) ||
-                    (book.tags && book.tags.some(tag => tag.toLowerCase().includes(searchTerm))) ||
-                    (book.description && book.description.toLowerCase().includes(searchTerm));
-                
-                return filterMatch && categoryMatch && availabilityMatch && formatMatch && searchMatch;
-            });
-            
-            // Sort books
-            filteredBooks.sort((a, b) => {
-                switch(sortFilter) {
-                    case 'title':
-                        return a.title.localeCompare(b.title);
-                    case 'author':
-                        return a.author.localeCompare(b.author);
-                    case 'rating':
-                        return (b.rating || 0) - (a.rating || 0);
-                    case 'date-added':
-                        const dateA = new Date(a.addedDate || 0);
-                        const dateB = new Date(b.addedDate || 0);
-                        return dateB - dateA;
-                    case 'popularity':
-                    default:
-                        return (b.borrowCount || 0) - (a.borrowCount || 0);
+                    updateNotificationBadge();
+                    renderNotifications();
                 }
             });
-            
-            renderBooks(filteredBooks);
         }
 
-        // Render books grid
-        function renderBooks(booksArray) {
-            if (!libraryGrid) return;
+        function updateNotificationBadge() {
+            const unreadCount = userNotifications.filter(n => !n.read).length;
             
-            if (!booksArray || booksArray.length === 0) {
-                const emptyTemplate = document.getElementById('emptyStateTemplate');
-                const emptyState = emptyTemplate.content.cloneNode(true);
-                libraryGrid.innerHTML = '';
-                libraryGrid.appendChild(emptyState);
-                return;
+            if (notificationBadge) {
+                if (unreadCount > 0) {
+                    notificationBadge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+                    notificationBadge.classList.remove('hidden');
+                } else {
+                    notificationBadge.classList.add('hidden');
+                }
             }
+            
+            // Update library-specific badge
+            if (libraryBadge) {
+                const libraryNotifications = userNotifications.filter(n => 
+                    n.type && (n.type.includes('book') || n.type.includes('library'))
+                ).length;
+                
+                if (libraryNotifications > 0) {
+                    libraryBadge.textContent = libraryNotifications > 3 ? '3+' : libraryNotifications;
+                    libraryBadge.style.display = 'flex';
+                } else {
+                    libraryBadge.style.display = 'none';
+                }
+            }
+        }
 
-            libraryGrid.innerHTML = booksArray.map(book => {
-                const categoryClass = getBookCategoryClass(book.category);
-                const categoryName = getCategoryDisplayName(book.category);
-                const availabilityStatus = getAvailabilityStatus(book);
-                const availabilityText = getAvailabilityText(book);
-                const isAvailable = book.availability === 'available';
-                const hasDigital = !!book.digitalLink;
-                const isBorrowedByUser = hasUserBorrowedBook(book.id);
-                const canBorrow = canUserBorrowMore() && (isAvailable || hasDigital) && !isBorrowedByUser;
-                
-                const availabilityClass = availabilityStatus === 'digital-only' ? 'digital-only' : 
-                                        availabilityStatus === 'available' ? 'available' : 
-                                        availabilityStatus === 'borrowed' ? 'borrowed' : 'reserved';
-                
-                const actionButton = hasDigital ? `
-                    <button class="book-action-btn digital-btn" onclick="openDigitalBook('${book.id}')">
-                        <i class="fas fa-file-pdf"></i> Read
-                    </button>
-                ` : isBorrowedByUser ? `
-                    <button class="book-action-btn borrow-book-btn" disabled>
-                        <i class="fas fa-check-circle"></i> Borrowed
-                    </button>
-                ` : canBorrow ? `
-                    <button class="book-action-btn borrow-book-btn" onclick="openBorrowModal('${book.id}')">
-                        <i class="fas fa-book-reader"></i> Borrow
-                    </button>
-                ` : `
-                    <button class="book-action-btn borrow-book-btn" disabled>
-                        <i class="fas fa-times-circle"></i> Unavailable
-                    </button>
-                `;
-                
-                const tagsHtml = book.tags && book.tags.length > 0 ? 
-                    book.tags.slice(0, 2).map(tag => `
-                        <span class="book-tag" onclick="filterByTag('${tag}')">${tag}</span>
-                    `).join('') : '';
-                
-                return `
-                    <div class="book-card ${book.featured ? 'featured' : ''}" data-book-id="${book.id}">
-                        ${book.featured ? `
-                            <div class="featured-badge">
-                                <i class="fas fa-star"></i> Featured
-                            </div>
-                        ` : ''}
-                        
-                        <div class="availability-badge ${availabilityClass}">
-                            ${availabilityText}
-                        </div>
-                        
-                        <div class="book-cover">
-                            <img src="${book.coverImage || 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'}" alt="${book.title}">
-                        </div>
-                        
-                        <div class="book-content">
-                            <div class="book-category ${categoryClass}">
-                                ${categoryName}
-                            </div>
-                            <h3 class="book-title">${book.title}</h3>
-                            <p class="book-author">by ${book.author}</p>
-                            
-                            <div class="book-rating">
-                                <div class="stars">
-                                    ${'★'.repeat(Math.floor(book.rating || 0))}${'☆'.repeat(5 - Math.floor(book.rating || 0))}
-                                </div>
-                                <span class="rating-value">${(book.rating || 0).toFixed(1)}</span>
-                            </div>
-                            
-                            <div class="book-meta-small">
-                                <span><i class="far fa-file"></i> ${book.pages || 'N/A'} pages</span>
-                                <span><i class="fas fa-calendar"></i> ${book.publishedYear || ''}</span>
-                            </div>
-                            
-                            <div class="book-actions">
-                                ${actionButton}
-                                <button class="book-action-btn details-btn" onclick="openBookDetails('${book.id}')">
-                                    <i class="fas fa-eye"></i> Details
-                                </button>
-                            </div>
-                        </div>
+        function renderNotifications() {
+            const notificationsList = document.getElementById('notificationsList');
+            if (!notificationsList) return;
+            
+            const sortedNotifications = [...userNotifications].sort((a, b) => 
+                new Date(b.createdAt || b.timestamp) - new Date(a.createdAt || a.timestamp)
+            );
+            
+            const recentNotifications = sortedNotifications.slice(0, 10);
+            
+            notificationsList.innerHTML = recentNotifications.map(notification => `
+                <div class="notification-item ${notification.read ? '' : 'unread'}" 
+                     onclick="handleNotificationClick('${notification.id}')">
+                    <div class="notification-content">
+                        ${!notification.read ? '<span class="notification-dot"></span>' : ''}
+                        ${notification.message || 'New notification'}
                     </div>
-                `;
-            }).join('');
+                    <div class="notification-time">${formatTime(notification.createdAt || notification.timestamp)}</div>
+                </div>
+            `).join('');
         }
 
-        // Render articles
-        function renderArticles() {
-            if (!articlesGrid) return;
-            
-            const featuredArticles = articles.filter(article => article.featured).slice(0, 3);
-            
-            if (featuredArticles.length === 0) {
-                articlesGrid.innerHTML = `
-                    <div class="empty-state" style="grid-column: 1 / -1;">
-                        <i class="fas fa-newspaper"></i>
-                        <h3>No Articles Available</h3>
-                        <p>Check back soon for featured articles.</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            articlesGrid.innerHTML = featuredArticles.map(article => {
-                return `
-                    <div class="article-card">
-                        <div class="article-image">
-                            <img src="${article.coverImage || 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'}" alt="${article.title}">
-                        </div>
-                        <div class="article-content">
-                            <h3 class="article-title">${article.title}</h3>
-                            <p class="article-excerpt">${article.excerpt || article.content?.substring(0, 150) || 'Read this insightful article...'}</p>
-                            <div class="article-meta">
-                                <span>${article.author}</span>
-                                <span class="read-time">
-                                    <i class="far fa-clock"></i> ${article.readTime || '5 min'}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        // Open book details modal
-        function openBookDetails(bookId) {
-            selectedBook = books.find(b => b.id === bookId);
-            if (!selectedBook) {
-                showNotification('Book not found', 'error');
-                return;
-            }
-            
-            // Update modal content
-            document.getElementById('bookModalTitle').textContent = selectedBook.title;
-            document.getElementById('bookModalAuthor').textContent = `by ${selectedBook.author}`;
-            document.getElementById('bookModalCover').src = selectedBook.coverImage || 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';
-            document.getElementById('bookModalRating').textContent = (selectedBook.rating || 0).toFixed(1);
-            document.getElementById('bookModalPages').textContent = `${selectedBook.pages || 'N/A'} pages`;
-            document.getElementById('bookModalYear').textContent = selectedBook.publishedYear || 'N/A';
-            document.getElementById('bookModalFormat').textContent = selectedBook.format || 'Paperback';
-            document.getElementById('bookModalDescription').textContent = selectedBook.description || selectedBook.summary || 'No description available.';
-            
-            // Update tags
-            const tagsHtml = selectedBook.tags && selectedBook.tags.length > 0 ? 
-                selectedBook.tags.map(tag => `
-                    <span class="book-tag" onclick="filterByTag('${tag}')">${tag}</span>
-                `).join('') : '<span style="color: var(--dark-gray);">No tags</span>';
-            document.getElementById('bookModalTags').innerHTML = tagsHtml;
-            
-            // Update availability
-            const availabilityStatus = getAvailabilityStatus(selectedBook);
-            const statusElement = document.getElementById('bookModalStatus');
-            statusElement.textContent = getAvailabilityText(selectedBook);
-            statusElement.className = `status-value status-${availabilityStatus.replace('-only', '')}`;
-            
-            // Update availability details
-            const detailsElement = document.getElementById('bookModalAvailabilityDetails');
-            if (selectedBook.digitalLink) {
-                detailsElement.innerHTML = `
-                    <p>Digital access available. Click the "Digital Access" button below to read online.</p>
-                `;
-                document.getElementById('digitalAccessBtn').style.display = 'flex';
-                document.getElementById('borrowFromModalBtn').style.display = 'none';
-            } else {
-                const availableCopies = selectedBook.availableCopies || 0;
-                const totalCopies = selectedBook.totalCopies || 0;
-                detailsElement.innerHTML = `
-                    <p>${availableCopies} of ${totalCopies} copies available</p>
-                    <p style="margin-top: 0.5rem; font-size: 0.9rem;">
-                        <i class="fas fa-map-marker-alt"></i> ${selectedBook.location || 'Main Library Shelf'}
-                    </p>
-                `;
-                document.getElementById('digitalAccessBtn').style.display = 'none';
-                document.getElementById('borrowFromModalBtn').style.display = 'flex';
-            }
-            
-            // Setup borrow button
-            const borrowBtn = document.getElementById('borrowFromModalBtn');
-            if (hasUserBorrowedBook(selectedBook.id)) {
-                borrowBtn.innerHTML = '<i class="fas fa-check-circle"></i> Already Borrowed';
-                borrowBtn.disabled = true;
-            } else if (!canUserBorrowMore()) {
-                borrowBtn.innerHTML = '<i class="fas fa-times-circle"></i> Limit Reached';
-                borrowBtn.disabled = true;
-            } else if (selectedBook.availability !== 'available') {
-                borrowBtn.innerHTML = '<i class="fas fa-times-circle"></i> Not Available';
-                borrowBtn.disabled = true;
-            } else {
-                borrowBtn.innerHTML = '<i class="fas fa-book-reader"></i> Borrow Book';
-                borrowBtn.disabled = false;
-                borrowBtn.onclick = () => {
-                    bookModal.classList.remove('active');
-                    openBorrowModal(selectedBook.id);
-                };
-            }
-            
-            // Setup digital access button
-            const digitalBtn = document.getElementById('digitalAccessBtn');
-            if (selectedBook.digitalLink) {
-                digitalBtn.onclick = () => openDigitalBook(selectedBook.id);
-            }
-            
-            // Show modal
-            bookModal.classList.add('active');
-            document.body.classList.add('modal-open');
-        }
-
-        // Open digital book
-        function openDigitalBook(bookId) {
-            const book = books.find(b => b.id === bookId);
-            if (!book || !book.digitalLink) {
-                showNotification('Digital access not available for this book', 'error');
-                return;
-            }
-            
-            window.open(book.digitalLink, '_blank');
-            showNotification('Opening digital book...', 'success');
-        }
-
-        // Open borrow modal
-        function openBorrowModal(bookId) {
-            if (!currentUser) {
-                showNotification('Please sign in to borrow books', 'error');
-                signinModal.classList.add('active');
-                return;
-            }
-            
-            selectedBook = books.find(b => b.id === bookId);
-            if (!selectedBook) {
-                showNotification('Book not found', 'error');
-                return;
-            }
-            
-            // Check if user can borrow
-            if (hasUserBorrowedBook(bookId)) {
-                showNotification('You have already borrowed this book', 'info');
-                return;
-            }
-            
-            if (!canUserBorrowMore()) {
-                showNotification('You have reached your borrowing limit. Please return some books first.', 'error');
-                return;
-            }
-            
-            if (selectedBook.availability !== 'available') {
-                showNotification('This book is not available for borrowing', 'error');
-                return;
-            }
-            
-            // Update modal content
-            document.getElementById('borrowBookTitle').textContent = selectedBook.title;
-            document.getElementById('borrowBookName').textContent = selectedBook.title;
-            document.getElementById('borrowBookAuthor').textContent = selectedBook.author;
-            
-            // Calculate dates
-            const borrowDuration = selectedBook.borrowDuration || 14;
-            const dueDate = new Date();
-            dueDate.setDate(dueDate.getDate() + borrowDuration);
-            
-            document.getElementById('borrowPeriod').textContent = `${borrowDuration} days`;
-            document.getElementById('borrowDueDate').textContent = dueDate.toLocaleDateString('en-US', {
-                weekday: 'short',
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric'
-            });
-            
-            document.getElementById('borrowLocation').textContent = selectedBook.location || 'Main Library - Front Desk';
-            
-            // Show modal
-            borrowModal.classList.add('active');
-            document.body.classList.add('modal-open');
-        }
-
-        // Confirm borrow book
-        async function confirmBorrowBook() {
-            if (!selectedBook || !currentUser) return;
-            
-            try {
-                // Create borrow record
-                const borrowRef = database.ref('borrowRecords').push();
-                const borrowDuration = selectedBook.borrowDuration || 14;
-                const dueDate = new Date();
-                dueDate.setDate(dueDate.getDate() + borrowDuration);
-                
-                const borrowRecord = {
-                    id: borrowRef.key,
-                    userId: currentUser.uid,
-                    bookId: selectedBook.id,
-                    bookTitle: selectedBook.title,
-                    borrowDate: new Date().toISOString(),
-                    dueDate: dueDate.toISOString(),
-                    returnDate: null,
-                    status: 'borrowed',
-                    renewals: 0,
-                    maxRenewals: 2,
-                    fineAmount: 0,
-                    paid: true
-                };
-                
-                await borrowRef.set(borrowRecord);
-                
-                // Update book availability
-                const bookRef = database.ref(`libraryBooks/${selectedBook.id}`);
-                await bookRef.update({
-                    availableCopies: Math.max((selectedBook.availableCopies || 1) - 1, 0),
-                    borrowCount: (selectedBook.borrowCount || 0) + 1,
-                    availability: (selectedBook.availableCopies || 1) <= 1 ? 'borrowed' : 'available'
+        function handleNotificationClick(notificationId) {
+            // Mark as read
+            if (currentUser && database) {
+                database.ref(`users/${currentUser.uid}/notifications/${notificationId}`).update({
+                    read: true
                 });
-                
-                // Update user's borrowed books
-                const userRef = database.ref(`users/${currentUser.uid}`);
-                const userSnapshot = await userRef.once('value');
-                const userData = userSnapshot.val();
-                const borrowedBooks = userData.borrowedBooks || [];
-                
-                if (!borrowedBooks.includes(selectedBook.id)) {
-                    borrowedBooks.push(selectedBook.id);
-                    await userRef.update({
-                        borrowedBooks: borrowedBooks
-                    });
-                    currentUserData.borrowedBooks = borrowedBooks;
-                }
-                
-                // Update membership info
-                updateMembershipInfo();
-                
-                // Close modal and show success
-                borrowModal.classList.remove('active');
-                document.body.classList.remove('modal-open');
-                
-                showNotification(`Successfully borrowed "${selectedBook.title}"!`, 'success');
-                
-                // Refresh data
-                setupRealtimeData();
-                filterAndRenderBooks();
-                
-            } catch (error) {
-                console.error('Error borrowing book:', error);
-                showNotification('Error borrowing book. Please try again.', 'error');
             }
         }
 
-        // Renew book
-        async function renewBook(recordId) {
-            if (!currentUser) return;
-            
-            try {
-                const recordRef = database.ref(`borrowRecords/${recordId}`);
-                const snapshot = await recordRef.once('value');
-                const record = snapshot.val();
-                
-                if (!record || record.userId !== currentUser.uid) {
-                    showNotification('Record not found', 'error');
-                    return;
-                }
-                
-                if (record.renewals >= record.maxRenewals) {
-                    showNotification('Maximum renewals reached', 'error');
-                    return;
-                }
-                
-                // Add 7 days to due date
-                const newDueDate = new Date(record.dueDate);
-                newDueDate.setDate(newDueDate.getDate() + 7);
-                
-                await recordRef.update({
-                    dueDate: newDueDate.toISOString(),
-                    renewals: (record.renewals || 0) + 1
-                });
-                
-                showNotification('Book renewed successfully! New due date: ' + newDueDate.toLocaleDateString(), 'success');
-                
-                // Refresh borrowed books
-                loadUserBorrowedBooks();
-                
-            } catch (error) {
-                console.error('Error renewing book:', error);
-                showNotification('Error renewing book', 'error');
-            }
-        }
-
-        // Filter by tag
-        function filterByTag(tag) {
-            document.getElementById('searchInput').value = tag;
-            filterAndRenderBooks();
-            showNotification(`Searching for books tagged: ${tag}`, 'info');
-        }
-
-        // Show upgrade options
-        function showUpgradeOptions() {
-            showNotification('Upgrade options coming soon!', 'info');
-        }
-
-        // Show all borrowed books
-        function showAllBorrowedBooks() {
-            showNotification('All borrowed books view coming soon!', 'info');
-        }
-
-        // Toggle dropdown
+        // User dropdown functions
         function toggleDropdown() {
             dropdownOpen = !dropdownOpen;
             const dropdown = document.getElementById('userDropdown');
@@ -3046,307 +3095,370 @@
             }
         }
 
-        // Close dropdown
         function closeDropdown() {
             dropdownOpen = false;
             const dropdown = document.getElementById('userDropdown');
             if (dropdown) dropdown.classList.remove('active');
+            if (notificationsDropdown) notificationsDropdown.classList.remove('active');
         }
 
-        // Sign out user
-        function signOut() {
-            currentUser = null;
-            currentUserData = null;
-            localStorage.removeItem('the_songa_welfare_user');
-            
-            if (database) {
-                database.ref('libraryBooks').off();
-                database.ref('libraryArticles').off();
+        // Social features functions
+        async function toggleBookLike(bookId) {
+            if (!currentUser) {
+                showNotification('Please sign in to like books', 'error');
+                return;
             }
             
-            closeDropdown();
-            signinModal.classList.add('active');
-            document.body.classList.remove('modal-open');
-            showNotification('Signed out successfully', 'success');
+            try {
+                const bookRef = database.ref(`libraryBooks/${bookId}`);
+                const snapshot = await bookRef.once('value');
+                const book = snapshot.val();
+                
+                let likedBy = book.likedBy || [];
+                let likes = book.likes || 0;
+                
+                if (likedBy.includes(currentUser.uid)) {
+                    likedBy = likedBy.filter(id => id !== currentUser.uid);
+                    likes--;
+                    showNotification('Book unliked', 'success', 2000);
+                } else {
+                    likedBy.push(currentUser.uid);
+                    likes++;
+                    showNotification('Book liked!', 'success', 2000);
+                }
+                
+                await bookRef.update({
+                    likedBy: likedBy,
+                    likes: likes
+                });
+                
+            } catch (error) {
+                console.error('Error toggling book like:', error);
+                showNotification('Error updating like status', 'error');
+            }
+        }
+
+        async function addToWishlist(bookId) {
+            if (!currentUser) {
+                showNotification('Please sign in to save books', 'error');
+                return;
+            }
             
-            // Hide member-only sections
-            membershipInfo.style.display = 'none';
-            myBooksSection.style.display = 'none';
+            try {
+                const userRef = database.ref(`users/${currentUser.uid}`);
+                const snapshot = await userRef.once('value');
+                const userData = snapshot.val();
+                
+                let wishlist = userData.wishlist || [];
+                
+                if (wishlist.includes(bookId)) {
+                    wishlist = wishlist.filter(id => id !== bookId);
+                    showNotification('Removed from wishlist', 'success', 2000);
+                } else {
+                    wishlist.push(bookId);
+                    showNotification('Added to wishlist!', 'success', 2000);
+                }
+                
+                await userRef.update({ wishlist: wishlist });
+                
+            } catch (error) {
+                console.error('Error updating wishlist:', error);
+                showNotification('Error updating wishlist', 'error');
+            }
+        }
+
+        async function shareBook(bookId) {
+            const book = books.find(b => b.id === bookId);
+            if (!book) return;
             
-            libraryGrid.innerHTML = `
-                <div class="loading">
-                    <div class="loading-spinner"></div>
-                    <p>Loading library books...</p>
+            const shareUrl = `${window.location.origin}/library.html?book=${bookId}`;
+            const shareText = `Check out "${book.title}" by ${book.author} on THE SONGA Library!`;
+            
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: book.title,
+                        text: shareText,
+                        url: shareUrl
+                    });
+                    showNotification('Book shared successfully!', 'success');
+                } catch (error) {
+                    console.error('Error sharing:', error);
+                    fallbackShare(shareText, shareUrl);
+                }
+            } else {
+                fallbackShare(shareText, shareUrl);
+            }
+        }
+
+        function fallbackShare(text, url) {
+            navigator.clipboard.writeText(`${text}\n${url}`).then(() => {
+                showNotification('Book link copied to clipboard!', 'success');
+            });
+        }
+
+        // Reading stats
+        async function updateReadingStats() {
+            if (!currentUser || !database) return;
+            
+            try {
+                const statsRef = database.ref(`users/${currentUser.uid}/readingStats`);
+                const snapshot = await statsRef.once('value');
+                
+                if (snapshot.exists()) {
+                    userReadingStats = snapshot.val();
+                    displayReadingStats();
+                }
+                
+                statsRef.on('value', (snapshot) => {
+                    if (snapshot.exists()) {
+                        userReadingStats = snapshot.val();
+                        displayReadingStats();
+                        updateDropdownStats();
+                    }
+                });
+                
+            } catch (error) {
+                console.error('Error fetching reading stats:', error);
+            }
+        }
+
+        function displayReadingStats() {
+            const readingStatsDiv = document.getElementById('readingStats');
+            if (!readingStatsDiv) return;
+            
+            if (Object.keys(userReadingStats).length > 0) {
+                readingStatsDiv.style.display = 'grid';
+                
+                document.getElementById('totalReadingTime').textContent = 
+                    `${Math.floor(userReadingStats.totalReadingMinutes / 60)}h`;
+                document.getElementById('currentStreak').textContent = 
+                    userReadingStats.currentStreak || 0;
+                document.getElementById('booksCompleted').textContent = 
+                    userReadingStats.booksCompleted || 0;
+                document.getElementById('achievements').textContent = 
+                    userReadingStats.achievements || 0;
+            }
+        }
+
+        function updateDropdownStats() {
+            document.getElementById('dropdownBooksBorrowed').textContent = 
+                userReadingStats?.booksBorrowed || 0;
+            document.getElementById('dropdownReadingTime').textContent = 
+                `${Math.floor((userReadingStats?.totalReadingMinutes || 0) / 60)}h`;
+        }
+
+        // Reading groups
+        async function loadReadingGroups() {
+            if (!database) return;
+            
+            try {
+                const groupsRef = database.ref('readingGroups');
+                const snapshot = await groupsRef.once('value');
+                
+                if (snapshot.exists()) {
+                    readingGroups = Object.keys(snapshot.val()).map(key => ({
+                        id: key,
+                        ...snapshot.val()[key]
+                    }));
+                    displayReadingGroups();
+                }
+                
+            } catch (error) {
+                console.error('Error loading reading groups:', error);
+            }
+        }
+
+        function displayReadingGroups() {
+            const groupsGrid = document.getElementById('readingGroups');
+            if (!groupsGrid) return;
+            
+            const activeGroups = readingGroups.filter(group => group.status === 'active').slice(0, 3);
+            
+            groupsGrid.innerHTML = activeGroups.map(group => `
+                <div class="group-card">
+                    <div class="group-icon">
+                        <i class="${group.icon || 'fas fa-users'}"></i>
+                    </div>
+                    <h4>${group.name}</h4>
+                    <p style="font-size: 0.9rem; color: var(--dark-gray); margin: 0.5rem 0;">
+                        ${group.description || 'Reading group'}
+                    </p>
+                    <div style="font-size: 0.85rem; color: var(--dark-gray);">
+                        <i class="fas fa-users"></i> ${group.memberCount || 0} members
+                    </div>
+                    <button class="join-group-btn" onclick="joinReadingGroup('${group.id}')">
+                        ${group.members?.includes(currentUser?.uid) ? 'Joined' : 'Join Group'}
+                    </button>
                 </div>
-            `;
+            `).join('');
         }
 
-        // Initialize the page
-        function initializePage() {
-            checkAuthStatus();
-            
-            // Load sample data if empty
-            if (database) {
-                database.ref('libraryBooks').once('value').then(snapshot => {
-                    if (!snapshot.exists()) {
-                        loadSampleBooks();
-                    }
-                });
-                
-                database.ref('libraryArticles').once('value').then(snapshot => {
-                    if (!snapshot.exists()) {
-                        loadSampleArticles();
-                    }
-                });
-                
-                fetchSubscriptionPlans();
+        async function joinReadingGroup(groupId) {
+            if (!currentUser) {
+                showNotification('Please sign in to join reading groups', 'error');
+                return;
             }
             
-            setupEventListeners();
+            try {
+                const groupRef = database.ref(`readingGroups/${groupId}`);
+                const snapshot = await groupRef.once('value');
+                const group = snapshot.val();
+                
+                let members = group.members || [];
+                let memberCount = group.memberCount || 0;
+                
+                if (members.includes(currentUser.uid)) {
+                    members = members.filter(id => id !== currentUser.uid);
+                    memberCount--;
+                    showNotification('Left reading group', 'success');
+                } else {
+                    members.push(currentUser.uid);
+                    memberCount++;
+                    showNotification('Joined reading group!', 'success');
+                }
+                
+                await groupRef.update({
+                    members: members,
+                    memberCount: memberCount
+                });
+                
+                loadReadingGroups();
+                
+            } catch (error) {
+                console.error('Error joining reading group:', error);
+                showNotification('Error joining group', 'error');
+            }
         }
 
-        // Load sample books
-        async function loadSampleBooks() {
-            if (!database) return;
+        // Book recommendations
+        async function loadBookRecommendations() {
+            if (!currentUser || !database) return;
             
             try {
+                const userRef = database.ref(`users/${currentUser.uid}`);
+                const snapshot = await userRef.once('value');
+                const userData = snapshot.val();
+                
+                const preferences = userData.readingPreferences || ['business', 'personal-growth'];
+                const borrowedBooks = userData.borrowedBooks || [];
+                const wishlist = userData.wishlist || [];
+                
                 const booksRef = database.ref('libraryBooks');
-                const snapshot = await booksRef.once('value');
+                const booksSnapshot = await booksRef.once('value');
+                const allBooks = booksSnapshot.exists() ? 
+                    Object.keys(booksSnapshot.val()).map(key => ({
+                        id: key,
+                        ...booksSnapshot.val()[key]
+                    })) : [];
                 
-                if (!snapshot.exists()) {
-                    const sampleBooks = {
-                        book_001: {
-                            id: "book_001",
-                            title: "Atomic Habits",
-                            author: "James Clear",
-                            category: "Personal Growth",
-                            description: "Tiny Changes, Remarkable Results: An Easy & Proven Way to Build Good Habits & Break Bad Ones. This book reveals practical strategies that will teach you exactly how to form good habits, break bad ones, and master the tiny behaviors that lead to remarkable results.",
-                            coverImage: "https://images.unsplash.com/photo-1544716278-e513176f20b5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-                            rating: 4.8,
-                            pages: 320,
-                            isbn: "978-0735211292",
-                            publisher: "Avery Publishing",
-                            publishedYear: 2018,
-                            genre: ["self-help", "psychology", "productivity"],
-                            tags: ["habits", "productivity", "self-improvement", "behavior", "personal-growth"],
-                            availability: "available",
-                            totalCopies: 5,
-                            availableCopies: 3,
-                            borrowCount: 15,
-                            featured: true,
-                            featuredOrder: 1,
-                            addedDate: new Date().toISOString(),
-                            subscriptionTiers: ["explorer", "scholar", "visionary"],
-                            language: "English",
-                            format: "Paperback",
-                            summary: "A revolutionary guide to building good habits and breaking bad ones through tiny changes.",
-                            keyTakeaways: [
-                                "1% improvement every day",
-                                "Habit stacking technique",
-                                "Environment design",
-                                "Identity-based habits"
-                            ],
-                            borrowDuration: 14,
-                            location: "Shelf A-12",
-                            digitalLink: "https://drive.google.com/file/d/example1/view"
-                        },
-                        book_002: {
-                            id: "book_002",
-                            title: "The Lean Startup",
-                            author: "Eric Ries",
-                            category: "Business",
-                            description: "How Today's Entrepreneurs Use Continuous Innovation to Create Radically Successful Businesses. The Lean Startup approach fosters companies that are both more capital efficient and that leverage human creativity more effectively.",
-                            coverImage: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-                            rating: 4.6,
-                            pages: 336,
-                            isbn: "978-0307887894",
-                            publisher: "Crown Business",
-                            publishedYear: 2011,
-                            genre: ["business", "entrepreneurship", "innovation"],
-                            tags: ["startup", "entrepreneurship", "innovation", "business", "management"],
-                            availability: "available",
-                            totalCopies: 3,
-                            availableCopies: 2,
-                            borrowCount: 8,
-                            featured: false,
-                            addedDate: new Date().toISOString(),
-                            subscriptionTiers: ["scholar", "visionary"],
-                            language: "English",
-                            format: "Hardcover",
-                            summary: "A methodology for developing businesses and products through validated learning and rapid experimentation.",
-                            borrowDuration: 14,
-                            location: "Shelf B-07"
-                        }
-                    };
-                    
-                    await booksRef.set(sampleBooks);
-                    console.log("Sample books loaded");
-                }
-            } catch (error) {
-                console.error('Error loading sample books:', error);
-            }
-        }
-
-        // Load sample articles
-        async function loadSampleArticles() {
-            if (!database) return;
-            
-            try {
-                const articlesRef = database.ref('libraryArticles');
-                const snapshot = await articlesRef.once('value');
+                bookRecommendations = allBooks
+                    .filter(book => 
+                        !borrowedBooks.includes(book.id) && 
+                        !wishlist.includes(book.id)
+                    )
+                    .filter(book => 
+                        preferences.some(pref => 
+                            book.category?.toLowerCase().includes(pref) ||
+                            book.tags?.some(tag => tag.toLowerCase().includes(pref))
+                        )
+                    )
+                    .sort((a, b) => (b.rating || 0) - (a.rating || 0))
+                    .slice(0, 6);
                 
-                if (!snapshot.exists()) {
-                    const sampleArticles = {
-                        article_001: {
-                            id: "article_001",
-                            title: "The Psychology of Wealth: Mindset Matters",
-                            author: "THE SONGA Team",
-                            category: "Finance",
-                            excerpt: "How your mindset influences your financial decisions and wealth accumulation journey.",
-                            content: "Full article content about wealth psychology... Your mindset determines your financial destiny. Learn how to cultivate a wealth-building mentality.",
-                            coverImage: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
-                            readTime: "5 min",
-                            publishedDate: new Date().toISOString(),
-                            tags: ["wealth", "psychology", "mindset", "finance"],
-                            views: 245,
-                            likes: 56,
-                            featured: true,
-                            status: "published",
-                            subscriptionTiers: ["all"]
-                        }
-                    };
-                    
-                    await articlesRef.set(sampleArticles);
-                    console.log("Sample articles loaded");
-                }
+                displayRecommendations();
+                
             } catch (error) {
-                console.error('Error loading sample articles:', error);
+                console.error('Error loading recommendations:', error);
             }
         }
 
-        // Setup event listeners
-        function setupEventListeners() {
-            // User profile dropdown
-            if (userProfile) {
-                userProfile.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    toggleDropdown();
-                });
+        function displayRecommendations() {
+            const recommendationsGrid = document.getElementById('bookRecommendations');
+            if (!recommendationsGrid) return;
+            
+            if (bookRecommendations.length === 0) {
+                recommendationsGrid.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: var(--dark-gray);">
+                        <i class="fas fa-lightbulb"></i>
+                        <p>Read more books to get personalized recommendations!</p>
+                    </div>
+                `;
+                return;
             }
             
-            // Close dropdowns when clicking outside
-            document.addEventListener('click', function() {
-                closeDropdown();
+            recommendationsGrid.innerHTML = bookRecommendations.map(book => `
+                <div class="recommendation-card">
+                    <div class="recommendation-cover">
+                        <img src="${book.coverImage || 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80'}" alt="${book.title}">
+                    </div>
+                    <h4 style="font-size: 1rem; margin-bottom: 0.5rem;">${book.title}</h4>
+                    <p style="font-size: 0.85rem; color: var(--dark-gray); margin-bottom: 1rem;">${book.author}</p>
+                    <button class="book-action-btn details-btn" onclick="openBookDetails('${book.id}')" style="padding: 8px 16px; font-size: 0.85rem;">
+                        View Details
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        async function refreshRecommendations() {
+            showNotification('Refreshing recommendations...', 'info');
+            await loadBookRecommendations();
+            showNotification('Recommendations updated!', 'success');
+        }
+
+        // Helper functions
+        function formatTime(timestamp) {
+            if (!timestamp) return 'Recently';
+            const now = new Date();
+            const time = new Date(timestamp);
+            const diffInSeconds = Math.floor((now - time) / 1000);
+            
+            if (diffInSeconds < 60) return 'Just now';
+            if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
+            if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`;
+            if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)}d ago`;
+            
+            return time.toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric'
             });
+        }
+
+        // Initialize enhanced features
+        function initializeEnhancedFeatures() {
+            window.addEventListener('scroll', handleScroll, { passive: true });
             
-            // Filter tabs
-            document.querySelectorAll('.filter-tab').forEach(tab => {
-                tab.addEventListener('click', function() {
-                    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
-                    filterAndRenderBooks();
-                });
-            });
-            
-            // Category badges
-            document.querySelectorAll('.category-badge').forEach(badge => {
-                badge.addEventListener('click', function() {
-                    document.querySelectorAll('.category-badge').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    filterAndRenderBooks();
-                });
-            });
-            
-            // Filter controls
-            document.getElementById('sortFilter').addEventListener('change', filterAndRenderBooks);
-            document.getElementById('availabilityFilter').addEventListener('change', filterAndRenderBooks);
-            document.getElementById('formatFilter').addEventListener('change', filterAndRenderBooks);
-            
-            // Search input
-            const searchInput = document.getElementById('searchInput');
-            let searchTimeout;
-            searchInput.addEventListener('input', function() {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(() => {
-                    filterAndRenderBooks();
-                }, 500);
-            });
-            
-            // Close modals
-            document.getElementById('closeBookModal').addEventListener('click', function() {
-                bookModal.classList.remove('active');
-                document.body.classList.remove('modal-open');
-            });
-            
-            document.getElementById('closeBorrowModal').addEventListener('click', function() {
-                borrowModal.classList.remove('active');
-                document.body.classList.remove('modal-open');
-            });
-            
-            document.getElementById('closeSigninModal').addEventListener('click', function() {
-                signinModal.classList.remove('active');
-            });
-            
-            // Confirm borrow button
-            document.getElementById('confirmBorrowBtn').addEventListener('click', confirmBorrowBook);
-            document.getElementById('cancelBorrowBtn').addEventListener('click', function() {
-                borrowModal.classList.remove('active');
-                document.body.classList.remove('modal-open');
-            });
-            
-            // Close modals when clicking outside
-            bookModal.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    bookModal.classList.remove('active');
-                    document.body.classList.remove('modal-open');
-                }
-            });
-            
-            borrowModal.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    borrowModal.classList.remove('active');
-                    document.body.classList.remove('modal-open');
-                }
-            });
-            
-            signinModal.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    signinModal.classList.remove('active');
-                }
-            });
-            
-            // Escape key to close modals
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    if (bookModal.classList.contains('active')) {
-                        bookModal.classList.remove('active');
-                        document.body.classList.remove('modal-open');
-                    }
-                    if (borrowModal.classList.contains('active')) {
-                        borrowModal.classList.remove('active');
-                        document.body.classList.remove('modal-open');
-                    }
-                    if (signinModal.classList.contains('active')) {
-                        signinModal.classList.remove('active');
-                    }
-                }
-            });
-            
-            // Dropdown options
-            const signOutOption = document.getElementById('signOutOption');
-            if (signOutOption) {
-                signOutOption.addEventListener('click', function() {
-                    signOut();
-                    closeDropdown();
-                });
+            if (currentUser) {
+                setupNotifications();
+                updateReadingStats();
+                loadReadingGroups();
+                loadBookRecommendations();
             }
         }
 
-        // Initialize when DOM is ready
-        document.addEventListener('DOMContentLoaded', initializePage);
+        // Add your existing library functions here...
+        // (Keep all your existing library functions from the previous code)
 
-        // Global function for Google Sign-In callback
-        window.handleGoogleSignIn = handleGoogleSignIn;
+        // Initialize everything
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize existing library functions
+            checkAuthStatus();
+            setupEventListeners();
+            
+            // Initialize enhanced features
+            initializeEnhancedFeatures();
+        });
+
+        // Make functions globally available
+        window.scrollToTop = scrollToTop;
+        window.toggleNotifications = toggleNotifications;
+        window.markAllNotificationsAsRead = markAllNotificationsAsRead;
+        window.toggleBookLike = toggleBookLike;
+        window.addToWishlist = addToWishlist;
+        window.shareBook = shareBook;
+        window.joinReadingGroup = joinReadingGroup;
+        window.refreshRecommendations = refreshRecommendations;
     </script>
 </body>
 </html>
