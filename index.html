@@ -2427,7 +2427,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 
-    <script>
+            <script>
         // Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBDZicoo7dFLtSmgRPvQE_gdm-tNOyCTXA",
@@ -2439,20 +2439,36 @@
             appId: "1:123922889572:web:482b2a624930baaf92d871"
         };
 
-        // Initialize Firebase
+        // Initialize Firebase with error handling for multiple initializations
         let firebaseApp;
         let database;
         let auth;
         let storage;
         
         try {
-            firebaseApp = firebase.initializeApp(firebaseConfig);
+            // Check if Firebase is already initialized
+            if (!firebase.apps.length) {
+                firebaseApp = firebase.initializeApp(firebaseConfig);
+                console.log("Firebase initialized successfully");
+            } else {
+                firebaseApp = firebase.app(); // Use existing app
+                console.log("Firebase already initialized, using existing instance");
+            }
+            
             database = firebase.database();
             auth = firebase.auth();
             storage = firebase.storage();
-            console.log("Firebase initialized successfully");
         } catch (error) {
             console.error("Firebase initialization error:", error);
+            // Try to get existing app
+            try {
+                firebaseApp = firebase.app();
+                database = firebase.database();
+                auth = firebase.auth();
+                storage = firebase.storage();
+            } catch (e) {
+                console.error("Could not initialize Firebase:", e);
+            }
         }
 
         // Global variables
@@ -2568,9 +2584,11 @@
             }
         };
 
-        // Show notification
+        // Show notification toast
         function showNotification(message, type = 'success', duration = 4000) {
             const toast = elements.notificationToast;
+            if (!toast) return;
+            
             toast.textContent = message;
             toast.className = `notification-toast show ${type}`;
             setTimeout(() => {
@@ -2581,6 +2599,8 @@
         // Show session status
         function showSessionStatus(message, type = 'restored') {
             const status = elements.sessionStatus;
+            if (!status) return;
+            
             status.innerHTML = `
                 <i class="fas fa-${type === 'restored' ? 'check-circle' : 'sync'}"></i>
                 <span>${message}</span>
@@ -2629,8 +2649,10 @@
                     updateUIForMember();
                     
                     // Hide signin modal if open
-                    elements.signinModal.classList.remove('active');
-                    document.body.classList.remove('modal-open');
+                    if (elements.signinModal) {
+                        elements.signinModal.classList.remove('active');
+                        document.body.classList.remove('modal-open');
+                    }
                     
                     // Fetch user data
                     fetchUserData(currentUser.uid);
@@ -2638,18 +2660,27 @@
                     // Setup realtime listeners
                     setupRealtimeListeners();
                     
-                    showNotification(`Welcome back, ${currentUser.firstName}!`, 'success');
+                    // Only show welcome back if on homepage
+                    if (window.location.pathname.includes('index.html') || 
+                        window.location.pathname === '/' || 
+                        window.location.pathname.includes('feed')) {
+                        showNotification(`Welcome back, ${currentUser.firstName}!`, 'success');
+                    }
                     
                     return true;
                 } catch (error) {
                     console.error("Error parsing stored user:", error);
                     clearUserSession();
-                    showSigninModal();
+                    if (elements.signinModal) {
+                        showSigninModal();
+                    }
                     return false;
                 }
             } else {
                 clearUserSession();
-                showSigninModal();
+                if (elements.signinModal) {
+                    showSigninModal();
+                }
                 return false;
             }
         }
@@ -2666,47 +2697,56 @@
 
             if (!currentUser || !database) return;
 
-            // Listen for new posts
-            const postsListener = database.ref('communityPosts').orderByChild('createdAt').limitToLast(50).on('value', (snapshot) => {
-                if (snapshot.exists()) {
-                    const postsData = snapshot.val();
-                    posts = Object.keys(postsData).map(key => ({
-                        id: key,
-                        ...postsData[key]
-                    })).filter(post => post.status === 'published');
-                    
-                    // Update posts display
-                    filterPosts(currentFilter);
-                    
-                    // Check for new posts
-                    checkNewPosts();
-                }
-            });
-            realtimeListeners.push(() => database.ref('communityPosts').off('value', postsListener));
-
-            // Listen for notifications
-            const notificationsListener = database.ref(`notifications/${currentUser.uid}`).orderByChild('timestamp').limitToLast(20).on('value', (snapshot) => {
+            // Listen for notifications (works on all pages)
+            const notificationsListener = database.ref(`notifications/${currentUser.uid}`).orderByChild('timestamp').limitToLast(50).on('value', (snapshot) => {
                 if (snapshot.exists()) {
                     const notifications = snapshot.val();
                     const unreadCount = Object.values(notifications).filter(n => !n.read).length;
                     
-                    // Update badge
-                    if (unreadCount > 0) {
-                        elements.notificationBadge.textContent = unreadCount > 99 ? '99+' : unreadCount;
-                        elements.notificationBadge.classList.remove('hidden');
-                    } else {
-                        elements.notificationBadge.classList.add('hidden');
+                    // Update badge if element exists
+                    if (elements.notificationBadge) {
+                        if (unreadCount > 0) {
+                            elements.notificationBadge.textContent = unreadCount > 99 ? '99+' : unreadCount;
+                            elements.notificationBadge.classList.remove('hidden');
+                        } else {
+                            elements.notificationBadge.classList.add('hidden');
+                        }
                     }
                     
                     // Update notifications modal if open
-                    if (elements.notificationsModal.classList.contains('active')) {
+                    if (elements.notificationsModal && elements.notificationsModal.classList.contains('active')) {
                         loadNotifications();
                     }
-                } else {
+                } else if (elements.notificationBadge) {
                     elements.notificationBadge.classList.add('hidden');
                 }
             });
             realtimeListeners.push(() => database.ref(`notifications/${currentUser.uid}`).off('value', notificationsListener));
+
+            // Only setup post listeners on feed page
+            if (window.location.pathname.includes('index.html') || 
+                window.location.pathname === '/' || 
+                window.location.pathname.includes('feed') ||
+                document.getElementById('postsContainer')) {
+                
+                // Listen for new posts
+                const postsListener = database.ref('communityPosts').orderByChild('createdAt').limitToLast(50).on('value', (snapshot) => {
+                    if (snapshot.exists()) {
+                        const postsData = snapshot.val();
+                        posts = Object.keys(postsData).map(key => ({
+                            id: key,
+                            ...postsData[key]
+                        })).filter(post => post.status === 'published');
+                        
+                        // Update posts display if on feed page
+                        if (elements.postsContainer) {
+                            filterPosts(currentFilter);
+                            checkNewPosts();
+                        }
+                    }
+                });
+                realtimeListeners.push(() => database.ref('communityPosts').off('value', postsListener));
+            }
 
             // Listen for user data updates
             const userListener = database.ref(`users/${currentUser.uid}`).on('value', (snapshot) => {
@@ -2717,8 +2757,10 @@
             realtimeListeners.push(() => database.ref(`users/${currentUser.uid}`).off('value', userListener));
         }
 
-        // Check for new posts
+        // Check for new posts (feed page only)
         function checkNewPosts() {
+            if (!elements.newPostsIndicator) return;
+            
             const lastViewed = localStorage.getItem('the_songa_last_viewed') || Date.now();
             const newPostsCount = posts.filter(post => 
                 new Date(post.createdAt) > new Date(parseInt(lastViewed))
@@ -2732,8 +2774,10 @@
             }
         }
 
-        // Mark posts as viewed
+        // Mark posts as viewed (feed page only)
         function markPostsAsViewed() {
+            if (!elements.newPostsIndicator) return;
+            
             localStorage.setItem('the_songa_last_viewed', Date.now().toString());
             elements.newPostsIndicator.style.display = 'none';
         }
@@ -2764,6 +2808,8 @@
 
         // Show signin modal
         function showSigninModal() {
+            if (!elements.signinModal) return;
+            
             elements.signinModal.classList.add('active');
             document.body.classList.add('modal-open');
             
@@ -2788,16 +2834,22 @@
         // Update UI for member
         function updateUIForMember() {
             if (currentUser) {
-                // Show user profile
-                elements.userProfile.style.display = 'flex';
-                elements.userAvatar.src = currentUser.picture;
-                elements.userDisplayName.textContent = currentUser.firstName;
+                // Show user profile if element exists
+                if (elements.userProfile) {
+                    elements.userProfile.style.display = 'flex';
+                    if (elements.userAvatar) elements.userAvatar.src = currentUser.picture;
+                    if (elements.userDisplayName) elements.userDisplayName.textContent = currentUser.firstName;
+                }
                 
-                // Show create post button
-                elements.createPostBtn.style.display = 'flex';
+                // Show create post button if element exists
+                if (elements.createPostBtn) {
+                    elements.createPostBtn.style.display = 'flex';
+                }
                 
-                // Show notification button
-                elements.notificationBtn.style.display = 'flex';
+                // Show notification button if element exists
+                if (elements.notificationBtn) {
+                    elements.notificationBtn.style.display = 'flex';
+                }
             }
         }
 
@@ -2818,8 +2870,160 @@
             }
         }
 
-        // Load posts initially
+        // Load notifications with proper error handling
+        async function loadNotifications() {
+            if (!currentUser || !database) {
+                showNotification('Please sign in to view notifications', 'error');
+                return;
+            }
+            
+            try {
+                const notificationsRef = database.ref(`notifications/${currentUser.uid}`).orderByChild('timestamp').limitToLast(50);
+                const snapshot = await notificationsRef.once('value');
+                
+                const notificationsList = elements.notificationsList;
+                if (!notificationsList) {
+                    console.error('Notifications list element not found');
+                    return;
+                }
+                
+                if (snapshot.exists()) {
+                    const notificationsData = snapshot.val();
+                    const notifications = Object.keys(notificationsData).map(key => ({
+                        id: key,
+                        ...notificationsData[key]
+                    })).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                    
+                    // Clear and build notifications list
+                    notificationsList.innerHTML = '';
+                    
+                    notifications.forEach(notification => {
+                        const timeAgo = formatTime(notification.timestamp);
+                        let notificationText = '';
+                        let icon = 'fas fa-bell';
+                        let avatarUrl = 'https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp';
+                        
+                        // Handle different notification types
+                        switch(notification.type) {
+                            case 'like':
+                                notificationText = `<strong>${notification.data?.userName || 'Someone'}</strong> liked your post`;
+                                if (notification.data?.userAvatar) avatarUrl = notification.data.userAvatar;
+                                icon = 'fas fa-heart';
+                                break;
+                            case 'comment':
+                                notificationText = `<strong>${notification.data?.userName || 'Someone'}</strong> commented on your post`;
+                                if (notification.data?.userAvatar) avatarUrl = notification.data.userAvatar;
+                                icon = 'fas fa-comment';
+                                break;
+                            case 'share':
+                                notificationText = `<strong>${notification.data?.userName || 'Someone'}</strong> shared your post`;
+                                if (notification.data?.userAvatar) avatarUrl = notification.data.userAvatar;
+                                icon = 'fas fa-share';
+                                break;
+                            case 'follow':
+                                notificationText = `<strong>${notification.data?.userName || 'Someone'}</strong> started following you`;
+                                if (notification.data?.userAvatar) avatarUrl = notification.data.userAvatar;
+                                icon = 'fas fa-user-plus';
+                                break;
+                            case 'post':
+                                notificationText = `<strong>${notification.data?.userName || 'Someone'}</strong> created a new post`;
+                                if (notification.data?.userAvatar) avatarUrl = notification.data.userAvatar;
+                                icon = 'fas fa-newspaper';
+                                break;
+                            default:
+                                notificationText = `New notification`;
+                                icon = 'fas fa-bell';
+                        }
+                        
+                        const notificationItem = document.createElement('div');
+                        notificationItem.className = `notification-item ${notification.read ? '' : 'unread'}`;
+                        notificationItem.innerHTML = `
+                            <div class="notification-avatar">
+                                <img src="${avatarUrl}" alt="User">
+                            </div>
+                            <div class="notification-content">
+                                <div class="notification-text">
+                                    <i class="${icon}"></i> ${notificationText}
+                                </div>
+                                <div class="notification-time">${timeAgo}</div>
+                            </div>
+                            ${notification.read ? '' : '<div class="notification-dot"></div>'}
+                        `;
+                        
+                        // Add click handler
+                        notificationItem.addEventListener('click', () => {
+                            viewNotification(notification.id, notification.data?.postId);
+                        });
+                        
+                        notificationsList.appendChild(notificationItem);
+                    });
+                } else {
+                    notificationsList.innerHTML = `
+                        <div class="no-notifications">
+                            <i class="fas fa-bell-slash"></i>
+                            <p>No notifications yet</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading notifications:', error);
+                if (elements.notificationsList) {
+                    elements.notificationsList.innerHTML = `
+                        <div class="no-notifications">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <p>Error loading notifications. Please try again.</p>
+                        </div>
+                    `;
+                }
+                showNotification('Error loading notifications', 'error');
+            }
+        }
+
+        // View notification and mark as read
+        async function viewNotification(notificationId, postId = null) {
+            try {
+                // Mark notification as read
+                const notificationRef = database.ref(`notifications/${currentUser.uid}/${notificationId}`);
+                await notificationRef.update({ read: true });
+                
+                // Close notifications modal
+                if (elements.notificationsModal) {
+                    elements.notificationsModal.classList.remove('active');
+                    document.body.classList.remove('modal-open');
+                }
+                
+                // Handle notification action based on type
+                if (postId) {
+                    // If it's a post-related notification, navigate to the post
+                    const isOnFeedPage = window.location.pathname.includes('index.html') || 
+                                        window.location.pathname === '/' || 
+                                        window.location.pathname.includes('feed');
+                    
+                    if (isOnFeedPage) {
+                        // Scroll to post on feed page
+                        const postElement = document.getElementById(`post-${postId}`);
+                        if (postElement) {
+                            postElement.scrollIntoView({ behavior: 'smooth' });
+                            postElement.classList.add('real-time-update');
+                            setTimeout(() => {
+                                postElement.classList.remove('real-time-update');
+                            }, 2000);
+                        }
+                    } else {
+                        // Redirect to feed page with post anchor
+                        window.location.href = `index.html#post-${postId}`;
+                    }
+                }
+            } catch (error) {
+                console.error('Error viewing notification:', error);
+                showNotification('Error processing notification', 'error');
+            }
+        }
+
+        // Load posts (feed page only)
         async function loadPosts() {
+            if (!elements.postsContainer) return;
+            
             try {
                 const postsRef = database.ref('communityPosts').orderByChild('createdAt').limitToLast(50);
                 const snapshot = await postsRef.once('value');
@@ -2847,7 +3051,7 @@
 
         // Load sample posts
         async function loadSamplePosts() {
-            if (!database) return;
+            if (!database || !elements.postsContainer) return;
             
             try {
                 const postsRef = database.ref('communityPosts');
@@ -2922,1000 +3126,6 @@
             }
         }
 
-        // Render posts
-        function renderPosts(postsArray) {
-            const container = elements.postsContainer;
-            
-            if (!postsArray || postsArray.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-newspaper"></i>
-                        <h3>No posts yet</h3>
-                        <p>${currentFilter === 'all' ? 'Check back soon for updates from THE SONGA Inner Circle!' : 'No posts in this category yet.'}</p>
-                        ${currentUser ? '<button class="btn-primary mt-2" onclick="openCreatePostModal()">Create First Post</button>' : ''}
-                    </div>
-                `;
-                return;
-            }
-            
-            // Sort posts (pinned first, then by date)
-            const sortedPosts = [...postsArray].sort((a, b) => {
-                if (a.isPinned && !b.isPinned) return -1;
-                if (!a.isPinned && b.isPinned) return 1;
-                return new Date(b.createdAt) - new Date(a.createdAt);
-            });
-            
-            container.innerHTML = sortedPosts.map(post => {
-                const typeIndicator = getPostCategoryIndicator(post.category);
-                const isPinned = post.isPinned || false;
-                const hasLiked = currentUser && post.likedBy && post.likedBy.includes(currentUser.uid);
-                const hasBookmarked = currentUserData && currentUserData.bookmarkedPosts && currentUserData.bookmarkedPosts.includes(post.id);
-                const isPostOwner = currentUser && post.authorId === currentUser.uid;
-                
-                const tagsHtml = post.tags && post.tags.length > 0 ? `
-                    <div class="post-tags">
-                        ${post.tags.map(tag => `<span class="post-tag">#${tag}</span>`).join('')}
-                    </div>
-                ` : '';
-                
-                const mediaHtml = post.imageUrl ? `
-                    <div class="post-media">
-                        <img src="${post.imageUrl}" alt="Post image" onclick="viewImage('${post.imageUrl}')">
-                    </div>
-                ` : '';
-                
-                const optionsHtml = isPostOwner ? `
-                    <div class="post-options">
-                        <button class="post-options-btn" onclick="togglePostOptions('${post.id}', event)">
-                            <i class="fas fa-ellipsis-h"></i>
-                        </button>
-                        <div class="post-options-dropdown" id="postOptions-${post.id}">
-                            <div class="post-option-item" onclick="showPostInsights('${post.id}')">
-                                <i class="fas fa-chart-line"></i>
-                                <span>Post Insights</span>
-                            </div>
-                            <div class="post-option-item delete" onclick="confirmDeletePost('${post.id}')">
-                                <i class="fas fa-trash-alt"></i>
-                                <span>Delete Post</span>
-                            </div>
-                        </div>
-                    </div>
-                ` : '';
-                
-                return `
-                    <div class="post-card ${isPinned ? 'pinned' : ''}" data-post-id="${post.id}" id="post-${post.id}">
-                        ${isPinned ? `
-                            <div class="pinned-indicator">
-                                <i class="fas fa-thumbtack"></i>
-                                <span>Pinned Post</span>
-                            </div>
-                        ` : ''}
-                        
-                        <div class="post-header">
-                            <div class="post-avatar">
-                                <img src="${post.authorAvatar || 'https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp'}" alt="${post.authorName}">
-                            </div>
-                            <div class="post-author-info">
-                                <div class="post-author">
-                                    <span>${post.authorName}</span>
-                                    ${typeIndicator}
-                                </div>
-                                <div class="post-time">
-                                    ${formatTime(post.createdAt)} 
-                                    • 
-                                    <span class="post-views">
-                                        <i class="fas fa-eye"></i>
-                                        <span id="views-${post.id}">${post.views || 0}</span>
-                                    </span>
-                                </div>
-                            </div>
-                            ${optionsHtml}
-                        </div>
-                        
-                        <div class="post-content">
-                            <h3>${post.title || ''}</h3>
-                            <p>${post.content || ''}</p>
-                            ${mediaHtml}
-                            ${tagsHtml}
-                        </div>
-                        
-                        <div class="post-actions">
-                            <button class="post-action ${hasLiked ? 'liked' : ''}" onclick="handlePostAction('${post.id}', 'like')">
-                                <i class="fas fa-heart"></i>
-                                <span id="likes-${post.id}">${post.likes || 0}</span>
-                            </button>
-                            <button class="post-action" onclick="handlePostAction('${post.id}', 'comment')">
-                                <i class="fas fa-comment"></i>
-                                <span id="comments-${post.id}">${post.comments || 0}</span>
-                            </button>
-                            <button class="post-action" onclick="handlePostAction('${post.id}', 'share')">
-                                <i class="fas fa-share"></i>
-                                <span id="shares-${post.id}">${post.shares || 0}</span>
-                            </button>
-                            <button class="post-action ${hasBookmarked ? 'saved' : ''}" onclick="handlePostAction('${post.id}', 'save')">
-                                <i class="fas fa-bookmark"></i>
-                                <span id="bookmarks-${post.id}">${post.bookmarks || 0}</span>
-                            </button>
-                        </div>
-                        
-                        <div class="comments-section" id="commentsSection-${post.id}">
-                            <div class="comments-header">
-                                <h4 class="comments-title">Comments</h4>
-                                <button class="close-comments" onclick="toggleComments('${post.id}')">
-                                    <i class="fas fa-times"></i>
-                                </button>
-                            </div>
-                            <div class="comments-list" id="commentsList-${post.id}">
-                                <!-- Comments will be loaded here -->
-                            </div>
-                            ${currentUser ? `
-                                <div class="comment-form">
-                                    <input type="text" class="comment-input" id="commentInput-${post.id}" placeholder="Write a comment..." onkeypress="if(event.key === 'Enter') submitComment('${post.id}')">
-                                    <button class="comment-submit" onclick="submitComment('${post.id}')">
-                                        <i class="fas fa-paper-plane"></i>
-                                    </button>
-                                </div>
-                            ` : `
-                                <div style="text-align: center; padding: 1rem; color: var(--dark-gray);">
-                                    <i class="fas fa-sign-in-alt"></i> Join Inner Circle to comment
-                                </div>
-                            `}
-                        </div>
-                    </div>
-                `;
-            }).join('');
-            
-            // Setup realtime listeners for each post
-            sortedPosts.forEach(post => {
-                setupPostRealtimeListener(post.id);
-            });
-        }
-
-        // Setup realtime listener for a post
-        function setupPostRealtimeListener(postId) {
-            if (!database) return;
-            
-            const postRef = database.ref(`communityPosts/${postId}`);
-            
-            const listener = postRef.on('value', (snapshot) => {
-                if (snapshot.exists()) {
-                    const post = snapshot.val();
-                    
-                    // Update likes count
-                    const likesElement = document.getElementById(`likes-${postId}`);
-                    if (likesElement) {
-                        const oldLikes = parseInt(likesElement.textContent) || 0;
-                        const newLikes = post.likes || 0;
-                        if (newLikes !== oldLikes) {
-                            likesElement.textContent = newLikes;
-                            likesElement.parentElement.classList.add('real-time-update');
-                            setTimeout(() => {
-                                likesElement.parentElement.classList.remove('real-time-update');
-                            }, 1000);
-                        }
-                    }
-                    
-                    // Update comments count
-                    const commentsElement = document.getElementById(`comments-${postId}`);
-                    if (commentsElement) {
-                        const oldComments = parseInt(commentsElement.textContent) || 0;
-                        const newComments = post.comments || 0;
-                        if (newComments !== oldComments) {
-                            commentsElement.textContent = newComments;
-                            commentsElement.parentElement.classList.add('real-time-update');
-                            setTimeout(() => {
-                                commentsElement.parentElement.classList.remove('real-time-update');
-                            }, 1000);
-                        }
-                    }
-                    
-                    // Update shares count
-                    const sharesElement = document.getElementById(`shares-${postId}`);
-                    if (sharesElement) {
-                        const oldShares = parseInt(sharesElement.textContent) || 0;
-                        const newShares = post.shares || 0;
-                        if (newShares !== oldShares) {
-                            sharesElement.textContent = newShares;
-                            sharesElement.parentElement.classList.add('real-time-update');
-                            setTimeout(() => {
-                                sharesElement.parentElement.classList.remove('real-time-update');
-                            }, 1000);
-                        }
-                    }
-                    
-                    // Update bookmarks count
-                    const bookmarksElement = document.getElementById(`bookmarks-${postId}`);
-                    if (bookmarksElement) {
-                        const oldBookmarks = parseInt(bookmarksElement.textContent) || 0;
-                        const newBookmarks = post.bookmarks || 0;
-                        if (newBookmarks !== oldBookmarks) {
-                            bookmarksElement.textContent = newBookmarks;
-                            bookmarksElement.parentElement.classList.add('real-time-update');
-                            setTimeout(() => {
-                                bookmarksElement.parentElement.classList.remove('real-time-update');
-                            }, 1000);
-                        }
-                    }
-                    
-                    // Update views count
-                    const viewsElement = document.getElementById(`views-${postId}`);
-                    if (viewsElement) {
-                        const oldViews = parseInt(viewsElement.textContent) || 0;
-                        const newViews = post.views || 0;
-                        if (newViews !== oldViews) {
-                            viewsElement.textContent = newViews;
-                            viewsElement.parentElement.classList.add('real-time-update');
-                            setTimeout(() => {
-                                viewsElement.parentElement.classList.remove('real-time-update');
-                            }, 1000);
-                        }
-                    }
-                    
-                    // Update like button state
-                    const likeButton = document.querySelector(`#post-${postId} .post-action[onclick*="like"]`);
-                    if (likeButton && currentUser) {
-                        const hasLiked = post.likedBy && post.likedBy.includes(currentUser.uid);
-                        if (hasLiked && !likeButton.classList.contains('liked')) {
-                            likeButton.classList.add('liked');
-                        } else if (!hasLiked && likeButton.classList.contains('liked')) {
-                            likeButton.classList.remove('liked');
-                        }
-                    }
-                    
-                    // Update bookmark button state
-                    const bookmarkButton = document.querySelector(`#post-${postId} .post-action[onclick*="save"]`);
-                    if (bookmarkButton && currentUserData) {
-                        const hasBookmarked = currentUserData.bookmarkedPosts && currentUserData.bookmarkedPosts.includes(postId);
-                        if (hasBookmarked && !bookmarkButton.classList.contains('saved')) {
-                            bookmarkButton.classList.add('saved');
-                        } else if (!hasBookmarked && bookmarkButton.classList.contains('saved')) {
-                            bookmarkButton.classList.remove('saved');
-                        }
-                    }
-                }
-            });
-            
-            realtimeListeners.push(() => postRef.off('value', listener));
-        }
-
-        // Get post category indicator
-        function getPostCategoryIndicator(category) {
-            switch(category) {
-                case 'event': return '<span class="post-type-indicator" style="background: rgba(37, 211, 102, 0.1); color: var(--accent);">EVENT</span>';
-                case 'resource': return '<span class="post-type-indicator" style="background: rgba(52, 152, 219, 0.1); color: #3498db;">RESOURCE</span>';
-                case 'discussion': return '<span class="post-type-indicator" style="background: rgba(155, 89, 182, 0.1); color: #9b59b6;">DISCUSSION</span>';
-                default: return '<span class="post-type-indicator" style="background: var(--gold-light); color: var(--gold-dark);">INNER CIRCLE</span>';
-            }
-        }
-
-        // Handle post actions
-        async function handlePostAction(postId, action) {
-            if (!currentUser) {
-                showNotification('Join the Inner Circle to interact with posts', 'error');
-                return;
-            }
-            
-            switch(action) {
-                case 'like':
-                    await likePost(postId);
-                    break;
-                case 'comment':
-                    toggleComments(postId);
-                    break;
-                case 'share':
-                    await sharePost(postId);
-                    break;
-                case 'save':
-                    await bookmarkPost(postId);
-                    break;
-            }
-        }
-
-        // Like post
-        async function likePost(postId) {
-            try {
-                const postRef = database.ref(`communityPosts/${postId}`);
-                const snapshot = await postRef.once('value');
-                const post = snapshot.val();
-                
-                if (!post) return;
-                
-                let likedBy = post.likedBy || [];
-                let likes = post.likes || 0;
-                
-                if (likedBy.includes(currentUser.uid)) {
-                    likedBy = likedBy.filter(id => id !== currentUser.uid);
-                    likes--;
-                } else {
-                    likedBy.push(currentUser.uid);
-                    likes++;
-                    
-                    // Create notification for post owner if not the current user
-                    if (post.authorId !== currentUser.uid) {
-                        await createNotification(post.authorId, 'like', {
-                            postId: postId,
-                            postTitle: post.title,
-                            userId: currentUser.uid,
-                            userName: currentUser.fullName || currentUser.firstName,
-                            userAvatar: currentUser.picture
-                        });
-                    }
-                }
-                
-                await postRef.update({
-                    likedBy: likedBy,
-                    likes: likes,
-                    updatedAt: new Date().toISOString()
-                });
-                
-            } catch (error) {
-                console.error('Error liking post:', error);
-                showNotification('Error liking post', 'error');
-            }
-        }
-
-        // Share post
-        async function sharePost(postId) {
-            try {
-                const postRef = database.ref(`communityPosts/${postId}`);
-                const snapshot = await postRef.once('value');
-                const post = snapshot.val();
-                
-                if (!post) return;
-                
-                const shares = (post.shares || 0) + 1;
-                
-                await postRef.update({
-                    shares: shares,
-                    updatedAt: new Date().toISOString()
-                });
-                
-                const postUrl = window.location.href + '#post-' + postId;
-                
-                if (navigator.share) {
-                    await navigator.share({
-                        title: post.title || 'Check out this post',
-                        text: post.content ? post.content.substring(0, 100) + '...' : 'I found this interesting post on THE SONGA Inner Circle',
-                        url: postUrl,
-                    });
-                } else {
-                    await navigator.clipboard.writeText(postUrl);
-                    showNotification('Post link copied to clipboard!', 'success');
-                }
-                
-                // Create notification for post owner if not the current user
-                if (post.authorId !== currentUser.uid) {
-                    await createNotification(post.authorId, 'share', {
-                        postId: postId,
-                        postTitle: post.title,
-                        userId: currentUser.uid,
-                        userName: currentUser.fullName || currentUser.firstName,
-                        userAvatar: currentUser.picture
-                    });
-                }
-                
-            } catch (error) {
-                console.error('Error sharing post:', error);
-                // Don't show error for cancelled share
-                if (error.name !== 'AbortError') {
-                    showNotification('Error sharing post', 'error');
-                }
-            }
-        }
-
-        // Bookmark post
-        async function bookmarkPost(postId) {
-            try {
-                const userRef = database.ref(`users/${currentUser.uid}`);
-                const snapshot = await userRef.once('value');
-                const userData = snapshot.val();
-                
-                let bookmarkedPosts = userData.bookmarkedPosts || [];
-                
-                if (bookmarkedPosts.includes(postId)) {
-                    bookmarkedPosts = bookmarkedPosts.filter(id => id !== postId);
-                    showNotification('Post removed from bookmarks', 'success');
-                } else {
-                    bookmarkedPosts.push(postId);
-                    showNotification('Post bookmarked!', 'success');
-                }
-                
-                await userRef.update({
-                    bookmarkedPosts: bookmarkedPosts
-                });
-                
-                // Update post bookmarks count
-                const postRef = database.ref(`communityPosts/${postId}`);
-                const postSnapshot = await postRef.once('value');
-                const post = postSnapshot.val();
-                
-                if (post) {
-                    let bookmarks = post.bookmarks || 0;
-                    if (bookmarkedPosts.includes(postId)) {
-                        bookmarks++;
-                    } else {
-                        bookmarks = Math.max(bookmarks - 1, 0);
-                    }
-                    
-                    await postRef.update({
-                        bookmarks: bookmarks,
-                        updatedAt: new Date().toISOString()
-                    });
-                }
-                
-            } catch (error) {
-                console.error('Error bookmarking post:', error);
-                showNotification('Error bookmarking post', 'error');
-            }
-        }
-
-        // Create notification
-        async function createNotification(userId, type, data) {
-            try {
-                const notificationRef = database.ref(`notifications/${userId}`).push();
-                const notification = {
-                    id: notificationRef.key,
-                    type: type,
-                    data: data,
-                    read: false,
-                    timestamp: new Date().toISOString()
-                };
-                
-                await notificationRef.set(notification);
-                
-                // Send push notification if available
-                if ('Notification' in window && Notification.permission === 'granted') {
-                    let title = 'New Notification';
-                    let body = '';
-                    
-                    switch(type) {
-                        case 'like':
-                            title = 'New Like';
-                            body = `${data.userName} liked your post: ${data.postTitle}`;
-                            break;
-                        case 'comment':
-                            title = 'New Comment';
-                            body = `${data.userName} commented on your post: ${data.postTitle}`;
-                            break;
-                        case 'share':
-                            title = 'New Share';
-                            body = `${data.userName} shared your post: ${data.postTitle}`;
-                            break;
-                        case 'follow':
-                            title = 'New Follower';
-                            body = `${data.userName} started following you`;
-                            break;
-                    }
-                    
-                    new Notification(title, { body: body, icon: data.userAvatar });
-                }
-                
-            } catch (error) {
-                console.error('Error creating notification:', error);
-            }
-        }
-
-        // Load notifications
-        async function loadNotifications() {
-            if (!currentUser || !database) return;
-            
-            try {
-                const notificationsRef = database.ref(`notifications/${currentUser.uid}`).orderByChild('timestamp').limitToLast(50);
-                const snapshot = await notificationsRef.once('value');
-                
-                const notificationsList = elements.notificationsList;
-                if (!notificationsList) return;
-                
-                if (snapshot.exists()) {
-                    const notifications = Object.keys(snapshot.val()).map(key => ({
-                        id: key,
-                        ...snapshot.val()[key]
-                    })).reverse();
-                    
-                    notificationsList.innerHTML = notifications.map(notification => {
-                        const timeAgo = formatTime(notification.timestamp);
-                        let notificationText = '';
-                        let icon = 'fas fa-bell';
-                        
-                        switch(notification.type) {
-                            case 'like':
-                                notificationText = `<strong>${notification.data.userName}</strong> liked your post: "${notification.data.postTitle}"`;
-                                icon = 'fas fa-heart';
-                                break;
-                            case 'comment':
-                                notificationText = `<strong>${notification.data.userName}</strong> commented on your post: "${notification.data.postTitle}"`;
-                                icon = 'fas fa-comment';
-                                break;
-                            case 'share':
-                                notificationText = `<strong>${notification.data.userName}</strong> shared your post: "${notification.data.postTitle}"`;
-                                icon = 'fas fa-share';
-                                break;
-                            case 'follow':
-                                notificationText = `<strong>${notification.data.userName}</strong> started following you`;
-                                icon = 'fas fa-user-plus';
-                                break;
-                            case 'post':
-                                notificationText = `<strong>${notification.data.userName}</strong> created a new post: "${notification.data.postTitle}"`;
-                                icon = 'fas fa-newspaper';
-                                break;
-                        }
-                        
-                        return `
-                            <div class="notification-item ${notification.read ? '' : 'unread'}" onclick="viewNotification('${notification.id}', '${notification.data.postId}')">
-                                <div class="notification-avatar">
-                                    <img src="${notification.data.userAvatar || 'https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp'}" alt="${notification.data.userName}">
-                                </div>
-                                <div class="notification-content">
-                                    <div class="notification-text">
-                                        <i class="${icon}"></i> ${notificationText}
-                                    </div>
-                                    <div class="notification-time">${timeAgo}</div>
-                                </div>
-                                ${notification.read ? '' : '<div class="notification-dot"></div>'}
-                            </div>
-                        `;
-                    }).join('');
-                } else {
-                    notificationsList.innerHTML = `
-                        <div class="no-notifications">
-                            <i class="fas fa-bell-slash"></i>
-                            <p>No notifications yet</p>
-                        </div>
-                    `;
-                }
-            } catch (error) {
-                console.error('Error loading notifications:', error);
-                elements.notificationsList.innerHTML = `
-                    <div class="no-notifications">
-                        <i class="fas fa-exclamation-circle"></i>
-                        <p>Error loading notifications</p>
-                    </div>
-                `;
-            }
-        }
-
-        // View notification
-        async function viewNotification(notificationId, postId) {
-            try {
-                // Mark notification as read
-                const notificationRef = database.ref(`notifications/${currentUser.uid}/${notificationId}`);
-                await notificationRef.update({ read: true });
-                
-                // Close notifications modal
-                elements.notificationsModal.classList.remove('active');
-                document.body.classList.remove('modal-open');
-                
-                // Scroll to post if postId is provided
-                if (postId) {
-                    const postElement = document.getElementById(`post-${postId}`);
-                    if (postElement) {
-                        postElement.scrollIntoView({ behavior: 'smooth' });
-                        
-                        // Highlight the post
-                        postElement.classList.add('real-time-update');
-                        setTimeout(() => {
-                            postElement.classList.remove('real-time-update');
-                        }, 2000);
-                    }
-                }
-            } catch (error) {
-                console.error('Error viewing notification:', error);
-            }
-        }
-
-        // Toggle comments
-        function toggleComments(postId) {
-            if (!currentUser) {
-                showNotification('Join the Inner Circle to comment on posts', 'error');
-                return;
-            }
-            
-            const commentsSection = document.getElementById(`commentsSection-${postId}`);
-            if (commentsSection) {
-                const isActive = commentsSection.classList.contains('active');
-                document.querySelectorAll('.comments-section.active').forEach(section => {
-                    section.classList.remove('active');
-                });
-                
-                if (!isActive) {
-                    commentsSection.classList.add('active');
-                    loadComments(postId);
-                    
-                    // Increment view count
-                    incrementViewCount(postId);
-                }
-            }
-        }
-
-        // Increment view count
-        async function incrementViewCount(postId) {
-            if (!currentUser) return;
-            
-            try {
-                const viewKey = `post_view_${postId}_${currentUser.uid}`;
-                const hasViewed = localStorage.getItem(viewKey);
-                
-                if (!hasViewed) {
-                    const postRef = database.ref(`communityPosts/${postId}`);
-                    postRef.transaction(post => {
-                        if (post) {
-                            post.views = (post.views || 0) + 1;
-                            post.updatedAt = new Date().toISOString();
-                        }
-                        return post;
-                    });
-                    
-                    localStorage.setItem(viewKey, 'true');
-                }
-            } catch (error) {
-                console.error('Error incrementing view count:', error);
-            }
-        }
-
-        // Load comments
-        async function loadComments(postId) {
-            try {
-                const commentsRef = database.ref(`comments/${postId}`).orderByChild('createdAt');
-                const snapshot = await commentsRef.once('value');
-                
-                const commentsList = document.getElementById(`commentsList-${postId}`);
-                if (!commentsList) return;
-                
-                if (snapshot.exists()) {
-                    const comments = Object.keys(snapshot.val()).map(key => ({
-                        id: key,
-                        ...snapshot.val()[key]
-                    })).reverse();
-                    
-                    commentsList.innerHTML = comments.map(comment => `
-                        <div class="comment-item" id="comment-${comment.id}">
-                            <div class="comment-header">
-                                <div class="comment-avatar">
-                                    <img src="${comment.authorAvatar || 'https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp'}" alt="${comment.authorName}">
-                                </div>
-                                <div class="comment-author">${comment.authorName}</div>
-                                <div class="comment-time">${formatTime(comment.createdAt)}</div>
-                            </div>
-                            <div class="comment-text">${comment.text}</div>
-                        </div>
-                    `).join('');
-                    
-                    // Setup realtime listener for comments
-                    setupCommentsRealtimeListener(postId);
-                } else {
-                    commentsList.innerHTML = `
-                        <div style="text-align: center; padding: 2rem; color: var(--dark-gray);">
-                            <i class="fas fa-comment-slash"></i>
-                            <p>No comments yet. Be the first to comment!</p>
-                        </div>
-                    `;
-                }
-            } catch (error) {
-                console.error('Error loading comments:', error);
-                const commentsList = document.getElementById(`commentsList-${postId}`);
-                if (commentsList) {
-                    commentsList.innerHTML = `
-                        <div style="text-align: center; padding: 2rem; color: var(--error);">
-                            <i class="fas fa-exclamation-circle"></i>
-                            <p>Error loading comments</p>
-                        </div>
-                    `;
-                }
-            }
-        }
-
-        // Setup realtime listener for comments
-        function setupCommentsRealtimeListener(postId) {
-            if (!database) return;
-            
-            const commentsRef = database.ref(`comments/${postId}`);
-            
-            const listener = commentsRef.on('child_added', (snapshot) => {
-                const comment = snapshot.val();
-                const commentsList = document.getElementById(`commentsList-${postId}`);
-                
-                if (commentsList && !document.getElementById(`comment-${comment.id}`)) {
-                    const commentElement = document.createElement('div');
-                    commentElement.className = 'comment-item';
-                    commentElement.id = `comment-${comment.id}`;
-                    commentElement.innerHTML = `
-                        <div class="comment-header">
-                            <div class="comment-avatar">
-                                <img src="${comment.authorAvatar || 'https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp'}" alt="${comment.authorName}">
-                            </div>
-                            <div class="comment-author">${comment.authorName}</div>
-                            <div class="comment-time">${formatTime(comment.createdAt)}</div>
-                        </div>
-                        <div class="comment-text">${comment.text}</div>
-                    `;
-                    
-                    commentsList.insertBefore(commentElement, commentsList.firstChild);
-                    
-                    // Highlight new comment
-                    commentElement.classList.add('real-time-update');
-                    setTimeout(() => {
-                        commentElement.classList.remove('real-time-update');
-                    }, 2000);
-                }
-            });
-            
-            realtimeListeners.push(() => commentsRef.off('child_added', listener));
-        }
-
-        // Submit comment
-        async function submitComment(postId) {
-            if (!currentUser) {
-                showNotification('Please join the Inner Circle to comment', 'error');
-                return;
-            }
-            
-            const commentInput = document.getElementById(`commentInput-${postId}`);
-            const commentText = commentInput.value.trim();
-            
-            if (!commentText) {
-                showNotification('Please enter a comment', 'error');
-                return;
-            }
-            
-            try {
-                const commentRef = database.ref(`comments/${postId}`).push();
-                const newComment = {
-                    id: commentRef.key,
-                    postId: postId,
-                    authorId: currentUser.uid,
-                    authorName: currentUser.fullName || currentUser.firstName,
-                    authorAvatar: currentUser.picture,
-                    text: commentText,
-                    createdAt: new Date().toISOString()
-                };
-                
-                await commentRef.set(newComment);
-                
-                // Update post comments count
-                const postRef = database.ref(`communityPosts/${postId}`);
-                const snapshot = await postRef.once('value');
-                const post = snapshot.val();
-                
-                if (post) {
-                    const comments = (post.comments || 0) + 1;
-                    await postRef.update({
-                        comments: comments,
-                        updatedAt: new Date().toISOString()
-                    });
-                    
-                    // Create notification for post owner if not the current user
-                    if (post.authorId !== currentUser.uid) {
-                        await createNotification(post.authorId, 'comment', {
-                            postId: postId,
-                            postTitle: post.title,
-                            userId: currentUser.uid,
-                            userName: currentUser.fullName || currentUser.firstName,
-                            userAvatar: currentUser.picture
-                        });
-                    }
-                }
-                
-                commentInput.value = '';
-                showNotification('Comment posted!', 'success');
-                
-            } catch (error) {
-                console.error('Error posting comment:', error);
-                showNotification('Error posting comment', 'error');
-            }
-        }
-
-        // Toggle post options
-        function togglePostOptions(postId, event) {
-            event.stopPropagation();
-            
-            document.querySelectorAll('.post-options-dropdown.active').forEach(dropdown => {
-                dropdown.classList.remove('active');
-            });
-            
-            const dropdown = document.getElementById(`postOptions-${postId}`);
-            if (dropdown) {
-                dropdown.classList.toggle('active');
-            }
-        }
-
-        // Show post insights
-        function showPostInsights(postId) {
-            // For now, just show a notification
-            showNotification('Post insights feature coming soon!', 'info');
-            closePostOptions();
-        }
-
-        // Confirm delete post
-        function confirmDeletePost(postId) {
-            postToDelete = postId;
-            elements.deleteConfirmModal.classList.add('active');
-            document.body.classList.add('modal-open');
-            closePostOptions();
-        }
-
-        // Close post options
-        function closePostOptions() {
-            document.querySelectorAll('.post-options-dropdown.active').forEach(dropdown => {
-                dropdown.classList.remove('active');
-            });
-        }
-
-        // Delete post
-        async function deletePost() {
-            if (!postToDelete || !currentUser) return;
-            
-            try {
-                const postRef = database.ref(`communityPosts/${postToDelete}`);
-                const snapshot = await postRef.once('value');
-                const post = snapshot.val();
-                
-                if (!post) {
-                    showNotification('Post not found', 'error');
-                    return;
-                }
-                
-                if (post.authorId !== currentUser.uid) {
-                    showNotification('You are not authorized to delete this post', 'error');
-                    return;
-                }
-                
-                await postRef.remove();
-                
-                // Delete comments
-                const commentsRef = database.ref(`comments/${postToDelete}`);
-                await commentsRef.remove();
-                
-                elements.deleteConfirmModal.classList.remove('active');
-                document.body.classList.remove('modal-open');
-                
-                showNotification('Post deleted successfully', 'success');
-                postToDelete = null;
-                
-            } catch (error) {
-                console.error('Error deleting post:', error);
-                showNotification('Error deleting post', 'error');
-                postToDelete = null;
-            }
-        }
-
-        // Filter posts
-        function filterPosts(category) {
-            currentFilter = category;
-            
-            // Update active button
-            document.querySelectorAll('.category-filter-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.category === category);
-            });
-            
-            // Filter posts
-            const filteredPosts = category === 'all' 
-                ? posts.filter(post => post.status === 'published')
-                : posts.filter(post => post.status === 'published' && post.category === category);
-            
-            renderPosts(filteredPosts);
-        }
-
-        // Handle image upload
-        function handleImageUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            // Check file size (10MB = 10 * 1024 * 1024 bytes)
-            const maxSize = 10 * 1024 * 1024;
-            if (file.size > maxSize) {
-                elements.fileSizeWarning.innerHTML = `
-                    <i class="fas fa-exclamation-circle"></i>
-                    <span>File size too large. Maximum size is 10MB.</span>
-                `;
-                elements.fileSizeWarning.classList.add('error');
-                elements.fileSizeWarning.classList.remove('success');
-                elements.postImage.value = '';
-                currentImageFile = null;
-                return;
-            }
-            
-            // Check file type
-            if (!file.type.match('image.*')) {
-                showNotification('Please select an image file', 'error');
-                elements.postImage.value = '';
-                currentImageFile = null;
-                return;
-            }
-            
-            elements.fileSizeWarning.innerHTML = `
-                <i class="fas fa-check-circle"></i>
-                <span>File size OK (${(file.size / (1024 * 1024)).toFixed(2)}MB)</span>
-            `;
-            elements.fileSizeWarning.classList.add('success');
-            elements.fileSizeWarning.classList.remove('error');
-            
-            currentImageFile = file;
-            
-            // Show preview
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                elements.previewImage.src = e.target.result;
-                elements.imagePreview.style.display = 'block';
-            };
-            reader.readAsDataURL(file);
-        }
-
-        // Remove image
-        function removeImage() {
-            elements.previewImage.src = '';
-            elements.imagePreview.style.display = 'none';
-            elements.postImage.value = '';
-            currentImageFile = null;
-            elements.fileSizeWarning.innerHTML = `
-                <i class="fas fa-info-circle"></i>
-                <span>Maximum file size: 10MB</span>
-            `;
-            elements.fileSizeWarning.classList.remove('error', 'success');
-        }
-
-        // Upload image to Firebase Storage
-        async function uploadImage(file) {
-            return new Promise((resolve, reject) => {
-                if (!file || !storage) {
-                    resolve(null);
-                    return;
-                }
-                
-                const storageRef = storage.ref();
-                const imageRef = storageRef.child(`post_images/${Date.now()}_${file.name}`);
-                const uploadTask = imageRef.put(file);
-                
-                elements.uploadProgress.style.display = 'block';
-                elements.submitPostBtn.disabled = true;
-                
-                uploadTask.on('state_changed',
-                    (snapshot) => {
-                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                        elements.uploadProgressFill.style.width = `${progress}%`;
-                        elements.uploadProgressText.textContent = `Uploading: ${Math.round(progress)}%`;
-                    },
-                    (error) => {
-                        console.error('Upload error:', error);
-                        elements.uploadProgress.style.display = 'none';
-                        elements.submitPostBtn.disabled = false;
-                        reject(error);
-                    },
-                    async () => {
-                        const downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
-                        elements.uploadProgress.style.display = 'none';
-                        elements.submitPostBtn.disabled = false;
-                        resolve(downloadURL);
-                    }
-                );
-            });
-        }
-
-        // View image in full screen
-        function viewImage(imageUrl) {
-            const modal = document.createElement('div');
-            modal.className = 'modal active';
-            modal.innerHTML = `
-                <div class="modal-content" style="max-width: 90vw; max-height: 90vh; background: transparent; box-shadow: none;">
-                    <button class="close-modal" style="background: rgba(0,0,0,0.5); color: white; top: 20px; right: 20px;">
-                        &times;
-                    </button>
-                    <div class="modal-body" style="padding: 0; display: flex; align-items: center; justify-content: center;">
-                        <img src="${imageUrl}" alt="Full size" style="max-width: 100%; max-height: 100%; border-radius: 12px;">
-                    </div>
-                </div>
-            `;
-            
-            document.body.appendChild(modal);
-            document.body.classList.add('modal-open');
-            
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal || e.target.classList.contains('close-modal')) {
-                    document.body.removeChild(modal);
-                    document.body.classList.remove('modal-open');
-                }
-            });
-        }
-
         // Onboarding functions
         function nextStep(step) {
             // Validate step 2
@@ -3928,7 +3138,7 @@
             document.querySelectorAll('.step-indicator').forEach(indicator => {
                 indicator.classList.remove('active');
             });
-            document.querySelector(`.step-indicator[data-step="${step}"]`).classList.add('active');
+            document.querySelector(`.step-indicator[data-step="${step}"]`)?.classList.add('active');
             
             // Hide current step
             document.querySelectorAll('.onboarding-slide').forEach(slide => {
@@ -3936,12 +3146,15 @@
             });
             
             // Show next step
-            document.getElementById(`step${step}`).classList.add('active');
-            currentStep = step;
-            
-            // Update selected clubs display for step 3
-            if (step === 3) {
-                updateSelectedClubsDisplay();
+            const stepElement = document.getElementById(`step${step}`);
+            if (stepElement) {
+                stepElement.classList.add('active');
+                currentStep = step;
+                
+                // Update selected clubs display for step 3
+                if (step === 3) {
+                    updateSelectedClubsDisplay();
+                }
             }
         }
 
@@ -3958,10 +3171,10 @@
             
             if (index === -1) {
                 selectedClubs.push(clubId);
-                clubCard.classList.add('selected');
+                clubCard?.classList.add('selected');
             } else {
                 selectedClubs.splice(index, 1);
-                clubCard.classList.remove('selected');
+                clubCard?.classList.remove('selected');
             }
             
             updateContinueButton();
@@ -4045,8 +3258,10 @@
                 }
                 
                 updateUIForMember();
-                elements.signinModal.classList.remove('active');
-                document.body.classList.remove('modal-open');
+                if (elements.signinModal) {
+                    elements.signinModal.classList.remove('active');
+                    document.body.classList.remove('modal-open');
+                }
                 
                 // Setup realtime listeners
                 setupRealtimeListeners();
@@ -4094,9 +3309,9 @@
             document.body.classList.remove('modal-open');
             
             // Update UI
-            elements.userProfile.style.display = 'none';
-            elements.createPostBtn.style.display = 'none';
-            elements.notificationBtn.style.display = 'none';
+            if (elements.userProfile) elements.userProfile.style.display = 'none';
+            if (elements.createPostBtn) elements.createPostBtn.style.display = 'none';
+            if (elements.notificationBtn) elements.notificationBtn.style.display = 'none';
             
             // Reset onboarding
             currentStep = 1;
@@ -4107,30 +3322,13 @@
                 indicator.classList.toggle('active', index === 0);
             });
             
-            // Clear posts
-            elements.postsContainer.innerHTML = `
-                <div class="post-card">
-                    <div class="post-header">
-                        <div class="skeleton" style="width: 44px; height: 44px; border-radius: 50%;"></div>
-                        <div class="post-author-info">
-                            <div class="skeleton" style="width: 100px; height: 16px; margin-bottom: 6px;"></div>
-                            <div class="skeleton" style="width: 70px; height: 12px;"></div>
-                        </div>
-                    </div>
-                    <div class="post-content">
-                        <div class="skeleton" style="width: 70%; height: 20px; margin-bottom: 12px;"></div>
-                        <div class="skeleton" style="width: 100%; height: 14px; margin-bottom: 6px;"></div>
-                        <div class="skeleton" style="width: 90%; height: 14px; margin-bottom: 6px;"></div>
-                        <div class="skeleton" style="width: 80%; height: 14px; margin-bottom: 6px;"></div>
-                    </div>
-                </div>
-            `;
+            // Show signin modal
+            if (elements.signinModal) {
+                showSigninModal();
+            }
             
             showNotification('Signed out successfully', 'success');
             showSessionStatus('Signed out', 'restored');
-            
-            // Show signin modal
-            showSigninModal();
         }
 
         // Open create post modal
@@ -4140,190 +3338,87 @@
                 return;
             }
             
-            elements.createPostModal.classList.add('active');
-            document.body.classList.add('modal-open');
-        }
-
-        // Close create post modal
-        function closeCreatePostModal() {
-            elements.createPostModal.classList.remove('active');
-            document.body.classList.remove('modal-open');
-            elements.createPostForm.reset();
-            elements.postTagsContainer.innerHTML = '';
-            removeImage();
-            elements.uploadProgress.style.display = 'none';
-            elements.submitPostBtn.disabled = false;
-        }
-
-        // Handle tag input
-        function handleTagInput(event) {
-            if (event.key === 'Enter' || event.key === ',') {
-                event.preventDefault();
-                const tag = elements.postTags.value.trim();
-                if (tag) {
-                    addTag(tag);
-                    elements.postTags.value = '';
-                }
-            }
-        }
-
-        // Add tag
-        function addTag(tag) {
-            const tagId = 'tag-' + Date.now();
-            const tagElement = document.createElement('div');
-            tagElement.className = 'tag-item';
-            tagElement.id = tagId;
-            tagElement.innerHTML = `
-                ${tag}
-                <button class="tag-remove" onclick="removeTag('${tagId}')">&times;</button>
-            `;
-            elements.postTagsContainer.appendChild(tagElement);
-        }
-
-        // Remove tag
-        function removeTag(tagId) {
-            const tagElement = document.getElementById(tagId);
-            if (tagElement) {
-                tagElement.remove();
-            }
-        }
-
-        // Submit create post form
-        async function submitCreatePostForm(event) {
-            event.preventDefault();
-            
-            if (!currentUser) {
-                showNotification('Please join the Inner Circle to create posts', 'error');
-                return;
-            }
-            
-            try {
-                const title = document.getElementById('postTitle').value.trim();
-                const content = document.getElementById('postContent').value.trim();
-                const category = document.getElementById('postCategory').value;
-                const isPinned = document.getElementById('postIsPinned').checked;
-                
-                if (!title || !content) {
-                    showNotification('Please fill in all required fields', 'error');
-                    return;
-                }
-                
-                // Get tags
-                const tagElements = document.querySelectorAll('#postTagsContainer .tag-item');
-                const tags = Array.from(tagElements).map(tag => 
-                    tag.textContent.replace('×', '').trim()
-                );
-                
-                // Upload image if exists
-                let imageUrl = null;
-                if (currentImageFile) {
-                    imageUrl = await uploadImage(currentImageFile);
-                }
-                
-                const postRef = database.ref('communityPosts').push();
-                const newPost = {
-                    id: postRef.key,
-                    authorId: currentUser.uid,
-                    authorName: currentUser.fullName || currentUser.firstName,
-                    authorAvatar: currentUser.picture,
-                    title: title,
-                    content: content,
-                    imageUrl: imageUrl,
-                    category: category,
-                    tags: tags,
-                    isPinned: isPinned,
-                    likes: 0,
-                    likedBy: [],
-                    comments: 0,
-                    shares: 0,
-                    bookmarks: 0,
-                    views: 0,
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString(),
-                    status: 'published'
-                };
-                
-                await postRef.set(newPost);
-                
-                // Create notifications for followers
-                if (currentUserData && currentUserData.followers) {
-                    currentUserData.followers.forEach(async (followerId) => {
-                        await createNotification(followerId, 'post', {
-                            postId: postRef.key,
-                            postTitle: title,
-                            userId: currentUser.uid,
-                            userName: currentUser.fullName || currentUser.firstName,
-                            userAvatar: currentUser.picture
-                        });
-                    });
-                }
-                
-                closeCreatePostModal();
-                showNotification('Post published successfully!', 'success');
-                
-            } catch (error) {
-                console.error('Error creating post:', error);
-                showNotification('Error creating post. Please try again.', 'error');
-                elements.submitPostBtn.disabled = false;
+            if (elements.createPostModal) {
+                elements.createPostModal.classList.add('active');
+                document.body.classList.add('modal-open');
             }
         }
 
         // Initialize event listeners
         function initEventListeners() {
             // Logo click
-            elements.logo.addEventListener('click', () => {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
+            if (elements.logo) {
+                elements.logo.addEventListener('click', () => {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            }
 
             // Back to top
-            elements.backToTop.addEventListener('click', () => {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
+            if (elements.backToTop) {
+                elements.backToTop.addEventListener('click', () => {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            }
 
             // Create post button
-            elements.createPostBtn.addEventListener('click', openCreatePostModal);
+            if (elements.createPostBtn) {
+                elements.createPostBtn.addEventListener('click', openCreatePostModal);
+            }
 
             // Notification button
-            elements.notificationBtn.addEventListener('click', () => {
-                if (!currentUser) {
-                    showNotification('Please join the Inner Circle to view notifications', 'error');
-                    return;
-                }
-                elements.notificationsModal.classList.add('active');
-                document.body.classList.add('modal-open');
-                loadNotifications();
-            });
+            if (elements.notificationBtn) {
+                elements.notificationBtn.addEventListener('click', () => {
+                    if (!currentUser) {
+                        showNotification('Please join the Inner Circle to view notifications', 'error');
+                        return;
+                    }
+                    if (elements.notificationsModal) {
+                        elements.notificationsModal.classList.add('active');
+                        document.body.classList.add('modal-open');
+                        loadNotifications();
+                    }
+                });
+            }
 
             // User profile dropdown
-            elements.userProfile.addEventListener('click', (e) => {
-                e.stopPropagation();
-                elements.userDropdown.classList.toggle('active');
-            });
+            if (elements.userProfile) {
+                elements.userProfile.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (elements.userDropdown) {
+                        elements.userDropdown.classList.toggle('active');
+                    }
+                });
+            }
 
             // Close dropdowns when clicking outside
             document.addEventListener('click', () => {
-                elements.userDropdown.classList.remove('active');
-                closePostOptions();
+                if (elements.userDropdown) {
+                    elements.userDropdown.classList.remove('active');
+                }
             });
 
-            // Filter buttons
-            elements.filterAllBtn.addEventListener('click', () => filterPosts('all'));
-            elements.filterAnnouncementBtn.addEventListener('click', () => filterPosts('announcement'));
-            elements.filterEventBtn.addEventListener('click', () => filterPosts('event'));
-            elements.filterResourceBtn.addEventListener('click', () => filterPosts('resource'));
-            elements.filterDiscussionBtn.addEventListener('click', () => filterPosts('discussion'));
+            // Filter buttons (feed page only)
+            if (elements.filterAllBtn) {
+                elements.filterAllBtn.addEventListener('click', () => filterPosts('all'));
+                elements.filterAnnouncementBtn.addEventListener('click', () => filterPosts('announcement'));
+                elements.filterEventBtn.addEventListener('click', () => filterPosts('event'));
+                elements.filterResourceBtn.addEventListener('click', () => filterPosts('resource'));
+                elements.filterDiscussionBtn.addEventListener('click', () => filterPosts('discussion'));
+            }
 
-            // New posts indicator
-            elements.newPostsIndicator.addEventListener('click', () => {
-                markPostsAsViewed();
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
+            // New posts indicator (feed page only)
+            if (elements.newPostsIndicator) {
+                elements.newPostsIndicator.addEventListener('click', () => {
+                    markPostsAsViewed();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            }
 
             // Onboarding buttons
-            elements.startOnboardingBtn.addEventListener('click', () => nextStep(2));
-            elements.backToStep1Btn.addEventListener('click', () => prevStep());
-            elements.continueToStep3Btn.addEventListener('click', () => nextStep(3));
-            elements.backToStep2Btn.addEventListener('click', () => prevStep());
+            if (elements.startOnboardingBtn) elements.startOnboardingBtn.addEventListener('click', () => nextStep(2));
+            if (elements.backToStep1Btn) elements.backToStep1Btn.addEventListener('click', () => prevStep());
+            if (elements.continueToStep3Btn) elements.continueToStep3Btn.addEventListener('click', () => nextStep(3));
+            if (elements.backToStep2Btn) elements.backToStep2Btn.addEventListener('click', () => prevStep());
 
             // Club selection
             document.querySelectorAll('.club-card').forEach(card => {
@@ -4334,33 +3429,43 @@
             });
 
             // Sign out
-            elements.signOutOption.addEventListener('click', signOut);
+            if (elements.signOutOption) {
+                elements.signOutOption.addEventListener('click', signOut);
+            }
 
             // Modal close buttons
-            elements.closeSigninModal.addEventListener('click', () => {
-                elements.signinModal.classList.remove('active');
-                document.body.classList.remove('modal-open');
-            });
+            if (elements.closeSigninModal) {
+                elements.closeSigninModal.addEventListener('click', () => {
+                    elements.signinModal.classList.remove('active');
+                    document.body.classList.remove('modal-open');
+                });
+            }
 
-            elements.closeNotificationsModal.addEventListener('click', () => {
-                elements.notificationsModal.classList.remove('active');
-                document.body.classList.remove('modal-open');
-            });
+            if (elements.closeNotificationsModal) {
+                elements.closeNotificationsModal.addEventListener('click', () => {
+                    elements.notificationsModal.classList.remove('active');
+                    document.body.classList.remove('modal-open');
+                });
+            }
 
-            elements.closeCreatePostModal.addEventListener('click', closeCreatePostModal);
-            elements.cancelCreatePostBtn.addEventListener('click', closeCreatePostModal);
-            elements.cancelDeleteBtn.addEventListener('click', () => {
-                elements.deleteConfirmModal.classList.remove('active');
-                document.body.classList.remove('modal-open');
-                postToDelete = null;
-            });
-            elements.confirmDeleteBtn.addEventListener('click', deletePost);
-
-            // Create post form
-            elements.createPostForm.addEventListener('submit', submitCreatePostForm);
-            elements.postTags.addEventListener('keydown', handleTagInput);
-            elements.postImage.addEventListener('change', handleImageUpload);
-            elements.removeImageBtn.addEventListener('click', removeImage);
+            if (elements.closeCreatePostModal) {
+                elements.closeCreatePostModal.addEventListener('click', closeCreatePostModal);
+            }
+            if (elements.cancelCreatePostBtn) {
+                elements.cancelCreatePostBtn.addEventListener('click', closeCreatePostModal);
+            }
+            if (elements.cancelDeleteBtn) {
+                elements.cancelDeleteBtn.addEventListener('click', () => {
+                    if (elements.deleteConfirmModal) {
+                        elements.deleteConfirmModal.classList.remove('active');
+                        document.body.classList.remove('modal-open');
+                        postToDelete = null;
+                    }
+                });
+            }
+            if (elements.confirmDeleteBtn) {
+                elements.confirmDeleteBtn.addEventListener('click', deletePost);
+            }
 
             // Close modals when clicking outside
             document.querySelectorAll('.modal').forEach(modal => {
@@ -4382,7 +3487,7 @@
                         modal.classList.remove('active');
                         document.body.classList.remove('modal-open');
                     });
-                    if (elements.deleteConfirmModal.classList.contains('active')) {
+                    if (elements.deleteConfirmModal && elements.deleteConfirmModal.classList.contains('active')) {
                         postToDelete = null;
                     }
                 }
@@ -4402,17 +3507,21 @@
             const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
             
             // Show/hide back to top button
-            if (scrollTop > 300) {
-                elements.backToTop.classList.add('visible');
-            } else {
-                elements.backToTop.classList.remove('visible');
+            if (elements.backToTop) {
+                if (scrollTop > 300) {
+                    elements.backToTop.classList.add('visible');
+                } else {
+                    elements.backToTop.classList.remove('visible');
+                }
             }
             
             // Hide/show bottom nav on scroll
-            if (scrollTop > 100) {
-                elements.bottomNav.classList.add('hidden');
-            } else {
-                elements.bottomNav.classList.remove('hidden');
+            if (elements.bottomNav) {
+                if (scrollTop > 100) {
+                    elements.bottomNav.classList.add('hidden');
+                } else {
+                    elements.bottomNav.classList.remove('hidden');
+                }
             }
         }
 
@@ -4424,25 +3533,9 @@
             // Initialize event listeners
             initEventListeners();
             
-            // Show skeleton loading if not authenticated
-            if (!isAuthenticated) {
-                elements.postsContainer.innerHTML = `
-                    <div class="post-card">
-                        <div class="post-header">
-                            <div class="skeleton" style="width: 44px; height: 44px; border-radius: 50%;"></div>
-                            <div class="post-author-info">
-                                <div class="skeleton" style="width: 100px; height: 16px; margin-bottom: 6px;"></div>
-                                <div class="skeleton" style="width: 70px; height: 12px;"></div>
-                            </div>
-                        </div>
-                        <div class="post-content">
-                            <div class="skeleton" style="width: 70%; height: 20px; margin-bottom: 12px;"></div>
-                            <div class="skeleton" style="width: 100%; height: 14px; margin-bottom: 6px;"></div>
-                            <div class="skeleton" style="width: 90%; height: 14px; margin-bottom: 6px;"></div>
-                            <div class="skeleton" style="width: 80%; height: 14px; margin-bottom: 6px;"></div>
-                        </div>
-                    </div>
-                `;
+            // Load posts if on feed page
+            if (elements.postsContainer) {
+                loadPosts();
             }
         }
 
