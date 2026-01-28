@@ -3126,6 +3126,907 @@
         }
     }
 
+    // Render posts
+    function renderPosts(postsArray) {
+        const container = elements.postsContainer;
+        if (!container) return;
+        
+        if (!postsArray || postsArray.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-newspaper"></i>
+                    <h3>No posts yet</h3>
+                    <p>${currentFilter === 'all' ? 'Check back soon for updates from THE SONGA Inner Circle!' : 'No posts in this category yet.'}</p>
+                    ${currentUser ? '<button class="btn-primary mt-2" onclick="openCreatePostModal()">Create First Post</button>' : ''}
+                </div>
+            `;
+            return;
+        }
+        
+        // Sort posts (pinned first, then by date)
+        const sortedPosts = [...postsArray].sort((a, b) => {
+            if (a.isPinned && !b.isPinned) return -1;
+            if (!a.isPinned && b.isPinned) return 1;
+            return new Date(b.createdAt) - new Date(a.createdAt);
+        });
+        
+        container.innerHTML = sortedPosts.map(post => {
+            const typeIndicator = getPostCategoryIndicator(post.category);
+            const isPinned = post.isPinned || false;
+            const hasLiked = currentUser && post.likedBy && post.likedBy.includes(currentUser.uid);
+            const hasBookmarked = currentUserData && currentUserData.bookmarkedPosts && currentUserData.bookmarkedPosts.includes(post.id);
+            const isPostOwner = currentUser && post.authorId === currentUser.uid;
+            
+            const tagsHtml = post.tags && post.tags.length > 0 ? `
+                <div class="post-tags">
+                    ${post.tags.map(tag => `<span class="post-tag">#${tag}</span>`).join('')}
+                </div>
+            ` : '';
+            
+            const mediaHtml = post.imageUrl ? `
+                <div class="post-media">
+                    <img src="${post.imageUrl}" alt="Post image" onclick="viewImage('${post.imageUrl}')">
+                </div>
+            ` : '';
+            
+            const optionsHtml = isPostOwner ? `
+                <div class="post-options">
+                    <button class="post-options-btn" onclick="togglePostOptions('${post.id}', event)">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </button>
+                    <div class="post-options-dropdown" id="postOptions-${post.id}">
+                        <div class="post-option-item" onclick="showPostInsights('${post.id}')">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Post Insights</span>
+                        </div>
+                        <div class="post-option-item delete" onclick="confirmDeletePost('${post.id}')">
+                            <i class="fas fa-trash-alt"></i>
+                            <span>Delete Post</span>
+                        </div>
+                    </div>
+                </div>
+            ` : '';
+            
+            return `
+                <div class="post-card ${isPinned ? 'pinned' : ''}" data-post-id="${post.id}" id="post-${post.id}">
+                    ${isPinned ? `
+                        <div class="pinned-indicator">
+                            <i class="fas fa-thumbtack"></i>
+                            <span>Pinned Post</span>
+                        </div>
+                    ` : ''}
+                    
+                    <div class="post-header">
+                        <div class="post-avatar">
+                            <img src="${post.authorAvatar || 'https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp'}" alt="${post.authorName}">
+                        </div>
+                        <div class="post-author-info">
+                            <div class="post-author">
+                                <span>${post.authorName}</span>
+                                ${typeIndicator}
+                            </div>
+                            <div class="post-time">
+                                ${formatTime(post.createdAt)} 
+                                • 
+                                <span class="post-views">
+                                    <i class="fas fa-eye"></i>
+                                    <span id="views-${post.id}">${post.views || 0}</span>
+                                </span>
+                            </div>
+                        </div>
+                        ${optionsHtml}
+                    </div>
+                    
+                    <div class="post-content">
+                        <h3>${post.title || ''}</h3>
+                        <p>${post.content || ''}</p>
+                        ${mediaHtml}
+                        ${tagsHtml}
+                    </div>
+                    
+                    <div class="post-actions">
+                        <button class="post-action ${hasLiked ? 'liked' : ''}" onclick="handlePostAction('${post.id}', 'like')">
+                            <i class="fas fa-heart"></i>
+                            <span id="likes-${post.id}">${post.likes || 0}</span>
+                        </button>
+                        <button class="post-action" onclick="handlePostAction('${post.id}', 'comment')">
+                            <i class="fas fa-comment"></i>
+                            <span id="comments-${post.id}">${post.comments || 0}</span>
+                        </button>
+                        <button class="post-action" onclick="handlePostAction('${post.id}', 'share')">
+                            <i class="fas fa-share"></i>
+                            <span id="shares-${post.id}">${post.shares || 0}</span>
+                        </button>
+                        <button class="post-action ${hasBookmarked ? 'saved' : ''}" onclick="handlePostAction('${post.id}', 'save')">
+                            <i class="fas fa-bookmark"></i>
+                            <span id="bookmarks-${post.id}">${post.bookmarks || 0}</span>
+                        </button>
+                    </div>
+                    
+                    <div class="comments-section" id="commentsSection-${post.id}">
+                        <div class="comments-header">
+                            <h4 class="comments-title">Comments</h4>
+                            <button class="close-comments" onclick="toggleComments('${post.id}')">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="comments-list" id="commentsList-${post.id}">
+                            <!-- Comments will be loaded here -->
+                        </div>
+                        ${currentUser ? `
+                            <div class="comment-form">
+                                <input type="text" class="comment-input" id="commentInput-${post.id}" placeholder="Write a comment..." onkeypress="if(event.key === 'Enter') submitComment('${post.id}')">
+                                <button class="comment-submit" onclick="submitComment('${post.id}')">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        ` : `
+                            <div style="text-align: center; padding: 1rem; color: var(--dark-gray);">
+                                <i class="fas fa-sign-in-alt"></i> Join Inner Circle to comment
+                            </div>
+                        `}
+                    </div>
+                </div>
+            `;
+        }).join('');
+        
+        // Setup realtime listeners for each post
+        sortedPosts.forEach(post => {
+            setupPostRealtimeListener(post.id);
+        });
+    }
+
+    // Setup realtime listener for a post
+    function setupPostRealtimeListener(postId) {
+        if (!database) return;
+        
+        const postRef = database.ref(`communityPosts/${postId}`);
+        
+        const listener = postRef.on('value', (snapshot) => {
+            if (snapshot.exists()) {
+                const post = snapshot.val();
+                
+                // Update likes count
+                const likesElement = document.getElementById(`likes-${postId}`);
+                if (likesElement) {
+                    const oldLikes = parseInt(likesElement.textContent) || 0;
+                    const newLikes = post.likes || 0;
+                    if (newLikes !== oldLikes) {
+                        likesElement.textContent = newLikes;
+                        likesElement.parentElement.classList.add('real-time-update');
+                        setTimeout(() => {
+                            likesElement.parentElement.classList.remove('real-time-update');
+                        }, 1000);
+                    }
+                }
+                
+                // Update comments count
+                const commentsElement = document.getElementById(`comments-${postId}`);
+                if (commentsElement) {
+                    const oldComments = parseInt(commentsElement.textContent) || 0;
+                    const newComments = post.comments || 0;
+                    if (newComments !== oldComments) {
+                        commentsElement.textContent = newComments;
+                        commentsElement.parentElement.classList.add('real-time-update');
+                        setTimeout(() => {
+                            commentsElement.parentElement.classList.remove('real-time-update');
+                        }, 1000);
+                    }
+                }
+                
+                // Update shares count
+                const sharesElement = document.getElementById(`shares-${postId}`);
+                if (sharesElement) {
+                    const oldShares = parseInt(sharesElement.textContent) || 0;
+                    const newShares = post.shares || 0;
+                    if (newShares !== oldShares) {
+                        sharesElement.textContent = newShares;
+                        sharesElement.parentElement.classList.add('real-time-update');
+                        setTimeout(() => {
+                            sharesElement.parentElement.classList.remove('real-time-update');
+                        }, 1000);
+                    }
+                }
+                
+                // Update bookmarks count
+                const bookmarksElement = document.getElementById(`bookmarks-${postId}`);
+                if (bookmarksElement) {
+                    const oldBookmarks = parseInt(bookmarksElement.textContent) || 0;
+                    const newBookmarks = post.bookmarks || 0;
+                    if (newBookmarks !== oldBookmarks) {
+                        bookmarksElement.textContent = newBookmarks;
+                        bookmarksElement.parentElement.classList.add('real-time-update');
+                        setTimeout(() => {
+                            bookmarksElement.parentElement.classList.remove('real-time-update');
+                        }, 1000);
+                    }
+                }
+                
+                // Update views count
+                const viewsElement = document.getElementById(`views-${postId}`);
+                if (viewsElement) {
+                    const oldViews = parseInt(viewsElement.textContent) || 0;
+                    const newViews = post.views || 0;
+                    if (newViews !== oldViews) {
+                        viewsElement.textContent = newViews;
+                        viewsElement.parentElement.classList.add('real-time-update');
+                        setTimeout(() => {
+                            viewsElement.parentElement.classList.remove('real-time-update');
+                        }, 1000);
+                    }
+                }
+                
+                // Update like button state
+                const likeButton = document.querySelector(`#post-${postId} .post-action[onclick*="like"]`);
+                if (likeButton && currentUser) {
+                    const hasLiked = post.likedBy && post.likedBy.includes(currentUser.uid);
+                    if (hasLiked && !likeButton.classList.contains('liked')) {
+                        likeButton.classList.add('liked');
+                    } else if (!hasLiked && likeButton.classList.contains('liked')) {
+                        likeButton.classList.remove('liked');
+                    }
+                }
+                
+                // Update bookmark button state
+                const bookmarkButton = document.querySelector(`#post-${postId} .post-action[onclick*="save"]`);
+                if (bookmarkButton && currentUserData) {
+                    const hasBookmarked = currentUserData.bookmarkedPosts && currentUserData.bookmarkedPosts.includes(postId);
+                    if (hasBookmarked && !bookmarkButton.classList.contains('saved')) {
+                        bookmarkButton.classList.add('saved');
+                    } else if (!hasBookmarked && bookmarkButton.classList.contains('saved')) {
+                        bookmarkButton.classList.remove('saved');
+                    }
+                }
+            }
+        });
+        
+        realtimeListeners.push(() => postRef.off('value', listener));
+    }
+
+    // Get post category indicator
+    function getPostCategoryIndicator(category) {
+        switch(category) {
+            case 'event': return '<span class="post-type-indicator" style="background: rgba(37, 211, 102, 0.1); color: var(--accent);">EVENT</span>';
+            case 'resource': return '<span class="post-type-indicator" style="background: rgba(52, 152, 219, 0.1); color: #3498db;">RESOURCE</span>';
+            case 'discussion': return '<span class="post-type-indicator" style="background: rgba(155, 89, 182, 0.1); color: #9b59b6;">DISCUSSION</span>';
+            default: return '<span class="post-type-indicator" style="background: var(--gold-light); color: var(--gold-dark);">INNER CIRCLE</span>';
+        }
+    }
+
+    // Handle post actions
+    async function handlePostAction(postId, action) {
+        if (!currentUser) {
+            showNotification('Join the Inner Circle to interact with posts', 'error');
+            return;
+        }
+        
+        switch(action) {
+            case 'like':
+                await likePost(postId);
+                break;
+            case 'comment':
+                toggleComments(postId);
+                break;
+            case 'share':
+                await sharePost(postId);
+                break;
+            case 'save':
+                await bookmarkPost(postId);
+                break;
+        }
+    }
+
+    // Like post
+    async function likePost(postId) {
+        try {
+            const postRef = database.ref(`communityPosts/${postId}`);
+            const snapshot = await postRef.once('value');
+            const post = snapshot.val();
+            
+            if (!post) return;
+            
+            let likedBy = post.likedBy || [];
+            let likes = post.likes || 0;
+            
+            if (likedBy.includes(currentUser.uid)) {
+                likedBy = likedBy.filter(id => id !== currentUser.uid);
+                likes--;
+            } else {
+                likedBy.push(currentUser.uid);
+                likes++;
+                
+                // Create notification for post owner if not the current user
+                if (post.authorId !== currentUser.uid) {
+                    await createNotification(post.authorId, 'like', {
+                        postId: postId,
+                        postTitle: post.title,
+                        userId: currentUser.uid,
+                        userName: currentUser.fullName || currentUser.firstName,
+                        userAvatar: currentUser.picture
+                    });
+                }
+            }
+            
+            await postRef.update({
+                likedBy: likedBy,
+                likes: likes,
+                updatedAt: new Date().toISOString()
+            });
+            
+        } catch (error) {
+            console.error('Error liking post:', error);
+            showNotification('Error liking post', 'error');
+        }
+    }
+
+    // Share post
+    async function sharePost(postId) {
+        try {
+            const postRef = database.ref(`communityPosts/${postId}`);
+            const snapshot = await postRef.once('value');
+            const post = snapshot.val();
+            
+            if (!post) return;
+            
+            const shares = (post.shares || 0) + 1;
+            
+            await postRef.update({
+                shares: shares,
+                updatedAt: new Date().toISOString()
+            });
+            
+            const postUrl = window.location.href + '#post-' + postId;
+            
+            if (navigator.share) {
+                await navigator.share({
+                    title: post.title || 'Check out this post',
+                    text: post.content ? post.content.substring(0, 100) + '...' : 'I found this interesting post on THE SONGA Inner Circle',
+                    url: postUrl,
+                });
+            } else {
+                await navigator.clipboard.writeText(postUrl);
+                showNotification('Post link copied to clipboard!', 'success');
+            }
+            
+            // Create notification for post owner if not the current user
+            if (post.authorId !== currentUser.uid) {
+                await createNotification(post.authorId, 'share', {
+                    postId: postId,
+                    postTitle: post.title,
+                    userId: currentUser.uid,
+                    userName: currentUser.fullName || currentUser.firstName,
+                    userAvatar: currentUser.picture
+                });
+            }
+            
+        } catch (error) {
+            console.error('Error sharing post:', error);
+            // Don't show error for cancelled share
+            if (error.name !== 'AbortError') {
+                showNotification('Error sharing post', 'error');
+            }
+        }
+    }
+
+    // Bookmark post
+    async function bookmarkPost(postId) {
+        try {
+            const userRef = database.ref(`users/${currentUser.uid}`);
+            const snapshot = await userRef.once('value');
+            const userData = snapshot.val();
+            
+            let bookmarkedPosts = userData.bookmarkedPosts || [];
+            
+            if (bookmarkedPosts.includes(postId)) {
+                bookmarkedPosts = bookmarkedPosts.filter(id => id !== postId);
+                showNotification('Post removed from bookmarks', 'success');
+            } else {
+                bookmarkedPosts.push(postId);
+                showNotification('Post bookmarked!', 'success');
+            }
+            
+            await userRef.update({
+                bookmarkedPosts: bookmarkedPosts
+            });
+            
+            // Update post bookmarks count
+            const postRef = database.ref(`communityPosts/${postId}`);
+            const postSnapshot = await postRef.once('value');
+            const post = postSnapshot.val();
+            
+            if (post) {
+                let bookmarks = post.bookmarks || 0;
+                if (bookmarkedPosts.includes(postId)) {
+                    bookmarks++;
+                } else {
+                    bookmarks = Math.max(bookmarks - 1, 0);
+                }
+                
+                await postRef.update({
+                    bookmarks: bookmarks,
+                    updatedAt: new Date().toISOString()
+                });
+            }
+            
+        } catch (error) {
+            console.error('Error bookmarking post:', error);
+            showNotification('Error bookmarking post', 'error');
+        }
+    }
+
+    // Create notification
+    async function createNotification(userId, type, data) {
+        try {
+            const notificationRef = database.ref(`notifications/${userId}`).push();
+            const notification = {
+                id: notificationRef.key,
+                type: type,
+                data: data,
+                read: false,
+                timestamp: new Date().toISOString()
+            };
+            
+            await notificationRef.set(notification);
+            
+            // Send push notification if available
+            if ('Notification' in window && Notification.permission === 'granted') {
+                let title = 'New Notification';
+                let body = '';
+                
+                switch(type) {
+                    case 'like':
+                        title = 'New Like';
+                        body = `${data.userName} liked your post: ${data.postTitle}`;
+                        break;
+                    case 'comment':
+                        title = 'New Comment';
+                        body = `${data.userName} commented on your post: ${data.postTitle}`;
+                        break;
+                    case 'share':
+                        title = 'New Share';
+                        body = `${data.userName} shared your post: ${data.postTitle}`;
+                        break;
+                    case 'follow':
+                        title = 'New Follower';
+                        body = `${data.userName} started following you`;
+                        break;
+                }
+                
+                new Notification(title, { body: body, icon: data.userAvatar });
+            }
+            
+        } catch (error) {
+            console.error('Error creating notification:', error);
+        }
+    }
+
+    // Toggle comments
+    function toggleComments(postId) {
+        if (!currentUser) {
+            showNotification('Join the Inner Circle to comment on posts', 'error');
+            return;
+        }
+        
+        const commentsSection = document.getElementById(`commentsSection-${postId}`);
+        if (commentsSection) {
+            const isActive = commentsSection.classList.contains('active');
+            document.querySelectorAll('.comments-section.active').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            if (!isActive) {
+                commentsSection.classList.add('active');
+                loadComments(postId);
+                
+                // Increment view count
+                incrementViewCount(postId);
+            }
+        }
+    }
+
+    // Increment view count
+    async function incrementViewCount(postId) {
+        if (!currentUser) return;
+        
+        try {
+            const viewKey = `post_view_${postId}_${currentUser.uid}`;
+            const hasViewed = localStorage.getItem(viewKey);
+            
+            if (!hasViewed) {
+                const postRef = database.ref(`communityPosts/${postId}`);
+                postRef.transaction(post => {
+                    if (post) {
+                        post.views = (post.views || 0) + 1;
+                        post.updatedAt = new Date().toISOString();
+                    }
+                    return post;
+                });
+                
+                localStorage.setItem(viewKey, 'true');
+            }
+        } catch (error) {
+            console.error('Error incrementing view count:', error);
+        }
+    }
+
+    // Load comments
+    async function loadComments(postId) {
+        try {
+            const commentsRef = database.ref(`comments/${postId}`).orderByChild('createdAt');
+            const snapshot = await commentsRef.once('value');
+            
+            const commentsList = document.getElementById(`commentsList-${postId}`);
+            if (!commentsList) return;
+            
+            if (snapshot.exists()) {
+                const comments = Object.keys(snapshot.val()).map(key => ({
+                    id: key,
+                    ...snapshot.val()[key]
+                })).reverse();
+                
+                commentsList.innerHTML = comments.map(comment => `
+                    <div class="comment-item" id="comment-${comment.id}">
+                        <div class="comment-header">
+                            <div class="comment-avatar">
+                                <img src="${comment.authorAvatar || 'https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp'}" alt="${comment.authorName}">
+                            </div>
+                            <div class="comment-author">${comment.authorName}</div>
+                            <div class="comment-time">${formatTime(comment.createdAt)}</div>
+                        </div>
+                        <div class="comment-text">${comment.text}</div>
+                    </div>
+                `).join('');
+                
+                // Setup realtime listener for comments
+                setupCommentsRealtimeListener(postId);
+            } else {
+                commentsList.innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: var(--dark-gray);">
+                        <i class="fas fa-comment-slash"></i>
+                        <p>No comments yet. Be the first to comment!</p>
+                    </div>
+                `;
+            }
+        } catch (error) {
+            console.error('Error loading comments:', error);
+            const commentsList = document.getElementById(`commentsList-${postId}`);
+            if (commentsList) {
+                commentsList.innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: var(--error);">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <p>Error loading comments</p>
+                    </div>
+                `;
+            }
+        }
+    }
+
+    // Setup realtime listener for comments
+    function setupCommentsRealtimeListener(postId) {
+        if (!database) return;
+        
+        const commentsRef = database.ref(`comments/${postId}`);
+        
+        const listener = commentsRef.on('child_added', (snapshot) => {
+            const comment = snapshot.val();
+            const commentsList = document.getElementById(`commentsList-${postId}`);
+            
+            if (commentsList && !document.getElementById(`comment-${comment.id}`)) {
+                const commentElement = document.createElement('div');
+                commentElement.className = 'comment-item';
+                commentElement.id = `comment-${comment.id}`;
+                commentElement.innerHTML = `
+                    <div class="comment-header">
+                        <div class="comment-avatar">
+                            <img src="${comment.authorAvatar || 'https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp'}" alt="${comment.authorName}">
+                        </div>
+                        <div class="comment-author">${comment.authorName}</div>
+                        <div class="comment-time">${formatTime(comment.createdAt)}</div>
+                    </div>
+                    <div class="comment-text">${comment.text}</div>
+                `;
+                
+                commentsList.insertBefore(commentElement, commentsList.firstChild);
+                
+                // Highlight new comment
+                commentElement.classList.add('real-time-update');
+                setTimeout(() => {
+                    commentElement.classList.remove('real-time-update');
+                }, 2000);
+            }
+        });
+        
+        realtimeListeners.push(() => commentsRef.off('child_added', listener));
+    }
+
+    // Submit comment
+    async function submitComment(postId) {
+        if (!currentUser) {
+            showNotification('Please join the Inner Circle to comment', 'error');
+            return;
+        }
+        
+        const commentInput = document.getElementById(`commentInput-${postId}`);
+        const commentText = commentInput.value.trim();
+        
+        if (!commentText) {
+            showNotification('Please enter a comment', 'error');
+            return;
+        }
+        
+        try {
+            const commentRef = database.ref(`comments/${postId}`).push();
+            const newComment = {
+                id: commentRef.key,
+                postId: postId,
+                authorId: currentUser.uid,
+                authorName: currentUser.fullName || currentUser.firstName,
+                authorAvatar: currentUser.picture,
+                text: commentText,
+                createdAt: new Date().toISOString()
+            };
+            
+            await commentRef.set(newComment);
+            
+            // Update post comments count
+            const postRef = database.ref(`communityPosts/${postId}`);
+            const snapshot = await postRef.once('value');
+            const post = snapshot.val();
+            
+            if (post) {
+                const comments = (post.comments || 0) + 1;
+                await postRef.update({
+                    comments: comments,
+                    updatedAt: new Date().toISOString()
+                });
+                
+                // Create notification for post owner if not the current user
+                if (post.authorId !== currentUser.uid) {
+                    await createNotification(post.authorId, 'comment', {
+                        postId: postId,
+                        postTitle: post.title,
+                        userId: currentUser.uid,
+                        userName: currentUser.fullName || currentUser.firstName,
+                        userAvatar: currentUser.picture
+                    });
+                }
+            }
+            
+            commentInput.value = '';
+            showNotification('Comment posted!', 'success');
+            
+        } catch (error) {
+            console.error('Error posting comment:', error);
+            showNotification('Error posting comment', 'error');
+        }
+    }
+
+    // Toggle post options
+    function togglePostOptions(postId, event) {
+        event.stopPropagation();
+        
+        document.querySelectorAll('.post-options-dropdown.active').forEach(dropdown => {
+            dropdown.classList.remove('active');
+        });
+        
+        const dropdown = document.getElementById(`postOptions-${postId}`);
+        if (dropdown) {
+            dropdown.classList.toggle('active');
+        }
+    }
+
+    // Show post insights
+    function showPostInsights(postId) {
+        // For now, just show a notification
+        showNotification('Post insights feature coming soon!', 'info');
+        closePostOptions();
+    }
+
+    // Confirm delete post
+    function confirmDeletePost(postId) {
+        postToDelete = postId;
+        if (elements.deleteConfirmModal) {
+            elements.deleteConfirmModal.classList.add('active');
+            document.body.classList.add('modal-open');
+            closePostOptions();
+        }
+    }
+
+    // Close post options
+    function closePostOptions() {
+        document.querySelectorAll('.post-options-dropdown.active').forEach(dropdown => {
+            dropdown.classList.remove('active');
+        });
+    }
+
+    // Delete post
+    async function deletePost() {
+        if (!postToDelete || !currentUser) return;
+        
+        try {
+            const postRef = database.ref(`communityPosts/${postToDelete}`);
+            const snapshot = await postRef.once('value');
+            const post = snapshot.val();
+            
+            if (!post) {
+                showNotification('Post not found', 'error');
+                return;
+            }
+            
+            if (post.authorId !== currentUser.uid) {
+                showNotification('You are not authorized to delete this post', 'error');
+                return;
+            }
+            
+            await postRef.remove();
+            
+            // Delete comments
+            const commentsRef = database.ref(`comments/${postToDelete}`);
+            await commentsRef.remove();
+            
+            if (elements.deleteConfirmModal) {
+                elements.deleteConfirmModal.classList.remove('active');
+                document.body.classList.remove('modal-open');
+            }
+            
+            showNotification('Post deleted successfully', 'success');
+            postToDelete = null;
+            
+        } catch (error) {
+            console.error('Error deleting post:', error);
+            showNotification('Error deleting post', 'error');
+            postToDelete = null;
+        }
+    }
+
+    // Filter posts
+    function filterPosts(category) {
+        currentFilter = category;
+        
+        // Update active button
+        document.querySelectorAll('.category-filter-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.category === category);
+        });
+        
+        // Filter posts
+        const filteredPosts = category === 'all' 
+            ? posts.filter(post => post.status === 'published')
+            : posts.filter(post => post.status === 'published' && post.category === category);
+        
+        renderPosts(filteredPosts);
+    }
+
+    // Handle image upload
+    function handleImageUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        
+        // Check file size (10MB = 10 * 1024 * 1024 bytes)
+        const maxSize = 10 * 1024 * 1024;
+        if (file.size > maxSize) {
+            elements.fileSizeWarning.innerHTML = `
+                <i class="fas fa-exclamation-circle"></i>
+                <span>File size too large. Maximum size is 10MB.</span>
+            `;
+            elements.fileSizeWarning.classList.add('error');
+            elements.fileSizeWarning.classList.remove('success');
+            elements.postImage.value = '';
+            currentImageFile = null;
+            return;
+        }
+        
+        // Check file type
+        if (!file.type.match('image.*')) {
+            showNotification('Please select an image file', 'error');
+            elements.postImage.value = '';
+            currentImageFile = null;
+            return;
+        }
+        
+        elements.fileSizeWarning.innerHTML = `
+            <i class="fas fa-check-circle"></i>
+            <span>File size OK (${(file.size / (1024 * 1024)).toFixed(2)}MB)</span>
+        `;
+        elements.fileSizeWarning.classList.add('success');
+        elements.fileSizeWarning.classList.remove('error');
+        
+        currentImageFile = file;
+        
+        // Show preview
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            if (elements.previewImage) {
+                elements.previewImage.src = e.target.result;
+            }
+            if (elements.imagePreview) {
+                elements.imagePreview.style.display = 'block';
+            }
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // Remove image
+    function removeImage() {
+        if (elements.previewImage) elements.previewImage.src = '';
+        if (elements.imagePreview) elements.imagePreview.style.display = 'none';
+        if (elements.postImage) elements.postImage.value = '';
+        currentImageFile = null;
+        if (elements.fileSizeWarning) {
+            elements.fileSizeWarning.innerHTML = `
+                <i class="fas fa-info-circle"></i>
+                <span>Maximum file size: 10MB</span>
+            `;
+            elements.fileSizeWarning.classList.remove('error', 'success');
+        }
+    }
+
+    // Upload image to Firebase Storage
+    async function uploadImage(file) {
+        return new Promise((resolve, reject) => {
+            if (!file || !storage) {
+                resolve(null);
+                return;
+            }
+            
+            const storageRef = storage.ref();
+            const imageRef = storageRef.child(`post_images/${Date.now()}_${file.name}`);
+            const uploadTask = imageRef.put(file);
+            
+            if (elements.uploadProgress) elements.uploadProgress.style.display = 'block';
+            if (elements.submitPostBtn) elements.submitPostBtn.disabled = true;
+            
+            uploadTask.on('state_changed',
+                (snapshot) => {
+                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    if (elements.uploadProgressFill) {
+                        elements.uploadProgressFill.style.width = `${progress}%`;
+                    }
+                    if (elements.uploadProgressText) {
+                        elements.uploadProgressText.textContent = `Uploading: ${Math.round(progress)}%`;
+                    }
+                },
+                (error) => {
+                    console.error('Upload error:', error);
+                    if (elements.uploadProgress) elements.uploadProgress.style.display = 'none';
+                    if (elements.submitPostBtn) elements.submitPostBtn.disabled = false;
+                    reject(error);
+                },
+                async () => {
+                    const downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
+                    if (elements.uploadProgress) elements.uploadProgress.style.display = 'none';
+                    if (elements.submitPostBtn) elements.submitPostBtn.disabled = false;
+                    resolve(downloadURL);
+                }
+            );
+        });
+    }
+
+    // View image in full screen
+    function viewImage(imageUrl) {
+        const modal = document.createElement('div');
+        modal.className = 'modal active';
+        modal.innerHTML = `
+            <div class="modal-content" style="max-width: 90vw; max-height: 90vh; background: transparent; box-shadow: none;">
+                <button class="close-modal" style="background: rgba(0,0,0,0.5); color: white; top: 20px; right: 20px;">
+                    &times;
+                </button>
+                <div class="modal-body" style="padding: 0; display: flex; align-items: center; justify-content: center;">
+                    <img src="${imageUrl}" alt="Full size" style="max-width: 100%; max-height: 100%; border-radius: 12px;">
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        document.body.classList.add('modal-open');
+        
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal || e.target.classList.contains('close-modal')) {
+                document.body.removeChild(modal);
+                document.body.classList.remove('modal-open');
+            }
+        });
+    }
+
     // Onboarding functions
     function nextStep(step) {
         // Validate step 2
@@ -3138,7 +4039,10 @@
         document.querySelectorAll('.step-indicator').forEach(indicator => {
             indicator.classList.remove('active');
         });
-        document.querySelector(`.step-indicator[data-step="${step}"]`)?.classList.add('active');
+        const stepIndicator = document.querySelector(`.step-indicator[data-step="${step}"]`);
+        if (stepIndicator) {
+            stepIndicator.classList.add('active');
+        }
         
         // Hide current step
         document.querySelectorAll('.onboarding-slide').forEach(slide => {
@@ -3171,10 +4075,14 @@
         
         if (index === -1) {
             selectedClubs.push(clubId);
-            clubCard?.classList.add('selected');
+            if (clubCard) {
+                clubCard.classList.add('selected');
+            }
         } else {
             selectedClubs.splice(index, 1);
-            clubCard?.classList.remove('selected');
+            if (clubCard) {
+                clubCard.classList.remove('selected');
+            }
         }
         
         updateContinueButton();
@@ -3344,6 +4252,144 @@
         }
     }
 
+    // Close create post modal
+    function closeCreatePostModal() {
+        if (elements.createPostModal) {
+            elements.createPostModal.classList.remove('active');
+            document.body.classList.remove('modal-open');
+        }
+        if (elements.createPostForm) {
+            elements.createPostForm.reset();
+        }
+        if (elements.postTagsContainer) {
+            elements.postTagsContainer.innerHTML = '';
+        }
+        removeImage();
+        if (elements.uploadProgress) {
+            elements.uploadProgress.style.display = 'none';
+        }
+        if (elements.submitPostBtn) {
+            elements.submitPostBtn.disabled = false;
+        }
+    }
+
+    // Handle tag input
+    function handleTagInput(event) {
+        if (event.key === 'Enter' || event.key === ',') {
+            event.preventDefault();
+            const tag = elements.postTags.value.trim();
+            if (tag) {
+                addTag(tag);
+                elements.postTags.value = '';
+            }
+        }
+    }
+
+    // Add tag
+    function addTag(tag) {
+        const tagId = 'tag-' + Date.now();
+        const tagElement = document.createElement('div');
+        tagElement.className = 'tag-item';
+        tagElement.id = tagId;
+        tagElement.innerHTML = `
+            ${tag}
+            <button class="tag-remove" onclick="removeTag('${tagId}')">&times;</button>
+        `;
+        if (elements.postTagsContainer) {
+            elements.postTagsContainer.appendChild(tagElement);
+        }
+    }
+
+    // Remove tag
+    function removeTag(tagId) {
+        const tagElement = document.getElementById(tagId);
+        if (tagElement) {
+            tagElement.remove();
+        }
+    }
+
+    // Submit create post form
+    async function submitCreatePostForm(event) {
+        event.preventDefault();
+        
+        if (!currentUser) {
+            showNotification('Please join the Inner Circle to create posts', 'error');
+            return;
+        }
+        
+        try {
+            const title = document.getElementById('postTitle')?.value.trim();
+            const content = document.getElementById('postContent')?.value.trim();
+            const category = document.getElementById('postCategory')?.value;
+            const isPinned = document.getElementById('postIsPinned')?.checked;
+            
+            if (!title || !content) {
+                showNotification('Please fill in all required fields', 'error');
+                return;
+            }
+            
+            // Get tags
+            const tagElements = document.querySelectorAll('#postTagsContainer .tag-item');
+            const tags = Array.from(tagElements).map(tag => 
+                tag.textContent.replace('×', '').trim()
+            );
+            
+            // Upload image if exists
+            let imageUrl = null;
+            if (currentImageFile) {
+                imageUrl = await uploadImage(currentImageFile);
+            }
+            
+            const postRef = database.ref('communityPosts').push();
+            const newPost = {
+                id: postRef.key,
+                authorId: currentUser.uid,
+                authorName: currentUser.fullName || currentUser.firstName,
+                authorAvatar: currentUser.picture,
+                title: title,
+                content: content,
+                imageUrl: imageUrl,
+                category: category,
+                tags: tags,
+                isPinned: isPinned,
+                likes: 0,
+                likedBy: [],
+                comments: 0,
+                shares: 0,
+                bookmarks: 0,
+                views: 0,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+                status: 'published'
+            };
+            
+            await postRef.set(newPost);
+            
+            // Create notifications for followers
+            if (currentUserData && currentUserData.followers) {
+                currentUserData.followers.forEach(async (followerId) => {
+                    await createNotification(followerId, 'post', {
+                        postId: postRef.key,
+                        postTitle: title,
+                        userId: currentUser.uid,
+                        userName: currentUser.fullName || currentUser.firstName,
+                        userAvatar: currentUser.picture
+                    });
+                });
+            }
+            
+            closeCreatePostModal();
+            showNotification('Post published successfully!', 'success');
+            
+        } catch (error) {
+            console.error('Error creating post:', error);
+            showNotification('Error creating post. Please try again.', 'error');
+            if (elements.submitPostBtn) {
+                elements.submitPostBtn.disabled = false;
+            }
+        }
+    }
+
     // Initialize event listeners
     function initEventListeners() {
         // Logo click
@@ -3395,6 +4441,7 @@
             if (elements.userDropdown) {
                 elements.userDropdown.classList.remove('active');
             }
+            closePostOptions();
         });
 
         // Filter buttons (feed page only)
@@ -3465,6 +4512,20 @@
         }
         if (elements.confirmDeleteBtn) {
             elements.confirmDeleteBtn.addEventListener('click', deletePost);
+        }
+
+        // Create post form
+        if (elements.createPostForm) {
+            elements.createPostForm.addEventListener('submit', submitCreatePostForm);
+        }
+        if (elements.postTags) {
+            elements.postTags.addEventListener('keydown', handleTagInput);
+        }
+        if (elements.postImage) {
+            elements.postImage.addEventListener('change', handleImageUpload);
+        }
+        if (elements.removeImageBtn) {
+            elements.removeImageBtn.addEventListener('click', removeImage);
         }
 
         // Close modals when clicking outside
