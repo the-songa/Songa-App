@@ -1,0 +1,1890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>BIG MEDIA TV - THE SONGA</title>
+    <!-- Preconnect to critical domains -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://www.gstatic.com">
+    <link rel="preconnect" href="https://i.postimg.cc">
+    <link rel="preconnect" href="https://accounts.google.com">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="icon" type="image/x-icon" href="https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Inline critical CSS -->
+    <style>
+        /* RESET AND BASE STYLES */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --gold: #D4AF37;
+            --gold-light: #F5E6B3;
+            --gold-dark: #B8860B;
+            --black: #000000;
+            --white: #ffffff;
+            --gray: #f5f5f5;
+            --dark-gray: #666666;
+            --light-gray: #e5e5e5;
+            --accent: #25D366;
+            --comment-bg: #f8f9fa;
+            --reply-bg: #f0f2f5;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --modal-overlay: rgba(0, 0, 0, 0.92);
+            --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            --hover-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --background: #fafafa;
+            --success: #2ecc71;
+            --error: #e74c3c;
+            --info: #3498db;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--black);
+            line-height: 1.5;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            padding-bottom: 80px;
+            min-height: 100vh;
+        }
+
+        body.modal-open {
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* BACK TO TOP BUTTON */
+        .back-to-top {
+            position: fixed;
+            bottom: 90px;
+            right: 16px;
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            border-radius: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--black);
+            cursor: pointer;
+            z-index: 98;
+            box-shadow: 0 3px 12px rgba(212, 175, 55, 0.3);
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            visibility: hidden;
+            border: none;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            transform: translateY(0);
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+        }
+
+        /* BOTTOM NAVIGATION */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--white);
+            display: flex;
+            justify-content: space-around;
+            padding: 0.5rem 0;
+            z-index: 100;
+            border-top: 1px solid var(--light-gray);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 -2px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+            transform: translateY(0);
+        }
+
+        .bottom-nav.hidden {
+            transform: translateY(100%);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--dark-gray);
+            text-decoration: none;
+            font-size: 0.7rem;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 6px 12px;
+            border-radius: 12px;
+            min-width: 56px;
+        }
+
+        .nav-icon {
+            font-size: 1.2rem;
+            margin-bottom: 2px;
+        }
+
+        .nav-item.active {
+            color: var(--gold-dark);
+            background: var(--gold-light);
+            font-weight: 700;
+        }
+
+        .nav-item:hover {
+            color: var(--gold-dark);
+        }
+
+        /* HEADER */
+        header {
+            background-color: var(--white);
+            color: var(--black);
+            padding: 0.5rem 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+            height: 56px;
+            backdrop-filter: blur(20px);
+            border-bottom: none;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            text-decoration: none;
+            min-width: 0;
+            flex-shrink: 0;
+        }
+
+        .logo img {
+            height: 36px;
+            width: 36px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .brand-info {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .brand-name {
+            font-weight: 800;
+            font-size: 1rem;
+            color: var(--gold-dark);
+            letter-spacing: -0.3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .brand-subtitle {
+            font-size: 0.6rem;
+            color: var(--dark-gray);
+            font-style: italic;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* TV HERO SECTION */
+        .tv-hero {
+            background: linear-gradient(135deg, rgba(0,0,0,0.9), rgba(0,0,0,0.7)),
+                        url('https://images.unsplash.com/photo-1533750349088-cd871a92f312?auto=format&fit=crop&w=1600');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 2rem 1rem;
+            text-align: center;
+            border-radius: 16px;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .tv-live-badge {
+            background: #e74c3c;
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 1rem;
+            animation: pulse 2s infinite;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .tv-title {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .tv-subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.4;
+        }
+
+        .tv-stats {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
+
+        .tv-stat {
+            text-align: center;
+        }
+
+        .tv-stat-number {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--gold);
+            margin-bottom: 0.25rem;
+        }
+
+        .tv-stat-label {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        /* TV PLAYER CONTAINER */
+        .tv-player-container {
+            background: var(--white);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            border: 1px solid var(--light-gray);
+        }
+
+        .tv-player-wrapper {
+            position: relative;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+            background: var(--black);
+        }
+
+        .tv-player {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .tv-player-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        .tv-player-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .tv-offline-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--gold);
+        }
+
+        .tv-offline-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .tv-offline-text {
+            opacity: 0.9;
+            max-width: 400px;
+            line-height: 1.4;
+            margin-bottom: 1.5rem;
+        }
+
+        .tv-player-controls {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tv-control-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .tv-control-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tv-control-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .tv-control-btn.active {
+            background: var(--gold);
+            color: var(--black);
+        }
+
+        .tv-control-right {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tv-viewer-count {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: white;
+        }
+
+        /* TV CHANNEL GRID */
+        .tv-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .tv-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .tv-channel-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 1.25rem;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            border: 1px solid var(--light-gray);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tv-channel-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--hover-shadow);
+            border-color: var(--gold);
+        }
+
+        .tv-channel-card.active {
+            border-color: var(--gold);
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.05), rgba(212, 175, 55, 0.1));
+        }
+
+        .tv-channel-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1rem;
+        }
+
+        .tv-channel-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--gold-light), var(--gold));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: var(--black);
+            flex-shrink: 0;
+        }
+
+        .tv-channel-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .tv-channel-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--black);
+            margin-bottom: 0.25rem;
+        }
+
+        .tv-channel-desc {
+            font-size: 0.85rem;
+            color: var(--dark-gray);
+            line-height: 1.3;
+        }
+
+        .tv-channel-schedule {
+            font-size: 0.8rem;
+            color: var(--gold-dark);
+            font-weight: 600;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .tv-channel-live {
+            background: #e74c3c;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-left: auto;
+        }
+
+        /* TV SCHEDULE */
+        .tv-schedule-section {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--light-gray);
+        }
+
+        .tv-schedule-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .tv-schedule-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--black);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tv-schedule-nav {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tv-schedule-nav-btn {
+            background: var(--gray);
+            border: 1px solid var(--light-gray);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--dark-gray);
+        }
+
+        .tv-schedule-nav-btn:hover {
+            background: var(--gold-light);
+            color: var(--gold-dark);
+            border-color: var(--gold);
+        }
+
+        .tv-schedule-days {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+            scrollbar-width: none;
+        }
+
+        .tv-schedule-days::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tv-schedule-day {
+            padding: 8px 16px;
+            background: var(--gray);
+            border: 1px solid var(--light-gray);
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .tv-schedule-day:hover {
+            border-color: var(--gold);
+            color: var(--gold-dark);
+        }
+
+        .tv-schedule-day.active {
+            background: var(--gold);
+            color: var(--black);
+            border-color: var(--gold);
+        }
+
+        .tv-schedule-today {
+            background: var(--gold-light);
+            color: var(--gold-dark);
+        }
+
+        .tv-schedule-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .tv-schedule-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem;
+            border-radius: 12px;
+            background: var(--gray);
+            border: 1px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .tv-schedule-item:hover {
+            border-color: var(--gold);
+            background: var(--gold-light);
+        }
+
+        .tv-schedule-item.live-now {
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.1), rgba(231, 76, 60, 0.05));
+            border-color: rgba(231, 76, 60, 0.3);
+        }
+
+        .tv-schedule-time {
+            background: var(--white);
+            padding: 6px 12px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            min-width: 70px;
+            text-align: center;
+            border: 1px solid var(--light-gray);
+            flex-shrink: 0;
+        }
+
+        .tv-schedule-item.live-now .tv-schedule-time {
+            background: #e74c3c;
+            color: white;
+            border-color: #e74c3c;
+        }
+
+        .tv-schedule-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .tv-schedule-show {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--black);
+            margin-bottom: 0.25rem;
+        }
+
+        .tv-schedule-channel {
+            font-size: 0.85rem;
+            color: var(--gold-dark);
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .tv-schedule-desc {
+            font-size: 0.85rem;
+            color: var(--dark-gray);
+            line-height: 1.4;
+        }
+
+        .tv-schedule-live-badge {
+            background: #e74c3c;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-left: 0.5rem;
+        }
+
+        /* TV CLUBS SHOWCASE */
+        .tv-clubs-section {
+            margin-bottom: 2rem;
+        }
+
+        .tv-clubs-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--black);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tv-clubs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .tv-club-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            border: 1px solid var(--light-gray);
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .tv-club-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--hover-shadow);
+            border-color: var(--gold);
+        }
+
+        .tv-club-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, var(--gold-light), var(--gold));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--black);
+            margin: 0 auto 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .tv-club-card:hover .tv-club-icon {
+            transform: scale(1.1);
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+        }
+
+        .tv-club-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--black);
+            margin-bottom: 0.5rem;
+        }
+
+        .tv-club-desc {
+            font-size: 0.85rem;
+            color: var(--dark-gray);
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+
+        .tv-club-schedule {
+            font-size: 0.8rem;
+            color: var(--gold-dark);
+            font-weight: 600;
+            background: var(--gold-light);
+            padding: 4px 12px;
+            border-radius: 12px;
+            display: inline-block;
+        }
+
+        /* TV CHAT SECTION */
+        .tv-chat-section {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--light-gray);
+        }
+
+        .tv-chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .tv-chat-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--black);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tv-chat-badge {
+            background: var(--gold);
+            color: var(--black);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+
+        .tv-chat-container {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+            padding-right: 5px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .tv-chat-message {
+            background: var(--gray);
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            margin-bottom: 0.75rem;
+            border: 1px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .tv-chat-message:hover {
+            border-color: var(--gold);
+            background: var(--gold-light);
+        }
+
+        .tv-chat-message-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        .tv-chat-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid var(--gold);
+            flex-shrink: 0;
+        }
+
+        .tv-chat-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .tv-chat-author {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--black);
+            flex: 1;
+            min-width: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .tv-chat-time {
+            font-size: 0.75rem;
+            color: var(--dark-gray);
+            flex-shrink: 0;
+        }
+
+        .tv-chat-text {
+            font-size: 0.9rem;
+            color: var(--black);
+            line-height: 1.4;
+        }
+
+        .tv-chat-input-container {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .tv-chat-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1.5px solid var(--light-gray);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            outline: none;
+            background: var(--gray);
+            transition: all 0.3s ease;
+        }
+
+        .tv-chat-input:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.1);
+            background: white;
+        }
+
+        .tv-chat-send-btn {
+            background: var(--gold);
+            color: var(--black);
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .tv-chat-send-btn:hover {
+            background: var(--gold-dark);
+            transform: scale(1.1);
+        }
+
+        /* TV MEMBERSHIP */
+        .tv-membership {
+            background: linear-gradient(135deg, var(--gold-light), var(--gold));
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--black);
+        }
+
+        .tv-membership-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .tv-membership-text {
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.5;
+        }
+
+        .tv-membership-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .tv-membership-feature {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1.25rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .tv-membership-feature i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--gold-dark);
+        }
+
+        .tv-membership-feature h4 {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .tv-membership-btn {
+            background: var(--black);
+            color: var(--white);
+            border: none;
+            padding: 12px 32px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tv-membership-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* MAIN CONTENT */
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0.75rem 1rem;
+            padding-bottom: 1rem;
+        }
+
+        /* UTILITY CLASSES */
+        .hidden {
+            display: none !important;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-1 { margin-top: 0.5rem; }
+        .mt-2 { margin-top: 1rem; }
+        .mt-3 { margin-top: 1.5rem; }
+        .mt-4 { margin-top: 2rem; }
+
+        .mb-1 { margin-bottom: 0.5rem; }
+        .mb-2 { margin-bottom: 1rem; }
+        .mb-3 { margin-bottom: 1.5rem; }
+        .mb-4 { margin-bottom: 2rem; }
+
+        /* RESPONSIVE DESIGN */
+        @media (max-width: 767px) {
+            .tv-title {
+                font-size: 1.5rem;
+            }
+            
+            .tv-hero {
+                padding: 1.5rem 1rem;
+            }
+            
+            .tv-stats {
+                gap: 1rem;
+            }
+            
+            .tv-stat-number {
+                font-size: 1.2rem;
+            }
+            
+            .tv-schedule-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .tv-clubs-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .tv-membership {
+                padding: 1.5rem;
+            }
+            
+            .tv-membership-title {
+                font-size: 1.5rem;
+            }
+            
+            .tv-membership-features {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                max-width: 800px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .container {
+                max-width: 1000px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo" id="logo">
+                <img src="https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp" alt="THE SONGA Logo">
+                <div class="brand-info">
+                    <div class="brand-name">THE SONGA</div>
+                    <div class="brand-subtitle">UNBOUND | UNBENT | UNBROKEN</div>
+                </div>
+            </div>
+            
+            <div class="auth-section">
+                <div class="notification-btn" id="notificationBtn">
+                    <i class="fas fa-bell"></i>
+                    <div class="notification-badge hidden" id="notificationBadge"></div>
+                </div>
+                
+                <div id="userProfile" class="user-profile">
+                    <div class="user-avatar">
+                        <img id="userAvatar" src="" alt="User Avatar">
+                    </div>
+                    <div class="user-name" id="userDisplayName"></div>
+                    <div class="user-dropdown" id="userDropdown">
+                        <div class="dropdown-item" id="myClubsOption">
+                            <i class="fas fa-users"></i>
+                            <span>My Clubs</span>
+                        </div>
+                        <div class="dropdown-item" id="myProfileOption">
+                            <i class="fas fa-user-circle"></i>
+                            <span>My Profile</span>
+                        </div>
+                        <div class="dropdown-item" id="signOutOption">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Sign Out</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- TV Hero Section -->
+        <section class="tv-hero">
+            <div class="tv-live-badge">
+                <i class="fas fa-circle"></i>
+                LIVE 24/7
+            </div>
+            <h1 class="tv-title">BIG MEDIA TV</h1>
+            <p class="tv-subtitle">
+                Your 24/7 community television network. Watch exclusive content from fitness, Christian, finance, education, and talent clubs.
+            </p>
+            <div class="tv-stats">
+                <div class="tv-stat">
+                    <div class="tv-stat-number" id="liveViewers">1,247</div>
+                    <div class="tv-stat-label">Live Viewers</div>
+                </div>
+                <div class="tv-stat">
+                    <div class="tv-stat-number" id="totalHours">365</div>
+                    <div class="tv-stat-label">Days On Air</div>
+                </div>
+                <div class="tv-stat">
+                    <div class="tv-stat-number" id="clubsCount">6</div>
+                    <div class="tv-stat-label">Clubs</div>
+                </div>
+                <div class="tv-stat">
+                    <div class="tv-stat-number" id="showsCount">50+</div>
+                    <div class="tv-stat-label">Shows</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TV Player -->
+        <section class="tv-player-container">
+            <div class="tv-player-wrapper">
+                <!-- YouTube Live Embed -->
+                <iframe 
+                    class="tv-player"
+                    id="youtubeLivePlayer"
+                    src=""
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen>
+                </iframe>
+                
+                <!-- Offline Overlay -->
+                <div class="tv-player-overlay" id="tvOfflineOverlay">
+                    <div class="tv-offline-icon">
+                        <i class="fas fa-satellite-dish"></i>
+                    </div>
+                    <h3 class="tv-offline-title">Stream Starting Soon</h3>
+                    <p class="tv-offline-text">
+                        BIG MEDIA TV is coming to you 24/7! We're currently setting up our broadcast. 
+                        Check our schedule below for upcoming shows.
+                    </p>
+                    <button class="tv-membership-btn" onclick="showUpcomingSchedule()">
+                        <i class="fas fa-calendar-alt"></i>
+                        View Schedule
+                    </button>
+                </div>
+            </div>
+            
+            <div class="tv-player-controls">
+                <div class="tv-control-left">
+                    <button class="tv-control-btn" id="tvPlayBtn" onclick="toggleTVPlay()">
+                        <i class="fas fa-play" id="tvPlayIcon"></i>
+                    </button>
+                    <button class="tv-control-btn" id="tvVolumeBtn" onclick="toggleTVVolume()">
+                        <i class="fas fa-volume-up" id="tvVolumeIcon"></i>
+                    </button>
+                    <button class="tv-control-btn" id="tvFullscreenBtn" onclick="toggleTVFullscreen()">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                </div>
+                <div class="tv-control-right">
+                    <div class="tv-viewer-count">
+                        <i class="fas fa-eye"></i>
+                        <span id="currentViewers">1,247</span> watching
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Channel Grid -->
+        <section class="tv-grid">
+            <div class="tv-channel-card active" onclick="switchChannel('fitness')">
+                <div class="tv-channel-header">
+                    <div class="tv-channel-icon">
+                        <i class="fas fa-dumbbell"></i>
+                    </div>
+                    <div class="tv-channel-info">
+                        <h3 class="tv-channel-name">WorkFit TV</h3>
+                        <p class="tv-channel-desc">Live workouts, nutrition tips, and wellness coaching</p>
+                    </div>
+                    <div class="tv-channel-live">
+                        <i class="fas fa-circle"></i>
+                        LIVE
+                    </div>
+                </div>
+                <div class="tv-channel-schedule">
+                    <i class="fas fa-clock"></i>
+                    Daily: 7 AM & 6 PM
+                </div>
+            </div>
+
+            <div class="tv-channel-card" onclick="switchChannel('christian')">
+                <div class="tv-channel-header">
+                    <div class="tv-channel-icon">
+                        <i class="fas fa-church"></i>
+                    </div>
+                    <div class="tv-channel-info">
+                        <h3 class="tv-channel-name">Faith Channel</h3>
+                        <p class="tv-channel-desc">Worship, Bible study, and spiritual growth</p>
+                    </div>
+                    <div class="tv-channel-schedule">
+                        <i class="fas fa-clock"></i>
+                        Sundays: 10 AM
+                    </div>
+                </div>
+            </div>
+
+            <div class="tv-channel-card" onclick="switchChannel('finance')">
+                <div class="tv-channel-header">
+                    <div class="tv-channel-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="tv-channel-info">
+                        <h3 class="tv-channel-name">Finance Hub</h3>
+                        <p class="tv-channel-desc">Investment strategies and financial education</p>
+                    </div>
+                    <div class="tv-channel-schedule">
+                        <i class="fas fa-clock"></i>
+                        Weekdays: 2 PM
+                    </div>
+                </div>
+            </div>
+
+            <div class="tv-channel-card" onclick="switchChannel('education')">
+                <div class="tv-channel-header">
+                    <div class="tv-channel-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <div class="tv-channel-info">
+                        <h3 class="tv-channel-name">Learning Zone</h3>
+                        <p class="tv-channel-desc">Educational programs and skill development</p>
+                    </div>
+                    <div class="tv-channel-schedule">
+                        <i class="fas fa-clock"></i>
+                        Mon-Fri: 9 AM - 4 PM
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TV Schedule -->
+        <section class="tv-schedule-section">
+            <div class="tv-schedule-header">
+                <h2 class="tv-schedule-title">
+                    <i class="fas fa-calendar-alt"></i>
+                    Today's Schedule
+                </h2>
+                <div class="tv-schedule-nav">
+                    <button class="tv-schedule-nav-btn" onclick="prevDaySchedule()">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="tv-schedule-nav-btn" onclick="nextDaySchedule()">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="tv-schedule-days" id="scheduleDays">
+                <button class="tv-schedule-day">Mon</button>
+                <button class="tv-schedule-day">Tue</button>
+                <button class="tv-schedule-day">Wed</button>
+                <button class="tv-schedule-day tv-schedule-today active">Thu</button>
+                <button class="tv-schedule-day">Fri</button>
+                <button class="tv-schedule-day">Sat</button>
+                <button class="tv-schedule-day">Sun</button>
+            </div>
+
+            <div class="tv-schedule-list" id="scheduleList">
+                <!-- Schedule items will be populated by JavaScript -->
+                <div class="tv-schedule-item live-now">
+                    <div class="tv-schedule-time">7:00 AM</div>
+                    <div class="tv-schedule-content">
+                        <h4 class="tv-schedule-show">Morning Fitness Bootcamp</h4>
+                        <div class="tv-schedule-channel">
+                            <i class="fas fa-dumbbell"></i>
+                            WorkFit TV
+                            <span class="tv-schedule-live-badge">
+                                <i class="fas fa-circle"></i>
+                                LIVE NOW
+                            </span>
+                        </div>
+                        <p class="tv-schedule-desc">Start your day with energy! 45-minute full-body workout.</p>
+                    </div>
+                </div>
+
+                <div class="tv-schedule-item">
+                    <div class="tv-schedule-time">9:00 AM</div>
+                    <div class="tv-schedule-content">
+                        <h4 class="tv-schedule-show">Financial Freedom 101</h4>
+                        <div class="tv-schedule-channel">
+                            <i class="fas fa-chart-line"></i>
+                            Finance Hub
+                        </div>
+                        <p class="tv-schedule-desc">Basics of budgeting and investment strategies for beginners.</p>
+                    </div>
+                </div>
+
+                <div class="tv-schedule-item">
+                    <div class="tv-schedule-time">2:00 PM</div>
+                    <div class="tv-schedule-content">
+                        <h4 class="tv-schedule-show">Coding Workshop</h4>
+                        <div class="tv-schedule-channel">
+                            <i class="fas fa-graduation-cap"></i>
+                            Learning Zone
+                        </div>
+                        <p class="tv-schedule-desc">Learn web development basics with practical examples.</p>
+                    </div>
+                </div>
+
+                <div class="tv-schedule-item">
+                    <div class="tv-schedule-time">6:00 PM</div>
+                    <div class="tv-schedule-content">
+                        <h4 class="tv-schedule-show">Evening Yoga & Meditation</h4>
+                        <div class="tv-schedule-channel">
+                            <i class="fas fa-dumbbell"></i>
+                            WorkFit TV
+                        </div>
+                        <p class="tv-schedule-desc">Wind down with gentle yoga and guided meditation.</p>
+                    </div>
+                </div>
+
+                <div class="tv-schedule-item">
+                    <div class="tv-schedule-time">8:00 PM</div>
+                    <div class="tv-schedule-content">
+                        <h4 class="tv-schedule-show">Talent Showcase</h4>
+                        <div class="tv-schedule-channel">
+                            <i class="fas fa-star"></i>
+                            Talent Club
+                        </div>
+                        <p class="tv-schedule-desc">Watch amazing performances from our community members.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Clubs Showcase -->
+        <section class="tv-clubs-section">
+            <h2 class="tv-clubs-title">
+                <i class="fas fa-users"></i>
+                Featured Clubs on BIG MEDIA TV
+            </h2>
+            <div class="tv-clubs-grid">
+                <div class="tv-club-card" onclick="showClubDetails('workfit')">
+                    <div class="tv-club-icon">
+                        <i class="fas fa-dumbbell"></i>
+                    </div>
+                    <h3 class="tv-club-name">WorkFit Club</h3>
+                    <p class="tv-club-desc">Fitness, nutrition, and wellness programs for all levels.</p>
+                    <div class="tv-club-schedule">Daily Workouts</div>
+                </div>
+
+                <div class="tv-club-card" onclick="showClubDetails('christian')">
+                    <div class="tv-club-icon">
+                        <i class="fas fa-church"></i>
+                    </div>
+                    <h3 class="tv-club-name">Christian Fellowship</h3>
+                    <p class="tv-club-desc">Spiritual growth, Bible study, and community worship.</p>
+                    <div class="tv-club-schedule">Weekly Services</div>
+                </div>
+
+                <div class="tv-club-card" onclick="showClubDetails('finance')">
+                    <div class="tv-club-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="tv-club-name">Financial Academy</h3>
+                    <p class="tv-club-desc">Investment strategies, budgeting, and wealth building.</p>
+                    <div class="tv-club-schedule">Expert Workshops</div>
+                </div>
+
+                <div class="tv-club-card" onclick="showClubDetails('talent')">
+                    <div class="tv-club-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h3 class="tv-club-name">Talent Club</h3>
+                    <p class="tv-club-desc">Showcase and develop your unique talents and skills.</p>
+                    <div class="tv-club-schedule">Monthly Showcases</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Live Chat -->
+        <section class="tv-chat-section">
+            <div class="tv-chat-header">
+                <h2 class="tv-chat-title">
+                    <i class="fas fa-comments"></i>
+                    Live Chat
+                    <span class="tv-chat-badge" id="chatUsersCount">247 online</span>
+                </h2>
+            </div>
+            
+            <div class="tv-chat-container" id="tvChatContainer">
+                <!-- Chat messages will be loaded here -->
+                <div class="tv-chat-message">
+                    <div class="tv-chat-message-header">
+                        <div class="tv-chat-avatar">
+                            <img src="https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp" alt="User">
+                        </div>
+                        <div class="tv-chat-author">THE SONGA</div>
+                        <div class="tv-chat-time">Just now</div>
+                    </div>
+                    <div class="tv-chat-text">
+                        Welcome to BIG MEDIA TV! Feel free to chat with other viewers while watching.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tv-chat-input-container">
+                <input type="text" class="tv-chat-input" id="tvChatInput" placeholder="Type your message..." onkeypress="if(event.key === 'Enter') sendChatMessage()">
+                <button class="tv-chat-send-btn" onclick="sendChatMessage()">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- Membership CTA -->
+        <section class="tv-membership">
+            <h2 class="tv-membership-title">Join the Inner Circle</h2>
+            <p class="tv-membership-text">
+                Get exclusive access to all club content, premium shows, and interactive features. 
+                As an Inner Circle member, you can even host your own shows on BIG MEDIA TV!
+            </p>
+            
+            <div class="tv-membership-features">
+                <div class="tv-membership-feature">
+                    <i class="fas fa-crown"></i>
+                    <h4>Premium Content</h4>
+                    <p>Exclusive shows and workshops</p>
+                </div>
+                <div class="tv-membership-feature">
+                    <i class="fas fa-broadcast-tower"></i>
+                    <h4>Live Broadcasting</h4>
+                    <p>Host your own shows</p>
+                </div>
+                <div class="tv-membership-feature">
+                    <i class="fas fa-users"></i>
+                    <h4>Networking</h4>
+                    <p>Connect with club members</p>
+                </div>
+            </div>
+            
+            <button class="tv-membership-btn" onclick="joinInnerCircle()">
+                <i class="fas fa-gem"></i>
+                Join Inner Circle
+            </button>
+        </section>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav" id="bottomNav">
+        <a href="index.html" class="nav-item">
+            <i class="fas fa-home nav-icon"></i>
+            <span>Feed</span>
+        </a>
+        <a href="tv.html" class="nav-item active">
+            <i class="fas fa-tv nav-icon"></i>
+            <span>TV</span>
+        </a>
+        <a href="events.html" class="nav-item">
+            <i class="fas fa-calendar-alt nav-icon"></i>
+            <span>Events</span>
+        </a>
+        <a href="library.html" class="nav-item">
+            <i class="fas fa-book nav-icon"></i>
+            <span>Library</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <i class="fas fa-user nav-icon"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+
+    <script>
+        // TV Channel JavaScript
+        let currentChannel = 'fitness';
+        let isPlaying = false;
+        let isMuted = false;
+        let chatMessages = [];
+        let currentDayIndex = 3; // Thursday
+
+        // DOM Elements
+        const elements = {
+            backToTop: document.getElementById('backToTop'),
+            youtubeLivePlayer: document.getElementById('youtubeLivePlayer'),
+            tvOfflineOverlay: document.getElementById('tvOfflineOverlay'),
+            tvPlayBtn: document.getElementById('tvPlayBtn'),
+            tvPlayIcon: document.getElementById('tvPlayIcon'),
+            tvVolumeBtn: document.getElementById('tvVolumeBtn'),
+            tvVolumeIcon: document.getElementById('tvVolumeIcon'),
+            tvFullscreenBtn: document.getElementById('tvFullscreenBtn'),
+            currentViewers: document.getElementById('currentViewers'),
+            liveViewers: document.getElementById('liveViewers'),
+            chatUsersCount: document.getElementById('chatUsersCount'),
+            tvChatContainer: document.getElementById('tvChatContainer'),
+            tvChatInput: document.getElementById('tvChatInput'),
+            bottomNav: document.getElementById('bottomNav'),
+            scheduleDays: document.getElementById('scheduleDays'),
+            scheduleList: document.getElementById('scheduleList')
+        };
+
+        // Initialize the page
+        function initTVPage() {
+            // Setup YouTube embed (replace with your YouTube channel ID)
+            const youtubeChannelId = 'YOUR_YOUTUBE_CHANNEL_ID'; // Replace with your YouTube channel ID
+            const embedUrl = `https://www.youtube.com/embed/live_stream?channel=${youtubeChannelId}&autoplay=0&mute=1`;
+            elements.youtubeLivePlayer.src = embedUrl;
+            
+            // Initialize chat
+            loadChatMessages();
+            
+            // Setup scroll handling
+            window.addEventListener('scroll', handleScroll);
+            
+            // Setup day selection
+            setupDaySelection();
+            
+            // Update viewer counts (simulate real-time)
+            updateViewerCounts();
+            
+            // Show notification
+            showNotification('BIG MEDIA TV is loading...', 'info');
+        }
+
+        // Switch channel
+        function switchChannel(channel) {
+            currentChannel = channel;
+            
+            // Update active channel card
+            document.querySelectorAll('.tv-channel-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+            
+            // Update player (in real implementation, change YouTube stream)
+            showNotification(`Switching to ${getChannelName(channel)}...`, 'info');
+            
+            // Update schedule highlights
+            updateScheduleForChannel(channel);
+        }
+
+        function getChannelName(channel) {
+            const names = {
+                'fitness': 'WorkFit TV',
+                'christian': 'Faith Channel',
+                'finance': 'Finance Hub',
+                'education': 'Learning Zone',
+                'talent': 'Talent Club'
+            };
+            return names[channel] || 'TV Channel';
+        }
+
+        // Toggle play/pause
+        function toggleTVPlay() {
+            if (isPlaying) {
+                // Pause logic (YouTube API would be used here)
+                elements.tvPlayIcon.className = 'fas fa-play';
+                showNotification('TV Paused', 'info');
+            } else {
+                // Play logic
+                elements.tvPlayIcon.className = 'fas fa-pause';
+                elements.tvOfflineOverlay.classList.add('hidden');
+                showNotification('TV Playing', 'success');
+            }
+            isPlaying = !isPlaying;
+        }
+
+        // Toggle volume
+        function toggleTVVolume() {
+            if (isMuted) {
+                elements.tvVolumeIcon.className = 'fas fa-volume-up';
+                showNotification('Volume On', 'info');
+            } else {
+                elements.tvVolumeIcon.className = 'fas fa-volume-mute';
+                showNotification('Volume Muted', 'info');
+            }
+            isMuted = !isMuted;
+        }
+
+        // Toggle fullscreen
+        function toggleTVFullscreen() {
+            const playerContainer = document.querySelector('.tv-player-container');
+            if (!document.fullscreenElement) {
+                if (playerContainer.requestFullscreen) {
+                    playerContainer.requestFullscreen();
+                } else if (playerContainer.webkitRequestFullscreen) {
+                    playerContainer.webkitRequestFullscreen();
+                } else if (playerContainer.msRequestFullscreen) {
+                    playerContainer.msRequestFullscreen();
+                }
+                showNotification('Fullscreen Mode', 'info');
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            }
+        }
+
+        // Update viewer counts
+        function updateViewerCounts() {
+            // Simulate live viewer updates
+            setInterval(() => {
+                const baseViewers = 1247;
+                const randomChange = Math.floor(Math.random() * 50) - 25;
+                const newViewers = Math.max(1000, baseViewers + randomChange);
+                
+                elements.liveViewers.textContent = newViewers.toLocaleString();
+                elements.currentViewers.textContent = newViewers.toLocaleString();
+                
+                // Update chat users count
+                const chatUsers = Math.floor(newViewers / 10);
+                elements.chatUsersCount.textContent = `${chatUsers} online`;
+            }, 10000);
+        }
+
+        // Load chat messages
+        function loadChatMessages() {
+            // Sample chat messages
+            chatMessages = [
+                { user: 'John D.', time: '2 min ago', message: 'Great workout this morning! 💪' },
+                { user: 'Sarah M.', time: '3 min ago', message: 'When is the next finance workshop?' },
+                { user: 'Mike T.', time: '5 min ago', message: 'Love the talent showcase last night!' },
+                { user: 'Grace L.', time: '7 min ago', message: 'Can we get more yoga sessions?' },
+                { user: 'Alex P.', time: '10 min ago', message: 'The meditation session was amazing!' }
+            ];
+            
+            updateChatDisplay();
+        }
+
+        // Send chat message
+        function sendChatMessage() {
+            const input = elements.tvChatInput;
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // Add new message
+            const newMessage = {
+                user: 'You',
+                time: 'Just now',
+                message: message
+            };
+            
+            chatMessages.push(newMessage);
+            updateChatDisplay();
+            
+            // Clear input
+            input.value = '';
+            
+            // Scroll to bottom
+            elements.tvChatContainer.scrollTop = elements.tvChatContainer.scrollHeight;
+            
+            // Show confirmation
+            showNotification('Message sent!', 'success');
+        }
+
+        // Update chat display
+        function updateChatDisplay() {
+            const container = elements.tvChatContainer;
+            container.innerHTML = '';
+            
+            // Add welcome message
+            const welcomeMsg = document.createElement('div');
+            welcomeMsg.className = 'tv-chat-message';
+            welcomeMsg.innerHTML = `
+                <div class="tv-chat-message-header">
+                    <div class="tv-chat-avatar">
+                        <img src="https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp" alt="THE SONGA">
+                    </div>
+                    <div class="tv-chat-author">THE SONGA</div>
+                    <div class="tv-chat-time">Just now</div>
+                </div>
+                <div class="tv-chat-text">
+                    Welcome to BIG MEDIA TV! Feel free to chat with other viewers while watching.
+                </div>
+            `;
+            container.appendChild(welcomeMsg);
+            
+            // Add user messages
+            chatMessages.forEach(msg => {
+                const msgElement = document.createElement('div');
+                msgElement.className = 'tv-chat-message';
+                msgElement.innerHTML = `
+                    <div class="tv-chat-message-header">
+                        <div class="tv-chat-avatar">
+                            <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(msg.user)}&background=${msg.user === 'You' ? 'D4AF37' : '666666'}&color=fff" alt="${msg.user}">
+                        </div>
+                        <div class="tv-chat-author">${msg.user}</div>
+                        <div class="tv-chat-time">${msg.time}</div>
+                    </div>
+                    <div class="tv-chat-text">${msg.message}</div>
+                `;
+                container.appendChild(msgElement);
+            });
+            
+            // Auto-scroll to bottom
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // Setup day selection
+        function setupDaySelection() {
+            const days = elements.scheduleDays.querySelectorAll('.tv-schedule-day');
+            days.forEach((day, index) => {
+                day.addEventListener('click', () => {
+                    // Update active day
+                    days.forEach(d => d.classList.remove('active'));
+                    day.classList.add('active');
+                    currentDayIndex = index;
+                    
+                    // Update schedule (in real app, fetch schedule for selected day)
+                    updateScheduleForDay(index);
+                    showNotification(`Showing schedule for ${day.textContent}`, 'info');
+                });
+            });
+        }
+
+        // Update schedule for day
+        function updateScheduleForDay(dayIndex) {
+            // In real implementation, fetch schedule from Firebase
+            const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+            showNotification(`Schedule for ${days[dayIndex]} loaded`, 'info');
+        }
+
+        // Update schedule for channel
+        function updateScheduleForChannel(channel) {
+            // In real implementation, filter schedule by channel
+            showNotification(`${getChannelName(channel)} schedule loaded`, 'info');
+        }
+
+        // Navigation functions
+        function prevDaySchedule() {
+            const days = elements.scheduleDays.querySelectorAll('.tv-schedule-day');
+            currentDayIndex = (currentDayIndex - 1 + days.length) % days.length;
+            days.forEach(d => d.classList.remove('active'));
+            days[currentDayIndex].classList.add('active');
+            updateScheduleForDay(currentDayIndex);
+        }
+
+        function nextDaySchedule() {
+            const days = elements.scheduleDays.querySelectorAll('.tv-schedule-day');
+            currentDayIndex = (currentDayIndex + 1) % days.length;
+            days.forEach(d => d.classList.remove('active'));
+            days[currentDayIndex].classList.add('active');
+            updateScheduleForDay(currentDayIndex);
+        }
+
+        // Show club details
+        function showClubDetails(club) {
+            showNotification(`${getChannelName(club)} details coming soon!`, 'info');
+        }
+
+        // Show upcoming schedule
+        function showUpcomingSchedule() {
+            // Scroll to schedule section
+            document.querySelector('.tv-schedule-section').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+            showNotification('Showing upcoming schedule', 'info');
+        }
+
+        // Join Inner Circle
+        function joinInnerCircle() {
+            showNotification('Redirecting to membership page...', 'info');
+            // In real implementation, redirect to signup/membership page
+            setTimeout(() => {
+                window.location.href = 'index.html#signinModal';
+            }, 1000);
+        }
+
+        // Scroll handling
+        function handleScroll() {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            // Show/hide back to top button
+            if (scrollTop > 300) {
+                elements.backToTop.classList.add('visible');
+            } else {
+                elements.backToTop.classList.remove('visible');
+            }
+            
+            // Hide/show bottom nav on scroll
+            if (scrollTop > 100) {
+                elements.bottomNav.classList.add('hidden');
+            } else {
+                elements.bottomNav.classList.remove('hidden');
+            }
+        }
+
+        // Show notification
+        function showNotification(message, type = 'info') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `notification-toast show ${type}`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                ${message}
+            `;
+            
+            // Style it
+            notification.style.cssText = `
+                position: fixed;
+                top: 80px;
+                right: 16px;
+                background: ${type === 'success' ? 'var(--success)' : type === 'error' ? 'var(--error)' : 'var(--info)'};
+                color: white;
+                padding: 12px 16px;
+                border-radius: 12px;
+                z-index: 9999;
+                max-width: calc(100vw - 40px);
+                box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+                font-weight: 500;
+                backdrop-filter: blur(10px);
+                font-size: 0.85rem;
+                animation: slideIn 0.3s ease;
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        document.body.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', initTVPage);
+
+        // Make functions available globally
+        window.switchChannel = switchChannel;
+        window.toggleTVPlay = toggleTVPlay;
+        window.toggleTVVolume = toggleTVVolume;
+        window.toggleTVFullscreen = toggleTVFullscreen;
+        window.sendChatMessage = sendChatMessage;
+        window.prevDaySchedule = prevDaySchedule;
+        window.nextDaySchedule = nextDaySchedule;
+        window.showClubDetails = showClubDetails;
+        window.showUpcomingSchedule = showUpcomingSchedule;
+        window.joinInnerCircle = joinInnerCircle;
+    </script>
+</body>
+</html>
