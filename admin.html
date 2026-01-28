@@ -18,8 +18,10 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
 
     <style>
+        /* Previous styles remain the same */
         * {
             margin: 0;
             padding: 0;
@@ -60,6 +62,7 @@
             overflow-x: hidden;
         }
 
+        /* Dashboard Layout */
         .dashboard {
             display: grid;
             grid-template-columns: 280px 1fr;
@@ -308,6 +311,15 @@
             background: #dc2626;
         }
 
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #0da271;
+        }
+
         /* ===== DASHBOARD OVERVIEW ===== */
         .stats-grid {
             display: grid;
@@ -485,6 +497,36 @@
             color: var(--danger);
         }
 
+        .status-draft {
+            background: #e0e7ff;
+            color: var(--info);
+        }
+
+        .status-upcoming {
+            background: #cffafe;
+            color: #0d9488;
+        }
+
+        .status-ongoing {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .status-completed {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .status-available {
+            background: #d1fae5;
+            color: var(--success);
+        }
+
+        .status-borrowed {
+            background: #fee2e2;
+            color: var(--danger);
+        }
+
         .tier-badge {
             display: inline-flex;
             align-items: center;
@@ -542,6 +584,11 @@
         .btn-icon.delete:hover {
             background: #fee2e2;
             color: var(--danger);
+        }
+
+        .btn-icon.view:hover {
+            background: #d1fae5;
+            color: var(--success);
         }
 
         /* ===== FORMS ===== */
@@ -641,10 +688,14 @@
             background: var(--bg-secondary);
             border-radius: var(--radius-lg);
             width: 90%;
-            max-width: 500px;
+            max-width: 600px;
             max-height: 90vh;
             overflow-y: auto;
             animation: modalSlideIn 0.3s ease;
+        }
+
+        .modal-lg {
+            max-width: 800px;
         }
 
         @keyframes modalSlideIn {
@@ -762,6 +813,94 @@
             border: 1px solid #fde68a;
         }
 
+        .alert-info {
+            background: #dbeafe;
+            color: var(--info);
+            border: 1px solid #bfdbfe;
+        }
+
+        /* ===== FILE UPLOAD ===== */
+        .file-upload {
+            border: 2px dashed var(--border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .file-upload:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .file-upload input[type="file"] {
+            display: none;
+        }
+
+        .file-preview {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--bg-primary);
+            border-radius: var(--radius);
+            margin-top: 1rem;
+        }
+
+        .file-preview img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: var(--radius);
+        }
+
+        /* ===== TABS ===== */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.875rem;
+            cursor: pointer;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .tab:hover {
+            color: var(--text-primary);
+        }
+
+        .tab.active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 1200px) {
             .charts-grid {
@@ -819,52 +958,11 @@
                 display: block;
                 overflow-x: auto;
             }
-        }
-
-        /* ===== TABS ===== */
-        .tabs {
-            display: flex;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 2rem;
-        }
-
-        .tab {
-            padding: 0.75rem 1.5rem;
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            font-weight: 500;
-            font-size: 0.875rem;
-            cursor: pointer;
-            position: relative;
-            transition: var(--transition);
-        }
-
-        .tab:hover {
-            color: var(--text-primary);
-        }
-
-        .tab.active {
-            color: var(--primary);
-            font-weight: 600;
-        }
-
-        .tab.active::after {
-            content: '';
-            position: absolute;
-            bottom: -1px;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: var(--primary);
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
+            
+            .modal {
+                width: 95%;
+                max-width: 95%;
+            }
         }
 
         /* ===== DARK MODE SUPPORT ===== */
@@ -998,6 +1096,10 @@
                         <span class="material-icons-sharp">refresh</span>
                         Refresh
                     </button>
+                    <button class="btn btn-danger" id="logoutBtn" style="display: none;">
+                        <span class="material-icons-sharp">logout</span>
+                        Logout
+                    </button>
                 </div>
             </header>
 
@@ -1006,7 +1108,7 @@
 
             <!-- Dashboard Content -->
             <div id="contentContainer">
-                <!-- Dashboard will be loaded here -->
+                <!-- Content will be loaded here -->
             </div>
         </main>
     </div>
@@ -1031,7 +1133,7 @@
                 </div>
                 <div class="stat-change positive">
                     <span class="material-icons-sharp">trending_up</span>
-                    <span>12% from last month</span>
+                    <span id="usersChange">12% from last month</span>
                 </div>
             </div>
             
@@ -1047,15 +1149,15 @@
                 </div>
                 <div class="stat-change positive">
                     <span class="material-icons-sharp">trending_up</span>
-                    <span>8% from last month</span>
+                    <span id="postsChange">8% from last month</span>
                 </div>
             </div>
             
             <div class="stat-card">
                 <div class="stat-header">
                     <div>
-                        <div class="stat-title">Event Registrations</div>
-                        <div class="stat-value" id="eventRegistrations">0</div>
+                        <div class="stat-title">Upcoming Events</div>
+                        <div class="stat-value" id="upcomingEvents">0</div>
                     </div>
                     <div class="stat-icon">
                         <span class="material-icons-sharp">event</span>
@@ -1063,15 +1165,15 @@
                 </div>
                 <div class="stat-change positive">
                     <span class="material-icons-sharp">trending_up</span>
-                    <span>23% from last month</span>
+                    <span id="eventsChange">23% from last month</span>
                 </div>
             </div>
             
             <div class="stat-card">
                 <div class="stat-header">
                     <div>
-                        <div class="stat-title">Books Borrowed</div>
-                        <div class="stat-value" id="booksBorrowed">0</div>
+                        <div class="stat-title">Books Available</div>
+                        <div class="stat-value" id="booksAvailable">0</div>
                     </div>
                     <div class="stat-icon">
                         <span class="material-icons-sharp">library_books</span>
@@ -1079,7 +1181,7 @@
                 </div>
                 <div class="stat-change positive">
                     <span class="material-icons-sharp">trending_up</span>
-                    <span>15% from last month</span>
+                    <span id="libraryChange">15% from last month</span>
                 </div>
             </div>
         </div>
@@ -1088,7 +1190,7 @@
             <div class="chart-card">
                 <div class="chart-header">
                     <h3 class="chart-title">User Growth</h3>
-                    <select class="form-select" style="width: auto; padding: 0.5rem;" id="userGrowthPeriod">
+                    <select class="form-select" style="width: auto; padding: 0.5rem;" id="userGrowthPeriod" onchange="updateUserGrowthChart()">
                         <option value="7">Last 7 days</option>
                         <option value="30" selected>Last 30 days</option>
                         <option value="90">Last 90 days</option>
@@ -1137,6 +1239,7 @@
         <div class="section-header">
             <h2 class="section-title">User Management</h2>
             <div class="header-actions">
+                <input type="text" class="form-input" id="userSearch" placeholder="Search users..." style="width: 200px;">
                 <button class="btn btn-secondary" onclick="exportUsers()">
                     <span class="material-icons-sharp">download</span>
                     Export
@@ -1179,10 +1282,18 @@
     <template id="postsTemplate">
         <div class="section-header">
             <h2 class="section-title">Post Management</h2>
-            <button class="btn btn-primary" onclick="showAddPostModal()">
-                <span class="material-icons-sharp">add</span>
-                Create Post
-            </button>
+            <div class="header-actions">
+                <select class="form-select" id="postFilter" style="width: 150px;">
+                    <option value="all">All Posts</option>
+                    <option value="published">Published</option>
+                    <option value="draft">Drafts</option>
+                    <option value="archived">Archived</option>
+                </select>
+                <button class="btn btn-primary" onclick="showAddPostModal()">
+                    <span class="material-icons-sharp">add</span>
+                    Create Post
+                </button>
+            </div>
         </div>
         
         <div class="data-table-container">
@@ -1206,101 +1317,77 @@
         </div>
     </template>
 
-    <template id="addUserModalTemplate">
-        <div class="modal">
-            <div class="modal-header">
-                <h3 class="modal-title">Add New User</h3>
-                <button class="modal-close" onclick="closeModal()">
-                    <span class="material-icons-sharp">close</span>
+    <template id="eventsTemplate">
+        <div class="section-header">
+            <h2 class="section-title">Event Management</h2>
+            <div class="header-actions">
+                <select class="form-select" id="eventFilter" style="width: 150px;">
+                    <option value="all">All Events</option>
+                    <option value="upcoming">Upcoming</option>
+                    <option value="ongoing">Ongoing</option>
+                    <option value="completed">Completed</option>
+                </select>
+                <button class="btn btn-primary" onclick="showAddEventModal()">
+                    <span class="material-icons-sharp">add</span>
+                    Create Event
                 </button>
             </div>
-            <div class="modal-body">
-                <form id="addUserForm">
-                    <div class="form-group">
-                        <label class="form-label">Email Address *</label>
-                        <input type="email" class="form-input" id="userEmail" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">First Name *</label>
-                        <input type="text" class="form-input" id="userFirstName" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Last Name *</label>
-                        <input type="text" class="form-input" id="userLastName" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Membership Tier *</label>
-                        <select class="form-select" id="userTier" required>
-                            <option value="explorer">Explorer</option>
-                            <option value="scholar">Scholar</option>
-                            <option value="visionary">Visionary</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Initial Password</label>
-                        <input type="password" class="form-input" id="userPassword" placeholder="Leave blank for auto-generate">
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-                <button class="btn btn-primary" onclick="createUser()">Create User</button>
-            </div>
+        </div>
+        
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Event</th>
+                        <th>Date & Time</th>
+                        <th>Location</th>
+                        <th>Registrations</th>
+                        <th>Capacity</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="eventsTableBody">
+                    <!-- Will be populated -->
+                </tbody>
+            </table>
         </div>
     </template>
 
-    <template id="editUserModalTemplate">
-        <div class="modal">
-            <div class="modal-header">
-                <h3 class="modal-title">Edit User</h3>
-                <button class="modal-close" onclick="closeModal()">
-                    <span class="material-icons-sharp">close</span>
+    <template id="libraryTemplate">
+        <div class="section-header">
+            <h2 class="section-title">Library Management</h2>
+            <div class="header-actions">
+                <select class="form-select" id="libraryFilter" style="width: 150px;">
+                    <option value="all">All Books</option>
+                    <option value="available">Available</option>
+                    <option value="borrowed">Borrowed</option>
+                    <option value="reserved">Reserved</option>
+                </select>
+                <button class="btn btn-primary" onclick="showAddBookModal()">
+                    <span class="material-icons-sharp">add</span>
+                    Add Book
                 </button>
             </div>
-            <div class="modal-body">
-                <form id="editUserForm">
-                    <div class="form-group">
-                        <label class="form-label">Email Address</label>
-                        <input type="email" class="form-input" id="editUserEmail" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">First Name</label>
-                        <input type="text" class="form-input" id="editUserFirstName" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Last Name</label>
-                        <input type="text" class="form-input" id="editUserLastName" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Membership Tier</label>
-                        <select class="form-select" id="editUserTier" required>
-                            <option value="explorer">Explorer</option>
-                            <option value="scholar">Scholar</option>
-                            <option value="visionary">Visionary</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Status</label>
-                        <select class="form-select" id="editUserStatus" required>
-                            <option value="active">Active</option>
-                            <option value="suspended">Suspended</option>
-                            <option value="pending">Pending</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Admin Access</label>
-                        <select class="form-select" id="editUserIsAdmin">
-                            <option value="false">No</option>
-                            <option value="true">Yes</option>
-                        </select>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-danger" onclick="deleteUser()">Delete User</button>
-                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-                <button class="btn btn-primary" onclick="saveUser()">Save Changes</button>
-            </div>
+        </div>
+        
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Book</th>
+                        <th>Author</th>
+                        <th>ISBN</th>
+                        <th>Category</th>
+                        <th>Status</th>
+                        <th>Due Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="libraryTableBody">
+                    <!-- Will be populated -->
+                </tbody>
+            </table>
         </div>
     </template>
 
@@ -1319,11 +1406,13 @@
         // Initialize Firebase
         let database;
         let auth;
+        let storage;
         try {
             firebase.initializeApp(firebaseConfig);
             database = firebase.database();
             auth = firebase.auth();
-            console.log("Firebase initialized successfully for admin panel");
+            storage = firebase.storage();
+            console.log("Firebase initialized successfully");
         } catch (error) {
             console.error("Firebase initialization error:", error);
             showAlert("Failed to connect to database. Please refresh the page.", "error");
@@ -1335,18 +1424,23 @@
         let posts = [];
         let events = [];
         let books = [];
+        let logs = [];
         let currentSection = 'dashboard';
         let currentModal = null;
-        let currentEditUserId = null;
+        let currentEditId = null;
+        let currentEditType = null;
 
         // Chart Instances
         let userGrowthChart = null;
         let membershipChart = null;
+        let engagementChart = null;
+        let performanceChart = null;
 
         // DOM Elements
         const contentContainer = document.getElementById('contentContainer');
         const alertContainer = document.getElementById('alertContainer');
         const modalOverlay = document.getElementById('modalOverlay');
+        const logoutBtn = document.getElementById('logoutBtn');
 
         // Initialize Admin Panel
         async function initializeAdminPanel() {
@@ -1361,16 +1455,16 @@
             
             // Start real-time updates
             startRealtimeUpdates();
+            
+            // Show logout button
+            logoutBtn.style.display = 'flex';
         }
 
         // Check Admin Authentication
         async function checkAdminAuth() {
-            // For simplicity, we'll check localStorage
-            // In production, you should implement proper Firebase Admin SDK on backend
             const adminData = localStorage.getItem('the_songa_admin');
             
             if (!adminData) {
-                // Redirect to login or show login modal
                 showLoginModal();
                 return;
             }
@@ -1407,7 +1501,7 @@
                             </div>
                             <div class="alert alert-warning">
                                 <span class="material-icons-sharp" style="vertical-align: middle; margin-right: 0.5rem;">info</span>
-                                Contact system administrator for credentials
+                                Use admin credentials to login
                             </div>
                         </form>
                     </div>
@@ -1425,25 +1519,49 @@
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
             
-            // In production, you would verify against Firebase Auth
-            // For this demo, we'll use a simple check
-            if (email === 'admin@thesongawelfare.com' && password === 'admin123') {
-                const adminData = {
-                    uid: 'admin_001',
-                    email: email,
-                    firstName: 'Admin',
-                    lastName: 'User',
-                    isAdmin: true
-                };
+            try {
+                // Try Firebase authentication
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                const user = userCredential.user;
                 
-                localStorage.setItem('the_songa_admin', JSON.stringify(adminData));
-                currentUser = adminData;
-                updateAdminUI();
-                closeModal();
-                showAlert('Login successful!', 'success');
-                loadDashboard();
-            } else {
-                showAlert('Invalid credentials', 'error');
+                // Check if user is admin (you should have a separate admin collection)
+                const userSnapshot = await database.ref('users').orderByChild('email').equalTo(email).once('value');
+                const userData = userSnapshot.val();
+                
+                if (userData) {
+                    const userId = Object.keys(userData)[0];
+                    const adminUser = { id: userId, ...userData[userId] };
+                    
+                    if (adminUser.isAdmin) {
+                        localStorage.setItem('the_songa_admin', JSON.stringify(adminUser));
+                        currentUser = adminUser;
+                        updateAdminUI();
+                        closeModal();
+                        showAlert('Login successful!', 'success');
+                        loadDashboard();
+                        logoutBtn.style.display = 'flex';
+                    } else {
+                        showAlert('Access denied. Admin privileges required.', 'error');
+                        auth.signOut();
+                    }
+                } else {
+                    showAlert('User not found in database.', 'error');
+                    auth.signOut();
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showAlert('Login failed. Please check your credentials.', 'error');
+            }
+        }
+
+        // Logout
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('the_songa_admin');
+                auth.signOut();
+                currentUser = null;
+                showLoginModal();
+                logoutBtn.style.display = 'none';
             }
         }
 
@@ -1451,12 +1569,12 @@
         function updateAdminUI() {
             if (currentUser) {
                 document.getElementById('adminName').textContent = 
-                    `${currentUser.firstName} ${currentUser.lastName}`;
-                document.getElementById('adminEmail').textContent = currentUser.email;
+                    `${currentUser.firstName || ''} ${currentUser.lastName || ''}`.trim() || 'Admin User';
+                document.getElementById('adminEmail').textContent = currentUser.email || 'admin@thesongawelfare.com';
                 document.getElementById('adminAvatar').textContent = 
-                    currentUser.firstName.charAt(0) + currentUser.lastName.charAt(0);
+                    (currentUser.firstName?.charAt(0) || 'A') + (currentUser.lastName?.charAt(0) || '');
                 document.getElementById('pageSubtitle').textContent = 
-                    `Welcome back, ${currentUser.firstName}`;
+                    `Welcome back, ${currentUser.firstName || 'Admin'}`;
             }
         }
 
@@ -1488,7 +1606,7 @@
                     document.querySelectorAll('.tab-content').forEach(content => {
                         content.classList.remove('active');
                     });
-                    document.getElementById(tabId).classList.add('active');
+                    document.getElementById(tabId)?.classList.add('active');
                 }
             });
 
@@ -1498,15 +1616,46 @@
                 showAlert('Data refreshed', 'success');
             });
 
+            // Logout button
+            logoutBtn.addEventListener('click', logout);
+
             // Global search
             document.getElementById('globalSearch').addEventListener('input', debounce((e) => {
                 const query = e.target.value.toLowerCase();
                 searchData(query);
             }, 300));
 
+            // User search
+            document.addEventListener('input', (e) => {
+                if (e.target.id === 'userSearch') {
+                    const query = e.target.value.toLowerCase();
+                    searchUsers(query);
+                }
+            });
+
+            // Post filter
+            document.addEventListener('change', (e) => {
+                if (e.target.id === 'postFilter') {
+                    filterPosts(e.target.value);
+                }
+                if (e.target.id === 'eventFilter') {
+                    filterEvents(e.target.value);
+                }
+                if (e.target.id === 'libraryFilter') {
+                    filterLibrary(e.target.value);
+                }
+            });
+
             // Close modal on overlay click
             modalOverlay.addEventListener('click', (e) => {
                 if (e.target === modalOverlay) {
+                    closeModal();
+                }
+            });
+
+            // Close modal on Escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
                     closeModal();
                 }
             });
@@ -1524,10 +1673,10 @@
             contentContainer.innerHTML = `
                 <div class="loading">
                     <div class="spinner"></div>
+                    <span style="margin-left: 1rem;">Loading ${section}...</span>
                 </div>
             `;
             
-            // Load section content
             try {
                 switch(section) {
                     case 'dashboard':
@@ -1611,24 +1760,26 @@
         // Fetch Dashboard Data
         async function fetchDashboardData() {
             try {
-                // Fetch users
-                const usersSnapshot = await database.ref('users').once('value');
+                // Fetch all data in parallel
+                const [usersSnapshot, postsSnapshot, eventsSnapshot, booksSnapshot, statsSnapshot] = await Promise.all([
+                    database.ref('users').once('value'),
+                    database.ref('communityPosts').once('value'),
+                    database.ref('events').once('value'),
+                    database.ref('libraryBooks').once('value'),
+                    database.ref('analytics/dailyStats').limitToLast(30).once('value')
+                ]);
+                
                 users = usersSnapshot.exists() ? Object.values(usersSnapshot.val()) : [];
-                
-                // Fetch posts
-                const postsSnapshot = await database.ref('communityPosts').once('value');
                 posts = postsSnapshot.exists() ? Object.values(postsSnapshot.val()) : [];
-                
-                // Fetch events
-                const eventsSnapshot = await database.ref('events').once('value');
                 events = eventsSnapshot.exists() ? Object.values(eventsSnapshot.val()) : [];
-                
-                // Fetch books
-                const booksSnapshot = await database.ref('libraryBooks').once('value');
                 books = booksSnapshot.exists() ? Object.values(booksSnapshot.val()) : [];
+                const stats = statsSnapshot.exists() ? statsSnapshot.val() : {};
                 
                 // Update stats
                 updateDashboardStats();
+                
+                // Update change percentages
+                updateChangePercentages(stats);
                 
             } catch (error) {
                 console.error('Error fetching dashboard data:', error);
@@ -1645,44 +1796,74 @@
             const activePosts = posts.filter(post => post.status === 'published');
             document.getElementById('activePosts').textContent = activePosts.length;
             
-            // Event Registrations
-            let totalRegistrations = 0;
-            events.forEach(event => {
-                totalRegistrations += event.registeredCount || 0;
+            // Upcoming Events
+            const now = new Date();
+            const upcomingEvents = events.filter(event => {
+                const eventDate = new Date(event.date);
+                return eventDate > now;
             });
-            document.getElementById('eventRegistrations').textContent = totalRegistrations;
+            document.getElementById('upcomingEvents').textContent = upcomingEvents.length;
             
-            // Books Borrowed
-            const borrowedBooks = books.filter(book => book.availability === 'borrowed');
-            document.getElementById('booksBorrowed').textContent = borrowedBooks.length;
+            // Books Available
+            const availableBooks = books.filter(book => book.status === 'available');
+            document.getElementById('booksAvailable').textContent = availableBooks.length;
+        }
+
+        // Update Change Percentages
+        function updateChangePercentages(stats) {
+            // This would calculate actual changes from previous period
+            // For now, using sample data
+            const changes = {
+                users: '+12%',
+                posts: '+8%',
+                events: '+23%',
+                library: '+15%'
+            };
+            
+            document.getElementById('usersChange').textContent = `${changes.users} from last month`;
+            document.getElementById('postsChange').textContent = `${changes.posts} from last month`;
+            document.getElementById('eventsChange').textContent = `${changes.events} from last month`;
+            document.getElementById('libraryChange').textContent = `${changes.library} from last month`;
         }
 
         // Initialize User Growth Chart
         function initUserGrowthChart() {
             const ctx = document.getElementById('userGrowthChart').getContext('2d');
             
-            // Sample data - in production, fetch actual data
-            const data = {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                datasets: [{
-                    label: 'New Users',
-                    data: [65, 59, 80, 81, 56, 85],
-                    borderColor: 'rgb(212, 175, 55)',
-                    backgroundColor: 'rgba(212, 175, 55, 0.1)',
-                    fill: true,
-                    tension: 0.4
-                }]
-            };
+            // Generate sample data for last 30 days
+            const labels = [];
+            const data = [];
+            for (let i = 29; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                labels.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+                data.push(Math.floor(Math.random() * 20) + 5); // Random new users per day
+            }
             
             userGrowthChart = new Chart(ctx, {
                 type: 'line',
-                data: data,
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'New Users',
+                        data: data,
+                        borderColor: 'rgb(212, 175, 55)',
+                        backgroundColor: 'rgba(212, 175, 55, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 2
+                    }]
+                },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
                         legend: {
                             display: false
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
                         }
                     },
                     scales: {
@@ -1690,6 +1871,9 @@
                             beginAtZero: true,
                             grid: {
                                 drawBorder: false
+                            },
+                            ticks: {
+                                precision: 0
                             }
                         },
                         x: {
@@ -1702,6 +1886,18 @@
             });
         }
 
+        // Update User Growth Chart
+        function updateUserGrowthChart() {
+            const period = document.getElementById('userGrowthPeriod').value;
+            
+            // Update chart with new period data
+            // In a real app, you would fetch new data based on the period
+            if (userGrowthChart) {
+                userGrowthChart.destroy();
+                initUserGrowthChart();
+            }
+        }
+
         // Initialize Membership Chart
         function initMembershipChart() {
             const ctx = document.getElementById('membershipChart').getContext('2d');
@@ -1711,30 +1907,34 @@
             const scholarCount = users.filter(u => u.membershipTier === 'scholar').length;
             const visionaryCount = users.filter(u => u.membershipTier === 'visionary').length;
             
-            const data = {
-                labels: ['Explorer', 'Scholar', 'Visionary'],
-                datasets: [{
-                    data: [explorerCount, scholarCount, visionaryCount],
-                    backgroundColor: [
-                        'rgb(14, 165, 233)',
-                        'rgb(59, 130, 246)',
-                        'rgb(212, 175, 55)'
-                    ],
-                    borderWidth: 1
-                }]
-            };
-            
             membershipChart = new Chart(ctx, {
                 type: 'doughnut',
-                data: data,
+                data: {
+                    labels: ['Explorer', 'Scholar', 'Visionary'],
+                    datasets: [{
+                        data: [explorerCount, scholarCount, visionaryCount],
+                        backgroundColor: [
+                            'rgb(14, 165, 233)',
+                            'rgb(59, 130, 246)',
+                            'rgb(212, 175, 55)'
+                        ],
+                        borderWidth: 1,
+                        hoverOffset: 4
+                    }]
+                },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
                         legend: {
-                            position: 'bottom'
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true
+                            }
                         }
-                    }
+                    },
+                    cutout: '60%'
                 }
             });
         }
@@ -1742,39 +1942,45 @@
         // Load Recent Activity
         async function loadRecentActivity() {
             try {
-                // Fetch recent activity from database
-                const activitySnapshot = await database.ref('analytics/dailyStats').limitToLast(5).once('value');
-                const activityData = activitySnapshot.exists() ? activitySnapshot.val() : {};
+                // Fetch recent logs
+                const logsSnapshot = await database.ref('logs').limitToLast(10).once('value');
+                const logsData = logsSnapshot.exists() ? logsSnapshot.val() : {};
                 
                 const tableBody = document.getElementById('recentActivityBody');
                 tableBody.innerHTML = '';
                 
-                Object.entries(activityData).forEach(([date, stats]) => {
+                // Convert to array and sort by timestamp
+                const logsArray = Object.entries(logsData).map(([id, log]) => ({ id, ...log }));
+                logsArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                
+                logsArray.slice(0, 5).forEach(log => {
                     const row = document.createElement('tr');
+                    const timeAgo = getTimeAgo(log.timestamp);
+                    
                     row.innerHTML = `
-                        <td><strong>System</strong></td>
-                        <td>Daily Stats</td>
-                        <td>${stats.newUsers || 0} new users, ${stats.newPosts || 0} new posts</td>
-                        <td>${formatDate(date)}</td>
+                        <td><strong>${log.userName || 'System'}</strong></td>
+                        <td>${log.action || 'Activity'}</td>
+                        <td>${log.details || 'No details'}</td>
+                        <td>${timeAgo}</td>
                     `;
                     tableBody.appendChild(row);
                 });
                 
-                // Add sample activities if no data
-                if (Object.keys(activityData).length === 0) {
+                // Add sample activities if no logs
+                if (logsArray.length === 0) {
                     const sampleActivities = [
-                        { user: 'John Doe', action: 'Registered', details: 'New user registration', time: '2 hours ago' },
-                        { user: 'Sarah Johnson', action: 'Upgraded', details: 'Upgraded to Visionary tier', time: '4 hours ago' },
-                        { user: 'System', action: 'Backup', details: 'Daily backup completed', time: '6 hours ago' }
+                        { userName: 'John Doe', action: 'Registered', details: 'New user registration', timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString() },
+                        { userName: 'Sarah Johnson', action: 'Upgraded', details: 'Upgraded to Visionary tier', timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString() },
+                        { userName: 'System', action: 'Backup', details: 'Daily backup completed', timestamp: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString() }
                     ];
                     
                     sampleActivities.forEach(activity => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
-                            <td><strong>${activity.user}</strong></td>
+                            <td><strong>${activity.userName}</strong></td>
                             <td>${activity.action}</td>
                             <td>${activity.details}</td>
-                            <td>${activity.time}</td>
+                            <td>${getTimeAgo(activity.timestamp)}</td>
                         `;
                         tableBody.appendChild(row);
                     });
@@ -1783,6 +1989,22 @@
             } catch (error) {
                 console.error('Error loading recent activity:', error);
             }
+        }
+
+        // Get Time Ago
+        function getTimeAgo(timestamp) {
+            const date = new Date(timestamp);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+            
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return `${diffMins}m ago`;
+            if (diffHours < 24) return `${diffHours}h ago`;
+            if (diffDays < 7) return `${diffDays}d ago`;
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
         }
 
         // Load Users
@@ -1808,34 +2030,37 @@
             tableBody.innerHTML = '';
             
             usersList.forEach(user => {
-                const row = document.createElement('tr');
                 const tierClass = `tier-${user.membershipTier || 'explorer'}`;
                 const statusClass = `status-${user.membershipStatus || 'active'}`;
+                const statusText = user.membershipStatus || 'active';
+                const tierText = (user.membershipTier || 'explorer').charAt(0).toUpperCase() + (user.membershipTier || 'explorer').slice(1);
                 
+                row = document.createElement('tr');
                 row.innerHTML = `
                     <td>
                         <div style="display: flex; align-items: center; gap: 0.75rem;">
                             <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.875rem; color: var(--secondary);">
-                                ${(user.firstName?.charAt(0) || '') + (user.lastName?.charAt(0) || '')}
+                                ${(user.firstName?.charAt(0) || 'U') + (user.lastName?.charAt(0) || '')}
                             </div>
                             <div>
-                                <div style="font-weight: 600;">${user.firstName || ''} ${user.lastName || ''}</div>
+                                <div style="font-weight: 600;">${user.firstName || 'User'} ${user.lastName || ''}</div>
                                 <div style="font-size: 0.75rem; color: var(--text-secondary);">ID: ${user.id.substring(0, 8)}</div>
                             </div>
                         </div>
                     </td>
                     <td>${user.email || 'N/A'}</td>
-                    <td><span class="tier-badge ${tierClass}">${user.membershipTier || 'explorer'}</span></td>
-                    <td><span class="status-badge ${statusClass}">${user.membershipStatus || 'active'}</span></td>
+                    <td><span class="tier-badge ${tierClass}">${tierText}</span></td>
+                    <td><span class="status-badge ${statusClass}">${statusText}</span></td>
                     <td>${user.joinedDate ? formatDate(user.joinedDate) : 'N/A'}</td>
                     <td>
                         <div class="action-buttons">
                             <button class="btn-icon edit" onclick="editUser('${user.id}')" title="Edit">
                                 <span class="material-icons-sharp">edit</span>
                             </button>
-                            <button class="btn-icon delete" onclick="confirmDeleteUser('${user.id}')" title="Delete">
+                            <button class="btn-icon delete" onclick="confirmDelete('user', '${user.id}')" title="Delete">
                                 <span class="material-icons-sharp">delete</span>
                             </button>
+                            ${user.isAdmin ? '<span class="material-icons-sharp" style="color: var(--primary);" title="Admin">verified</span>' : ''}
                         </div>
                     </td>
                 `;
@@ -1843,10 +2068,136 @@
             });
         }
 
+        // Search Users
+        function searchUsers(query) {
+            if (!query.trim()) {
+                renderUsersTable(users);
+                return;
+            }
+            
+            const filteredUsers = users.filter(user => 
+                (user.firstName?.toLowerCase().includes(query) ||
+                user.lastName?.toLowerCase().includes(query) ||
+                user.email?.toLowerCase().includes(query) ||
+                user.membershipTier?.toLowerCase().includes(query) ||
+                user.membershipStatus?.toLowerCase().includes(query))
+            );
+            
+            renderUsersTable(filteredUsers);
+        }
+
         // Show Add User Modal
         function showAddUserModal() {
-            const template = document.getElementById('addUserModalTemplate');
-            showModal(template.innerHTML);
+            const modalHTML = `
+                <div class="modal">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Add New User</h3>
+                        <button class="modal-close" onclick="closeModal()">
+                            <span class="material-icons-sharp">close</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addUserForm">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">First Name *</label>
+                                    <input type="text" class="form-input" id="userFirstName" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Last Name *</label>
+                                    <input type="text" class="form-input" id="userLastName" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Email Address *</label>
+                                <input type="email" class="form-input" id="userEmail" required>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Membership Tier *</label>
+                                    <select class="form-select" id="userTier" required>
+                                        <option value="explorer">Explorer</option>
+                                        <option value="scholar">Scholar</option>
+                                        <option value="visionary">Visionary</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Status *</label>
+                                    <select class="form-select" id="userStatus" required>
+                                        <option value="active">Active</option>
+                                        <option value="pending">Pending</option>
+                                        <option value="suspended">Suspended</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Password *</label>
+                                <input type="password" class="form-input" id="userPassword" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <input type="checkbox" id="userIsAdmin"> Grant admin privileges
+                                </label>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                        <button class="btn btn-primary" onclick="createUser()">Create User</button>
+                    </div>
+                </div>
+            `;
+            
+            showModal(modalHTML);
+        }
+
+        // Create User
+        async function createUser() {
+            const firstName = document.getElementById('userFirstName').value;
+            const lastName = document.getElementById('userLastName').value;
+            const email = document.getElementById('userEmail').value;
+            const password = document.getElementById('userPassword').value;
+            const tier = document.getElementById('userTier').value;
+            const status = document.getElementById('userStatus').value;
+            const isAdmin = document.getElementById('userIsAdmin').checked;
+            
+            if (!firstName || !lastName || !email || !password) {
+                showAlert('Please fill in all required fields', 'error');
+                return;
+            }
+            
+            try {
+                // Create user in Firebase Auth
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                const userId = userCredential.user.uid;
+                
+                // Create user data in database
+                const userData = {
+                    id: userId,
+                    email: email,
+                    firstName: firstName,
+                    lastName: lastName,
+                    fullName: `${firstName} ${lastName}`,
+                    membershipTier: tier,
+                    membershipStatus: status,
+                    isAdmin: isAdmin,
+                    joinedDate: new Date().toISOString(),
+                    lastLogin: new Date().toISOString(),
+                    createdAt: new Date().toISOString()
+                };
+                
+                await database.ref(`users/${userId}`).set(userData);
+                
+                // Log the action
+                await logAction('user_created', `Created user ${firstName} ${lastName}`);
+                
+                showAlert('User created successfully', 'success');
+                closeModal();
+                loadUsers();
+            } catch (error) {
+                console.error('Error creating user:', error);
+                showAlert(`Failed to create user: ${error.message}`, 'error');
+            }
         }
 
         // Edit User
@@ -1857,122 +2208,162 @@
                 return;
             }
             
-            currentEditUserId = userId;
+            currentEditId = userId;
+            currentEditType = 'user';
             
-            const template = document.getElementById('editUserModalTemplate');
-            showModal(template.innerHTML);
+            const modalHTML = `
+                <div class="modal">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Edit User</h3>
+                        <button class="modal-close" onclick="closeModal()">
+                            <span class="material-icons-sharp">close</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editUserForm">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">First Name</label>
+                                    <input type="text" class="form-input" id="editUserFirstName" value="${user.firstName || ''}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Last Name</label>
+                                    <input type="text" class="form-input" id="editUserLastName" value="${user.lastName || ''}" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Email Address</label>
+                                <input type="email" class="form-input" id="editUserEmail" value="${user.email || ''}" required>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Membership Tier</label>
+                                    <select class="form-select" id="editUserTier" required>
+                                        <option value="explorer" ${user.membershipTier === 'explorer' ? 'selected' : ''}>Explorer</option>
+                                        <option value="scholar" ${user.membershipTier === 'scholar' ? 'selected' : ''}>Scholar</option>
+                                        <option value="visionary" ${user.membershipTier === 'visionary' ? 'selected' : ''}>Visionary</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Status</label>
+                                    <select class="form-select" id="editUserStatus" required>
+                                        <option value="active" ${user.membershipStatus === 'active' ? 'selected' : ''}>Active</option>
+                                        <option value="pending" ${user.membershipStatus === 'pending' ? 'selected' : ''}>Pending</option>
+                                        <option value="suspended" ${user.membershipStatus === 'suspended' ? 'selected' : ''}>Suspended</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <input type="checkbox" id="editUserIsAdmin" ${user.isAdmin ? 'checked' : ''}> Admin privileges
+                                </label>
+                            </div>
+                            <div class="alert alert-warning">
+                                <span class="material-icons-sharp" style="vertical-align: middle; margin-right: 0.5rem;">warning</span>
+                                Changing email may require user to re-verify their account.
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-danger" onclick="confirmDelete('user', '${userId}')">Delete User</button>
+                        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                        <button class="btn btn-primary" onclick="saveUser()">Save Changes</button>
+                    </div>
+                </div>
+            `;
             
-            // Populate form
-            setTimeout(() => {
-                document.getElementById('editUserEmail').value = user.email || '';
-                document.getElementById('editUserFirstName').value = user.firstName || '';
-                document.getElementById('editUserLastName').value = user.lastName || '';
-                document.getElementById('editUserTier').value = user.membershipTier || 'explorer';
-                document.getElementById('editUserStatus').value = user.membershipStatus || 'active';
-                document.getElementById('editUserIsAdmin').value = user.isAdmin ? 'true' : 'false';
-            }, 100);
+            showModal(modalHTML);
         }
 
         // Save User
         async function saveUser() {
-            if (!currentEditUserId) return;
+            if (!currentEditId) return;
             
             const updates = {
-                email: document.getElementById('editUserEmail').value,
                 firstName: document.getElementById('editUserFirstName').value,
                 lastName: document.getElementById('editUserLastName').value,
                 fullName: `${document.getElementById('editUserFirstName').value} ${document.getElementById('editUserLastName').value}`,
+                email: document.getElementById('editUserEmail').value,
                 membershipTier: document.getElementById('editUserTier').value,
                 membershipStatus: document.getElementById('editUserStatus').value,
-                isAdmin: document.getElementById('editUserIsAdmin').value === 'true',
+                isAdmin: document.getElementById('editUserIsAdmin').checked,
                 updatedAt: new Date().toISOString()
             };
             
             try {
-                await database.ref(`users/${currentEditUserId}`).update(updates);
+                await database.ref(`users/${currentEditId}`).update(updates);
+                await logAction('user_updated', `Updated user ${updates.firstName} ${updates.lastName}`);
                 showAlert('User updated successfully', 'success');
                 closeModal();
-                loadUsers(); // Refresh the table
+                loadUsers();
             } catch (error) {
                 console.error('Error updating user:', error);
                 showAlert('Failed to update user', 'error');
             }
         }
 
-        // Delete User
-        async function deleteUser() {
-            if (!currentEditUserId || !confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
-                return;
-            }
+        // Confirm Delete
+        function confirmDelete(type, id) {
+            const itemName = type === 'user' ? 'user' : 
+                           type === 'post' ? 'post' : 
+                           type === 'event' ? 'event' : 'book';
             
+            if (confirm(`Are you sure you want to delete this ${itemName}? This action cannot be undone.`)) {
+                deleteItem(type, id);
+            }
+        }
+
+        // Delete Item
+        async function deleteItem(type, id) {
             try {
-                await database.ref(`users/${currentEditUserId}`).remove();
-                showAlert('User deleted successfully', 'success');
+                switch(type) {
+                    case 'user':
+                        await database.ref(`users/${id}`).remove();
+                        await auth.deleteUser(id);
+                        await logAction('user_deleted', `Deleted user ${id}`);
+                        showAlert('User deleted successfully', 'success');
+                        loadUsers();
+                        break;
+                    case 'post':
+                        await database.ref(`communityPosts/${id}`).remove();
+                        await logAction('post_deleted', `Deleted post ${id}`);
+                        showAlert('Post deleted successfully', 'success');
+                        loadPosts();
+                        break;
+                    case 'event':
+                        await database.ref(`events/${id}`).remove();
+                        await logAction('event_deleted', `Deleted event ${id}`);
+                        showAlert('Event deleted successfully', 'success');
+                        loadEvents();
+                        break;
+                    case 'book':
+                        await database.ref(`libraryBooks/${id}`).remove();
+                        await logAction('book_deleted', `Deleted book ${id}`);
+                        showAlert('Book deleted successfully', 'success');
+                        loadLibrary();
+                        break;
+                }
                 closeModal();
-                loadUsers(); // Refresh the table
             } catch (error) {
-                console.error('Error deleting user:', error);
-                showAlert('Failed to delete user', 'error');
+                console.error(`Error deleting ${type}:`, error);
+                showAlert(`Failed to delete ${type}`, 'error');
             }
         }
 
-        // Confirm Delete User
-        function confirmDeleteUser(userId) {
-            if (confirm('Are you sure you want to delete this user?')) {
-                deleteUserById(userId);
-            }
-        }
-
-        // Delete User by ID
-        async function deleteUserById(userId) {
-            try {
-                await database.ref(`users/${userId}`).remove();
-                showAlert('User deleted successfully', 'success');
-                loadUsers();
-            } catch (error) {
-                console.error('Error deleting user:', error);
-                showAlert('Failed to delete user', 'error');
-            }
-        }
-
-        // Create User
-        async function createUser() {
-            const email = document.getElementById('userEmail').value;
-            const firstName = document.getElementById('userFirstName').value;
-            const lastName = document.getElementById('userLastName').value;
-            const tier = document.getElementById('userTier').value;
-            const password = document.getElementById('userPassword').value;
+        // Export Users
+        function exportUsers() {
+            const data = users.map(user => ({
+                ID: user.id,
+                Name: `${user.firstName} ${user.lastName}`,
+                Email: user.email,
+                'Membership Tier': user.membershipTier,
+                Status: user.membershipStatus,
+                'Join Date': user.joinedDate,
+                'Last Login': user.lastLogin,
+                'Is Admin': user.isAdmin ? 'Yes' : 'No'
+            }));
             
-            if (!email || !firstName || !lastName) {
-                showAlert('Please fill in all required fields', 'error');
-                return;
-            }
-            
-            try {
-                // In production, you would create user in Firebase Auth first
-                // For this demo, we'll add directly to database
-                const userId = `user_${Date.now()}`;
-                const userData = {
-                    id: userId,
-                    email: email,
-                    firstName: firstName,
-                    lastName: lastName,
-                    fullName: `${firstName} ${lastName}`,
-                    membershipTier: tier,
-                    membershipStatus: 'active',
-                    joinedDate: new Date().toISOString(),
-                    lastLogin: new Date().toISOString(),
-                    isAdmin: false
-                };
-                
-                await database.ref(`users/${userId}`).set(userData);
-                showAlert('User created successfully', 'success');
-                closeModal();
-                loadUsers();
-            } catch (error) {
-                console.error('Error creating user:', error);
-                showAlert('Failed to create user', 'error');
-            }
+            exportToCSV(data, `the_songa_users_${new Date().toISOString().split('T')[0]}.csv`);
         }
 
         // Load Posts
@@ -1984,7 +2375,7 @@
                 const postsSnapshot = await database.ref('communityPosts').once('value');
                 posts = postsSnapshot.exists() ? Object.entries(postsSnapshot.val()).map(([id, data]) => ({ id, ...data })) : [];
                 
-                renderPostsTable();
+                renderPostsTable(posts);
                 
             } catch (error) {
                 console.error('Error loading posts:', error);
@@ -1993,31 +2384,35 @@
         }
 
         // Render Posts Table
-        function renderPostsTable() {
+        function renderPostsTable(postsList) {
             const tableBody = document.getElementById('postsTableBody');
             tableBody.innerHTML = '';
             
-            posts.forEach(post => {
-                const row = document.createElement('tr');
-                const statusClass = post.status === 'published' ? 'status-active' : 'status-pending';
+            postsList.forEach(post => {
+                const statusClass = `status-${post.status || 'draft'}`;
+                const statusText = (post.status || 'draft').charAt(0).toUpperCase() + (post.status || 'draft').slice(1);
                 
+                const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>
                         <div style="font-weight: 600;">${post.title || 'Untitled'}</div>
                         <div style="font-size: 0.75rem; color: var(--text-secondary);">${post.id.substring(0, 8)}</div>
                     </td>
                     <td>${post.authorName || 'Unknown'}</td>
-                    <td><span class="status-badge">${post.category || 'announcement'}</span></td>
+                    <td><span class="status-badge">${post.category || 'general'}</span></td>
                     <td>${post.likes || 0}</td>
-                    <td>${post.comments || 0}</td>
-                    <td><span class="status-badge ${statusClass}">${post.status || 'draft'}</span></td>
+                    <td>${post.comments ? Object.keys(post.comments).length : 0}</td>
+                    <td><span class="status-badge ${statusClass}">${statusText}</span></td>
                     <td>${post.createdAt ? formatDate(post.createdAt) : 'N/A'}</td>
                     <td>
                         <div class="action-buttons">
+                            <button class="btn-icon view" onclick="viewPost('${post.id}')" title="View">
+                                <span class="material-icons-sharp">visibility</span>
+                            </button>
                             <button class="btn-icon edit" onclick="editPost('${post.id}')" title="Edit">
                                 <span class="material-icons-sharp">edit</span>
                             </button>
-                            <button class="btn-icon delete" onclick="deletePost('${post.id}')" title="Delete">
+                            <button class="btn-icon delete" onclick="confirmDelete('post', '${post.id}')" title="Delete">
                                 <span class="material-icons-sharp">delete</span>
                             </button>
                         </div>
@@ -2027,10 +2422,21 @@
             });
         }
 
+        // Filter Posts
+        function filterPosts(status) {
+            if (status === 'all') {
+                renderPostsTable(posts);
+                return;
+            }
+            
+            const filteredPosts = posts.filter(post => post.status === status);
+            renderPostsTable(filteredPosts);
+        }
+
         // Show Add Post Modal
         function showAddPostModal() {
             const modalHTML = `
-                <div class="modal" style="max-width: 600px;">
+                <div class="modal modal-lg">
                     <div class="modal-header">
                         <h3 class="modal-title">Create New Post</h3>
                         <button class="modal-close" onclick="closeModal()">
@@ -2045,7 +2451,7 @@
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Content *</label>
-                                <textarea class="form-textarea" id="postContent" rows="6" required></textarea>
+                                <textarea class="form-textarea" id="postContent" rows="8" required></textarea>
                             </div>
                             <div class="form-grid">
                                 <div class="form-group">
@@ -2053,14 +2459,23 @@
                                     <select class="form-select" id="postCategory">
                                         <option value="announcement">Announcement</option>
                                         <option value="event">Event</option>
+                                        <option value="news">News</option>
+                                        <option value="educational">Educational</option>
                                         <option value="discussion">Discussion</option>
-                                        <option value="resource">Resource</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">Author</label>
-                                    <input type="text" class="form-input" id="postAuthor" value="THE SONGA">
+                                    <label class="form-label">Status</label>
+                                    <select class="form-select" id="postStatus">
+                                        <option value="draft">Draft</option>
+                                        <option value="published">Published</option>
+                                        <option value="archived">Archived</option>
+                                    </select>
                                 </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Featured Image URL (optional)</label>
+                                <input type="url" class="form-input" id="postImage" placeholder="https://example.com/image.jpg">
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Tags (comma-separated)</label>
@@ -2068,14 +2483,14 @@
                             </div>
                             <div class="form-group">
                                 <label class="form-label">
-                                    <input type="checkbox" id="postPinned"> Pin this post
+                                    <input type="checkbox" id="postPinned"> Pin this post to top
                                 </label>
                             </div>
                         </form>
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-                        <button class="btn btn-primary" onclick="createPost()">Publish Post</button>
+                        <button class="btn btn-primary" onclick="createPost()">Create Post</button>
                     </div>
                 </div>
             `;
@@ -2088,7 +2503,8 @@
             const title = document.getElementById('postTitle').value;
             const content = document.getElementById('postContent').value;
             const category = document.getElementById('postCategory').value;
-            const author = document.getElementById('postAuthor').value;
+            const status = document.getElementById('postStatus').value;
+            const imageUrl = document.getElementById('postImage').value;
             const tags = document.getElementById('postTags').value;
             const isPinned = document.getElementById('postPinned').checked;
             
@@ -2098,33 +2514,85 @@
             }
             
             try {
-                const postId = `post_${Date.now()}`;
+                const postId = database.ref().child('communityPosts').push().key;
                 const postData = {
                     id: postId,
                     title: title,
                     content: content,
                     category: category,
-                    authorName: author,
-                    authorId: currentUser.uid,
+                    authorName: currentUser.fullName || 'Admin',
+                    authorId: currentUser.id,
+                    status: status,
+                    imageUrl: imageUrl || null,
                     tags: tags ? tags.split(',').map(t => t.trim()) : [],
                     isPinned: isPinned,
-                    status: 'published',
                     likes: 0,
-                    comments: 0,
-                    shares: 0,
-                    bookmarks: 0,
+                    comments: {},
+                    views: 0,
                     createdAt: new Date().toISOString(),
                     updatedAt: new Date().toISOString()
                 };
                 
                 await database.ref(`communityPosts/${postId}`).set(postData);
-                showAlert('Post published successfully', 'success');
+                await logAction('post_created', `Created post: ${title}`);
+                
+                showAlert('Post created successfully', 'success');
                 closeModal();
                 loadPosts();
             } catch (error) {
                 console.error('Error creating post:', error);
-                showAlert('Failed to publish post', 'error');
+                showAlert('Failed to create post', 'error');
             }
+        }
+
+        // View Post
+        async function viewPost(postId) {
+            const post = posts.find(p => p.id === postId);
+            if (!post) {
+                showAlert('Post not found', 'error');
+                return;
+            }
+            
+            const modalHTML = `
+                <div class="modal modal-lg">
+                    <div class="modal-header">
+                        <h3 class="modal-title">${post.title}</h3>
+                        <button class="modal-close" onclick="closeModal()">
+                            <span class="material-icons-sharp">close</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div style="margin-bottom: 1rem;">
+                            <span class="status-badge status-${post.status}">${post.status}</span>
+                            <span class="status-badge">${post.category}</span>
+                            ${post.isPinned ? '<span class="status-badge" style="background: var(--primary-light); color: var(--primary-dark);">Pinned</span>' : ''}
+                        </div>
+                        ${post.imageUrl ? `<img src="${post.imageUrl}" style="width: 100%; max-height: 300px; object-fit: cover; border-radius: var(--radius); margin-bottom: 1rem;">` : ''}
+                        <div style="margin-bottom: 1rem;">
+                            <strong>Author:</strong> ${post.authorName}<br>
+                            <strong>Created:</strong> ${formatDate(post.createdAt)}<br>
+                            <strong>Updated:</strong> ${formatDate(post.updatedAt)}
+                        </div>
+                        <div style="background: var(--bg-primary); padding: 1rem; border-radius: var(--radius); margin-bottom: 1rem;">
+                            ${post.content}
+                        </div>
+                        <div>
+                            <strong>Tags:</strong> ${post.tags ? post.tags.map(tag => `<span class="status-badge" style="margin: 0.25rem;">${tag}</span>`).join('') : 'None'}
+                        </div>
+                        <div style="display: flex; gap: 2rem; margin-top: 1rem;">
+                            <div><strong>Likes:</strong> ${post.likes || 0}</div>
+                            <div><strong>Comments:</strong> ${post.comments ? Object.keys(post.comments).length : 0}</div>
+                            <div><strong>Views:</strong> ${post.views || 0}</div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+                        <button class="btn btn-primary" onclick="editPost('${postId}')">Edit Post</button>
+                    </div>
+                </div>
+            `;
+            
+            showModal(modalHTML);
         }
 
         // Edit Post
@@ -2135,8 +2603,13 @@
                 return;
             }
             
+            currentEditId = postId;
+            currentEditType = 'post';
+            
+            closeModal(); // Close view modal if open
+            
             const modalHTML = `
-                <div class="modal" style="max-width: 600px;">
+                <div class="modal modal-lg">
                     <div class="modal-header">
                         <h3 class="modal-title">Edit Post</h3>
                         <button class="modal-close" onclick="closeModal()">
@@ -2147,26 +2620,51 @@
                         <form id="editPostForm">
                             <div class="form-group">
                                 <label class="form-label">Title</label>
-                                <input type="text" class="form-input" id="editPostTitle" value="${post.title || ''}">
+                                <input type="text" class="form-input" id="editPostTitle" value="${post.title || ''}" required>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Content</label>
-                                <textarea class="form-textarea" id="editPostContent" rows="6">${post.content || ''}</textarea>
+                                <textarea class="form-textarea" id="editPostContent" rows="8" required>${post.content || ''}</textarea>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Category</label>
+                                    <select class="form-select" id="editPostCategory">
+                                        <option value="announcement" ${post.category === 'announcement' ? 'selected' : ''}>Announcement</option>
+                                        <option value="event" ${post.category === 'event' ? 'selected' : ''}>Event</option>
+                                        <option value="news" ${post.category === 'news' ? 'selected' : ''}>News</option>
+                                        <option value="educational" ${post.category === 'educational' ? 'selected' : ''}>Educational</option>
+                                        <option value="discussion" ${post.category === 'discussion' ? 'selected' : ''}>Discussion</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Status</label>
+                                    <select class="form-select" id="editPostStatus">
+                                        <option value="draft" ${post.status === 'draft' ? 'selected' : ''}>Draft</option>
+                                        <option value="published" ${post.status === 'published' ? 'selected' : ''}>Published</option>
+                                        <option value="archived" ${post.status === 'archived' ? 'selected' : ''}>Archived</option>
+                                    </select>
+                                </div>
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Status</label>
-                                <select class="form-select" id="editPostStatus">
-                                    <option value="published" ${post.status === 'published' ? 'selected' : ''}>Published</option>
-                                    <option value="draft" ${post.status === 'draft' ? 'selected' : ''}>Draft</option>
-                                    <option value="archived" ${post.status === 'archived' ? 'selected' : ''}>Archived</option>
-                                </select>
+                                <label class="form-label">Featured Image URL</label>
+                                <input type="url" class="form-input" id="editPostImage" value="${post.imageUrl || ''}" placeholder="https://example.com/image.jpg">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Tags (comma-separated)</label>
+                                <input type="text" class="form-input" id="editPostTags" value="${post.tags ? post.tags.join(', ') : ''}" placeholder="community, welcome, announcement">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <input type="checkbox" id="editPostPinned" ${post.isPinned ? 'checked' : ''}> Pin this post to top
+                                </label>
                             </div>
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-danger" onclick="deletePost('${postId}')">Delete Post</button>
+                        <button class="btn btn-danger" onclick="confirmDelete('post', '${postId}')">Delete Post</button>
                         <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-                        <button class="btn btn-primary" onclick="updatePost('${postId}')">Save Changes</button>
+                        <button class="btn btn-primary" onclick="updatePost()">Save Changes</button>
                     </div>
                 </div>
             `;
@@ -2175,16 +2673,24 @@
         }
 
         // Update Post
-        async function updatePost(postId) {
+        async function updatePost() {
+            if (!currentEditId) return;
+            
             const updates = {
                 title: document.getElementById('editPostTitle').value,
                 content: document.getElementById('editPostContent').value,
+                category: document.getElementById('editPostCategory').value,
                 status: document.getElementById('editPostStatus').value,
+                imageUrl: document.getElementById('editPostImage').value || null,
+                tags: document.getElementById('editPostTags').value ? 
+                      document.getElementById('editPostTags').value.split(',').map(t => t.trim()) : [],
+                isPinned: document.getElementById('editPostPinned').checked,
                 updatedAt: new Date().toISOString()
             };
             
             try {
-                await database.ref(`communityPosts/${postId}`).update(updates);
+                await database.ref(`communityPosts/${currentEditId}`).update(updates);
+                await logAction('post_updated', `Updated post: ${updates.title}`);
                 showAlert('Post updated successfully', 'success');
                 closeModal();
                 loadPosts();
@@ -2194,59 +2700,800 @@
             }
         }
 
-        // Delete Post
-        async function deletePost(postId) {
-            if (!confirm('Are you sure you want to delete this post?')) {
+        // Load Events
+        async function loadEvents() {
+            const template = document.getElementById('eventsTemplate');
+            contentContainer.innerHTML = template.innerHTML;
+            
+            try {
+                const eventsSnapshot = await database.ref('events').once('value');
+                events = eventsSnapshot.exists() ? Object.entries(eventsSnapshot.val()).map(([id, data]) => ({ id, ...data })) : [];
+                
+                renderEventsTable(events);
+                
+            } catch (error) {
+                console.error('Error loading events:', error);
+                showAlert('Failed to load events', 'error');
+            }
+        }
+
+        // Render Events Table
+        function renderEventsTable(eventsList) {
+            const tableBody = document.getElementById('eventsTableBody');
+            tableBody.innerHTML = '';
+            
+            const now = new Date();
+            
+            eventsList.forEach(event => {
+                const eventDate = new Date(event.date);
+                let status = 'upcoming';
+                let statusClass = 'status-upcoming';
+                
+                if (event.status === 'completed') {
+                    status = 'completed';
+                    statusClass = 'status-completed';
+                } else if (event.status === 'cancelled') {
+                    status = 'cancelled';
+                    statusClass = 'status-suspended';
+                } else if (eventDate < now) {
+                    status = 'completed';
+                    statusClass = 'status-completed';
+                } else if (eventDate.getTime() - now.getTime() < 24 * 60 * 60 * 1000) {
+                    status = 'ongoing';
+                    statusClass = 'status-ongoing';
+                }
+                
+                row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <div style="font-weight: 600;">${event.title || 'Untitled Event'}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-secondary);">${event.id.substring(0, 8)}</div>
+                    </td>
+                    <td>
+                        <div>${formatDate(event.date)}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-secondary);">${event.time || 'All day'}</div>
+                    </td>
+                    <td>${event.location || 'Online'}</td>
+                    <td>${event.registeredCount || 0}</td>
+                    <td>${event.capacity || 'Unlimited'}</td>
+                    <td><span class="status-badge ${statusClass}">${status}</span></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-icon view" onclick="viewEvent('${event.id}')" title="View">
+                                <span class="material-icons-sharp">visibility</span>
+                            </button>
+                            <button class="btn-icon edit" onclick="editEvent('${event.id}')" title="Edit">
+                                <span class="material-icons-sharp">edit</span>
+                            </button>
+                            <button class="btn-icon delete" onclick="confirmDelete('event', '${event.id}')" title="Delete">
+                                <span class="material-icons-sharp">delete</span>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Filter Events
+        function filterEvents(filter) {
+            if (filter === 'all') {
+                renderEventsTable(events);
+                return;
+            }
+            
+            const now = new Date();
+            let filteredEvents = [];
+            
+            switch(filter) {
+                case 'upcoming':
+                    filteredEvents = events.filter(event => {
+                        const eventDate = new Date(event.date);
+                        return eventDate > now && event.status !== 'cancelled';
+                    });
+                    break;
+                case 'ongoing':
+                    filteredEvents = events.filter(event => {
+                        const eventDate = new Date(event.date);
+                        return eventDate.getTime() - now.getTime() < 24 * 60 * 60 * 1000 && eventDate > now;
+                    });
+                    break;
+                case 'completed':
+                    filteredEvents = events.filter(event => {
+                        const eventDate = new Date(event.date);
+                        return eventDate < now || event.status === 'completed';
+                    });
+                    break;
+            }
+            
+            renderEventsTable(filteredEvents);
+        }
+
+        // Show Add Event Modal
+        function showAddEventModal() {
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const tomorrowStr = tomorrow.toISOString().split('T')[0];
+            
+            const modalHTML = `
+                <div class="modal modal-lg">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Create New Event</h3>
+                        <button class="modal-close" onclick="closeModal()">
+                            <span class="material-icons-sharp">close</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addEventForm">
+                            <div class="form-group">
+                                <label class="form-label">Event Title *</label>
+                                <input type="text" class="form-input" id="eventTitle" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Description *</label>
+                                <textarea class="form-textarea" id="eventDescription" rows="6" required></textarea>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Date *</label>
+                                    <input type="date" class="form-input" id="eventDate" value="${tomorrowStr}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Time</label>
+                                    <input type="time" class="form-input" id="eventTime">
+                                </div>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Location</label>
+                                    <input type="text" class="form-input" id="eventLocation" placeholder="Online or physical address">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Capacity</label>
+                                    <input type="number" class="form-input" id="eventCapacity" placeholder="Leave empty for unlimited">
+                                </div>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Event Type</label>
+                                    <select class="form-select" id="eventType">
+                                        <option value="workshop">Workshop</option>
+                                        <option value="seminar">Seminar</option>
+                                        <option value="meeting">Meeting</option>
+                                        <option value="social">Social Event</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Registration Fee (KSh)</label>
+                                    <input type="number" class="form-input" id="eventFee" value="0" min="0">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Featured Image URL</label>
+                                <input type="url" class="form-input" id="eventImage" placeholder="https://example.com/event.jpg">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Organizer Name</label>
+                                <input type="text" class="form-input" id="eventOrganizer" value="${currentUser.fullName || 'THE SONGA'}">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                        <button class="btn btn-primary" onclick="createEvent()">Create Event</button>
+                    </div>
+                </div>
+            `;
+            
+            showModal(modalHTML);
+        }
+
+        // Create Event
+        async function createEvent() {
+            const title = document.getElementById('eventTitle').value;
+            const description = document.getElementById('eventDescription').value;
+            const date = document.getElementById('eventDate').value;
+            const time = document.getElementById('eventTime').value;
+            const location = document.getElementById('eventLocation').value;
+            const capacity = document.getElementById('eventCapacity').value;
+            const type = document.getElementById('eventType').value;
+            const fee = document.getElementById('eventFee').value;
+            const imageUrl = document.getElementById('eventImage').value;
+            const organizer = document.getElementById('eventOrganizer').value;
+            
+            if (!title || !description || !date) {
+                showAlert('Please fill in required fields', 'error');
                 return;
             }
             
             try {
-                await database.ref(`communityPosts/${postId}`).remove();
-                showAlert('Post deleted successfully', 'success');
+                const eventId = database.ref().child('events').push().key;
+                const eventData = {
+                    id: eventId,
+                    title: title,
+                    description: description,
+                    date: date,
+                    time: time || null,
+                    location: location || 'Online',
+                    capacity: capacity ? parseInt(capacity) : null,
+                    type: type,
+                    fee: parseInt(fee) || 0,
+                    imageUrl: imageUrl || null,
+                    organizer: organizer,
+                    registeredCount: 0,
+                    status: 'upcoming',
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                };
+                
+                await database.ref(`events/${eventId}`).set(eventData);
+                await logAction('event_created', `Created event: ${title}`);
+                
+                showAlert('Event created successfully', 'success');
                 closeModal();
-                loadPosts();
+                loadEvents();
             } catch (error) {
-                console.error('Error deleting post:', error);
-                showAlert('Failed to delete post', 'error');
+                console.error('Error creating event:', error);
+                showAlert('Failed to create event', 'error');
             }
         }
 
-        // Load Events
-        async function loadEvents() {
-            contentContainer.innerHTML = `
-                <div class="section-header">
-                    <h2 class="section-title">Event Management</h2>
-                    <button class="btn btn-primary" onclick="showAddEventModal()">
-                        <span class="material-icons-sharp">add</span>
-                        Create Event
-                    </button>
-                </div>
-                <div class="loading">
-                    <div class="spinner"></div>
+        // View Event
+        async function viewEvent(eventId) {
+            const event = events.find(e => e.id === eventId);
+            if (!event) {
+                showAlert('Event not found', 'error');
+                return;
+            }
+            
+            const modalHTML = `
+                <div class="modal modal-lg">
+                    <div class="modal-header">
+                        <h3 class="modal-title">${event.title}</h3>
+                        <button class="modal-close" onclick="closeModal()">
+                            <span class="material-icons-sharp">close</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        ${event.imageUrl ? `<img src="${event.imageUrl}" style="width: 100%; max-height: 300px; object-fit: cover; border-radius: var(--radius); margin-bottom: 1rem;">` : ''}
+                        <div style="margin-bottom: 1rem;">
+                            <div><strong>Date:</strong> ${formatDate(event.date)} ${event.time ? `at ${event.time}` : ''}</div>
+                            <div><strong>Location:</strong> ${event.location}</div>
+                            <div><strong>Organizer:</strong> ${event.organizer}</div>
+                            <div><strong>Type:</strong> ${event.type}</div>
+                            <div><strong>Fee:</strong> KSh ${event.fee || 0}</div>
+                        </div>
+                        <div style="background: var(--bg-primary); padding: 1rem; border-radius: var(--radius); margin-bottom: 1rem;">
+                            ${event.description}
+                        </div>
+                        <div style="display: flex; gap: 2rem; margin-top: 1rem;">
+                            <div><strong>Capacity:</strong> ${event.capacity || 'Unlimited'}</div>
+                            <div><strong>Registered:</strong> ${event.registeredCount || 0}</div>
+                            <div><strong>Available:</strong> ${event.capacity ? event.capacity - (event.registeredCount || 0) : 'Unlimited'}</div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+                        <button class="btn btn-primary" onclick="editEvent('${eventId}')">Edit Event</button>
+                    </div>
                 </div>
             `;
             
-            // Implementation similar to posts
-            // ... (would include event CRUD operations)
+            showModal(modalHTML);
+        }
+
+        // Edit Event
+        async function editEvent(eventId) {
+            const event = events.find(e => e.id === eventId);
+            if (!event) {
+                showAlert('Event not found', 'error');
+                return;
+            }
+            
+            currentEditId = eventId;
+            currentEditType = 'event';
+            
+            closeModal(); // Close view modal if open
+            
+            const modalHTML = `
+                <div class="modal modal-lg">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Edit Event</h3>
+                        <button class="modal-close" onclick="closeModal()">
+                            <span class="material-icons-sharp">close</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editEventForm">
+                            <div class="form-group">
+                                <label class="form-label">Event Title</label>
+                                <input type="text" class="form-input" id="editEventTitle" value="${event.title || ''}" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Description</label>
+                                <textarea class="form-textarea" id="editEventDescription" rows="6" required>${event.description || ''}</textarea>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Date</label>
+                                    <input type="date" class="form-input" id="editEventDate" value="${event.date}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Time</label>
+                                    <input type="time" class="form-input" id="editEventTime" value="${event.time || ''}">
+                                </div>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Location</label>
+                                    <input type="text" class="form-input" id="editEventLocation" value="${event.location || ''}" placeholder="Online or physical address">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Capacity</label>
+                                    <input type="number" class="form-input" id="editEventCapacity" value="${event.capacity || ''}" placeholder="Leave empty for unlimited">
+                                </div>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Event Type</label>
+                                    <select class="form-select" id="editEventType">
+                                        <option value="workshop" ${event.type === 'workshop' ? 'selected' : ''}>Workshop</option>
+                                        <option value="seminar" ${event.type === 'seminar' ? 'selected' : ''}>Seminar</option>
+                                        <option value="meeting" ${event.type === 'meeting' ? 'selected' : ''}>Meeting</option>
+                                        <option value="social" ${event.type === 'social' ? 'selected' : ''}>Social Event</option>
+                                        <option value="other" ${event.type === 'other' ? 'selected' : ''}>Other</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Status</label>
+                                    <select class="form-select" id="editEventStatus">
+                                        <option value="upcoming" ${event.status === 'upcoming' ? 'selected' : ''}>Upcoming</option>
+                                        <option value="ongoing" ${event.status === 'ongoing' ? 'selected' : ''}>Ongoing</option>
+                                        <option value="completed" ${event.status === 'completed' ? 'selected' : ''}>Completed</option>
+                                        <option value="cancelled" ${event.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Registration Fee (KSh)</label>
+                                    <input type="number" class="form-input" id="editEventFee" value="${event.fee || 0}" min="0">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Registered Count</label>
+                                    <input type="number" class="form-input" id="editEventRegistered" value="${event.registeredCount || 0}" min="0">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Featured Image URL</label>
+                                <input type="url" class="form-input" id="editEventImage" value="${event.imageUrl || ''}" placeholder="https://example.com/event.jpg">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Organizer Name</label>
+                                <input type="text" class="form-input" id="editEventOrganizer" value="${event.organizer || currentUser.fullName || 'THE SONGA'}">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-danger" onclick="confirmDelete('event', '${eventId}')">Delete Event</button>
+                        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                        <button class="btn btn-primary" onclick="updateEvent()">Save Changes</button>
+                    </div>
+                </div>
+            `;
+            
+            showModal(modalHTML);
+        }
+
+        // Update Event
+        async function updateEvent() {
+            if (!currentEditId) return;
+            
+            const updates = {
+                title: document.getElementById('editEventTitle').value,
+                description: document.getElementById('editEventDescription').value,
+                date: document.getElementById('editEventDate').value,
+                time: document.getElementById('editEventTime').value || null,
+                location: document.getElementById('editEventLocation').value || 'Online',
+                capacity: document.getElementById('editEventCapacity').value ? 
+                        parseInt(document.getElementById('editEventCapacity').value) : null,
+                type: document.getElementById('editEventType').value,
+                status: document.getElementById('editEventStatus').value,
+                fee: parseInt(document.getElementById('editEventFee').value) || 0,
+                registeredCount: parseInt(document.getElementById('editEventRegistered').value) || 0,
+                imageUrl: document.getElementById('editEventImage').value || null,
+                organizer: document.getElementById('editEventOrganizer').value,
+                updatedAt: new Date().toISOString()
+            };
+            
+            try {
+                await database.ref(`events/${currentEditId}`).update(updates);
+                await logAction('event_updated', `Updated event: ${updates.title}`);
+                showAlert('Event updated successfully', 'success');
+                closeModal();
+                loadEvents();
+            } catch (error) {
+                console.error('Error updating event:', error);
+                showAlert('Failed to update event', 'error');
+            }
         }
 
         // Load Library
         async function loadLibrary() {
-            contentContainer.innerHTML = `
-                <div class="section-header">
-                    <h2 class="section-title">Library Management</h2>
-                    <button class="btn btn-primary" onclick="showAddBookModal()">
-                        <span class="material-icons-sharp">add</span>
-                        Add Book
-                    </button>
-                </div>
-                <div class="loading">
-                    <div class="spinner"></div>
+            const template = document.getElementById('libraryTemplate');
+            contentContainer.innerHTML = template.innerHTML;
+            
+            try {
+                const booksSnapshot = await database.ref('libraryBooks').once('value');
+                books = booksSnapshot.exists() ? Object.entries(booksSnapshot.val()).map(([id, data]) => ({ id, ...data })) : [];
+                
+                renderLibraryTable(books);
+                
+            } catch (error) {
+                console.error('Error loading library:', error);
+                showAlert('Failed to load library', 'error');
+            }
+        }
+
+        // Render Library Table
+        function renderLibraryTable(booksList) {
+            const tableBody = document.getElementById('libraryTableBody');
+            tableBody.innerHTML = '';
+            
+            booksList.forEach(book => {
+                const statusClass = `status-${book.status || 'available'}`;
+                const statusText = (book.status || 'available').charAt(0).toUpperCase() + (book.status || 'available').slice(1);
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <div style="font-weight: 600;">${book.title || 'Untitled Book'}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-secondary);">${book.id.substring(0, 8)}</div>
+                    </td>
+                    <td>${book.author || 'Unknown Author'}</td>
+                    <td>${book.isbn || 'N/A'}</td>
+                    <td><span class="status-badge">${book.category || 'General'}</span></td>
+                    <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                    <td>${book.dueDate ? formatDate(book.dueDate) : 'N/A'}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-icon view" onclick="viewBook('${book.id}')" title="View">
+                                <span class="material-icons-sharp">visibility</span>
+                            </button>
+                            <button class="btn-icon edit" onclick="editBook('${book.id}')" title="Edit">
+                                <span class="material-icons-sharp">edit</span>
+                            </button>
+                            <button class="btn-icon delete" onclick="confirmDelete('book', '${book.id}')" title="Delete">
+                                <span class="material-icons-sharp">delete</span>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Filter Library
+        function filterLibrary(filter) {
+            if (filter === 'all') {
+                renderLibraryTable(books);
+                return;
+            }
+            
+            const filteredBooks = books.filter(book => book.status === filter);
+            renderLibraryTable(filteredBooks);
+        }
+
+        // Show Add Book Modal
+        function showAddBookModal() {
+            const modalHTML = `
+                <div class="modal">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Add New Book</h3>
+                        <button class="modal-close" onclick="closeModal()">
+                            <span class="material-icons-sharp">close</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addBookForm">
+                            <div class="form-group">
+                                <label class="form-label">Book Title *</label>
+                                <input type="text" class="form-input" id="bookTitle" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Author *</label>
+                                <input type="text" class="form-input" id="bookAuthor" required>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">ISBN</label>
+                                    <input type="text" class="form-input" id="bookISBN" placeholder="Optional">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Publication Year</label>
+                                    <input type="number" class="form-input" id="bookYear" min="1000" max="${new Date().getFullYear()}">
+                                </div>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Category</label>
+                                    <select class="form-select" id="bookCategory">
+                                        <option value="fiction">Fiction</option>
+                                        <option value="non-fiction">Non-Fiction</option>
+                                        <option value="educational">Educational</option>
+                                        <option value="business">Business</option>
+                                        <option value="self-help">Self-Help</option>
+                                        <option value="biography">Biography</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Status</label>
+                                    <select class="form-select" id="bookStatus">
+                                        <option value="available">Available</option>
+                                        <option value="borrowed">Borrowed</option>
+                                        <option value="reserved">Reserved</option>
+                                        <option value="maintenance">Maintenance</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Description</label>
+                                <textarea class="form-textarea" id="bookDescription" rows="4"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Cover Image URL</label>
+                                <input type="url" class="form-input" id="bookImage" placeholder="https://example.com/book-cover.jpg">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Total Copies</label>
+                                <input type="number" class="form-input" id="bookCopies" value="1" min="1">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                        <button class="btn btn-primary" onclick="createBook()">Add Book</button>
+                    </div>
                 </div>
             `;
             
-            // Implementation similar to posts
-            // ... (would include book CRUD operations)
+            showModal(modalHTML);
+        }
+
+        // Create Book
+        async function createBook() {
+            const title = document.getElementById('bookTitle').value;
+            const author = document.getElementById('bookAuthor').value;
+            const isbn = document.getElementById('bookISBN').value;
+            const year = document.getElementById('bookYear').value;
+            const category = document.getElementById('bookCategory').value;
+            const status = document.getElementById('bookStatus').value;
+            const description = document.getElementById('bookDescription').value;
+            const imageUrl = document.getElementById('bookImage').value;
+            const copies = document.getElementById('bookCopies').value;
+            
+            if (!title || !author) {
+                showAlert('Please fill in title and author', 'error');
+                return;
+            }
+            
+            try {
+                const bookId = database.ref().child('libraryBooks').push().key;
+                const bookData = {
+                    id: bookId,
+                    title: title,
+                    author: author,
+                    isbn: isbn || null,
+                    year: year ? parseInt(year) : null,
+                    category: category,
+                    status: status,
+                    description: description || null,
+                    imageUrl: imageUrl || null,
+                    totalCopies: parseInt(copies) || 1,
+                    availableCopies: status === 'available' ? (parseInt(copies) || 1) : 0,
+                    borrowedBy: null,
+                    dueDate: null,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                };
+                
+                await database.ref(`libraryBooks/${bookId}`).set(bookData);
+                await logAction('book_added', `Added book: ${title}`);
+                
+                showAlert('Book added successfully', 'success');
+                closeModal();
+                loadLibrary();
+            } catch (error) {
+                console.error('Error adding book:', error);
+                showAlert('Failed to add book', 'error');
+            }
+        }
+
+        // View Book
+        async function viewBook(bookId) {
+            const book = books.find(b => b.id === bookId);
+            if (!book) {
+                showAlert('Book not found', 'error');
+                return;
+            }
+            
+            const modalHTML = `
+                <div class="modal">
+                    <div class="modal-header">
+                        <h3 class="modal-title">${book.title}</h3>
+                        <button class="modal-close" onclick="closeModal()">
+                            <span class="material-icons-sharp">close</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        ${book.imageUrl ? `<img src="${book.imageUrl}" style="width: 100%; max-height: 300px; object-fit: contain; border-radius: var(--radius); margin-bottom: 1rem;">` : ''}
+                        <div style="margin-bottom: 1rem;">
+                            <div><strong>Author:</strong> ${book.author}</div>
+                            <div><strong>ISBN:</strong> ${book.isbn || 'N/A'}</div>
+                            <div><strong>Year:</strong> ${book.year || 'N/A'}</div>
+                            <div><strong>Category:</strong> ${book.category}</div>
+                            <div><strong>Status:</strong> <span class="status-badge status-${book.status}">${book.status}</span></div>
+                            ${book.dueDate ? `<div><strong>Due Date:</strong> ${formatDate(book.dueDate)}</div>` : ''}
+                            ${book.borrowedBy ? `<div><strong>Borrowed By:</strong> ${book.borrowedBy}</div>` : ''}
+                        </div>
+                        <div style="background: var(--bg-primary); padding: 1rem; border-radius: var(--radius); margin-bottom: 1rem;">
+                            ${book.description || 'No description available.'}
+                        </div>
+                        <div style="display: flex; gap: 2rem; margin-top: 1rem;">
+                            <div><strong>Total Copies:</strong> ${book.totalCopies || 1}</div>
+                            <div><strong>Available:</strong> ${book.availableCopies || 0}</div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+                        <button class="btn btn-primary" onclick="editBook('${bookId}')">Edit Book</button>
+                    </div>
+                </div>
+            `;
+            
+            showModal(modalHTML);
+        }
+
+        // Edit Book
+        async function editBook(bookId) {
+            const book = books.find(b => b.id === bookId);
+            if (!book) {
+                showAlert('Book not found', 'error');
+                return;
+            }
+            
+            currentEditId = bookId;
+            currentEditType = 'book';
+            
+            closeModal(); // Close view modal if open
+            
+            const modalHTML = `
+                <div class="modal">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Edit Book</h3>
+                        <button class="modal-close" onclick="closeModal()">
+                            <span class="material-icons-sharp">close</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editBookForm">
+                            <div class="form-group">
+                                <label class="form-label">Book Title</label>
+                                <input type="text" class="form-input" id="editBookTitle" value="${book.title || ''}" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Author</label>
+                                <input type="text" class="form-input" id="editBookAuthor" value="${book.author || ''}" required>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">ISBN</label>
+                                    <input type="text" class="form-input" id="editBookISBN" value="${book.isbn || ''}" placeholder="Optional">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Publication Year</label>
+                                    <input type="number" class="form-input" id="editBookYear" value="${book.year || ''}" min="1000" max="${new Date().getFullYear()}">
+                                </div>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Category</label>
+                                    <select class="form-select" id="editBookCategory">
+                                        <option value="fiction" ${book.category === 'fiction' ? 'selected' : ''}>Fiction</option>
+                                        <option value="non-fiction" ${book.category === 'non-fiction' ? 'selected' : ''}>Non-Fiction</option>
+                                        <option value="educational" ${book.category === 'educational' ? 'selected' : ''}>Educational</option>
+                                        <option value="business" ${book.category === 'business' ? 'selected' : ''}>Business</option>
+                                        <option value="self-help" ${book.category === 'self-help' ? 'selected' : ''}>Self-Help</option>
+                                        <option value="biography" ${book.category === 'biography' ? 'selected' : ''}>Biography</option>
+                                        <option value="other" ${book.category === 'other' ? 'selected' : ''}>Other</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Status</label>
+                                    <select class="form-select" id="editBookStatus">
+                                        <option value="available" ${book.status === 'available' ? 'selected' : ''}>Available</option>
+                                        <option value="borrowed" ${book.status === 'borrowed' ? 'selected' : ''}>Borrowed</option>
+                                        <option value="reserved" ${book.status === 'reserved' ? 'selected' : ''}>Reserved</option>
+                                        <option value="maintenance" ${book.status === 'maintenance' ? 'selected' : ''}>Maintenance</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Total Copies</label>
+                                    <input type="number" class="form-input" id="editBookTotalCopies" value="${book.totalCopies || 1}" min="1">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Available Copies</label>
+                                    <input type="number" class="form-input" id="editBookAvailableCopies" value="${book.availableCopies || 0}" min="0">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Description</label>
+                                <textarea class="form-textarea" id="editBookDescription" rows="4">${book.description || ''}</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Cover Image URL</label>
+                                <input type="url" class="form-input" id="editBookImage" value="${book.imageUrl || ''}" placeholder="https://example.com/book-cover.jpg">
+                            </div>
+                            ${book.status === 'borrowed' ? `
+                                <div class="alert alert-warning">
+                                    <span class="material-icons-sharp" style="vertical-align: middle; margin-right: 0.5rem;">info</span>
+                                    This book is currently borrowed. Changing status to "Available" will remove borrower information.
+                                </div>
+                            ` : ''}
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-danger" onclick="confirmDelete('book', '${bookId}')">Delete Book</button>
+                        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                        <button class="btn btn-primary" onclick="updateBook()">Save Changes</button>
+                    </div>
+                </div>
+            `;
+            
+            showModal(modalHTML);
+        }
+
+        // Update Book
+        async function updateBook() {
+            if (!currentEditId) return;
+            
+            const status = document.getElementById('editBookStatus').value;
+            const updates = {
+                title: document.getElementById('editBookTitle').value,
+                author: document.getElementById('editBookAuthor').value,
+                isbn: document.getElementById('editBookISBN').value || null,
+                year: document.getElementById('editBookYear').value ? 
+                      parseInt(document.getElementById('editBookYear').value) : null,
+                category: document.getElementById('editBookCategory').value,
+                status: status,
+                description: document.getElementById('editBookDescription').value || null,
+                imageUrl: document.getElementById('editBookImage').value || null,
+                totalCopies: parseInt(document.getElementById('editBookTotalCopies').value) || 1,
+                availableCopies: parseInt(document.getElementById('editBookAvailableCopies').value) || 0,
+                updatedAt: new Date().toISOString()
+            };
+            
+            // If changing from borrowed to available, clear borrower info
+            const book = books.find(b => b.id === currentEditId);
+            if (book && book.status === 'borrowed' && status !== 'borrowed') {
+                updates.borrowedBy = null;
+                updates.dueDate = null;
+            }
+            
+            try {
+                await database.ref(`libraryBooks/${currentEditId}`).update(updates);
+                await logAction('book_updated', `Updated book: ${updates.title}`);
+                showAlert('Book updated successfully', 'success');
+                closeModal();
+                loadLibrary();
+            } catch (error) {
+                console.error('Error updating book:', error);
+                showAlert('Failed to update book', 'error');
+            }
         }
 
         // Load Analytics
@@ -2255,13 +3502,80 @@
                 <div class="section-header">
                     <h2 class="section-title">Advanced Analytics</h2>
                     <div class="header-actions">
-                        <select class="form-select" style="width: auto;">
-                            <option>Last 7 days</option>
-                            <option selected>Last 30 days</option>
-                            <option>Last 90 days</option>
+                        <select class="form-select" id="analyticsPeriod" style="width: auto;">
+                            <option value="7">Last 7 days</option>
+                            <option value="30" selected>Last 30 days</option>
+                            <option value="90">Last 90 days</option>
+                            <option value="365">Last year</option>
                         </select>
                     </div>
                 </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div>
+                                <div class="stat-title">Avg. Session Duration</div>
+                                <div class="stat-value" id="avgSession">4.2m</div>
+                            </div>
+                            <div class="stat-icon">
+                                <span class="material-icons-sharp">timelapse</span>
+                            </div>
+                        </div>
+                        <div class="stat-change positive">
+                            <span class="material-icons-sharp">trending_up</span>
+                            <span>+0.5m from last month</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div>
+                                <div class="stat-title">Bounce Rate</div>
+                                <div class="stat-value" id="bounceRate">32%</div>
+                            </div>
+                            <div class="stat-icon">
+                                <span class="material-icons-sharp">exit_to_app</span>
+                            </div>
+                        </div>
+                        <div class="stat-change negative">
+                            <span class="material-icons-sharp">trending_down</span>
+                            <span>-5% from last month</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div>
+                                <div class="stat-title">Top Content</div>
+                                <div class="stat-value" id="topContent">28</div>
+                            </div>
+                            <div class="stat-icon">
+                                <span class="material-icons-sharp">star</span>
+                            </div>
+                        </div>
+                        <div class="stat-change positive">
+                            <span class="material-icons-sharp">trending_up</span>
+                            <span>+3 from last month</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div>
+                                <div class="stat-title">Conversion Rate</div>
+                                <div class="stat-value" id="conversionRate">8.5%</div>
+                            </div>
+                            <div class="stat-icon">
+                                <span class="material-icons-sharp">conversion_path</span>
+                            </div>
+                        </div>
+                        <div class="stat-change positive">
+                            <span class="material-icons-sharp">trending_up</span>
+                            <span>+1.2% from last month</span>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="charts-grid">
                     <div class="chart-card">
                         <div class="chart-header">
@@ -2280,14 +3594,154 @@
                         </div>
                     </div>
                 </div>
+                
+                <div class="section-header">
+                    <h2 class="section-title">Top Performing Content</h2>
+                </div>
+                
+                <div class="data-table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Content</th>
+                                <th>Type</th>
+                                <th>Engagement</th>
+                                <th>Views</th>
+                                <th>Shares</th>
+                                <th>Performance</th>
+                            </tr>
+                        </thead>
+                        <tbody id="topContentTable">
+                            <!-- Will be populated -->
+                        </tbody>
+                    </table>
+                </div>
             `;
             
             // Initialize analytics charts
             initAnalyticsCharts();
+            loadTopContent();
+        }
+
+        // Initialize Analytics Charts
+        function initAnalyticsCharts() {
+            // Engagement Chart
+            const engagementCtx = document.getElementById('engagementChart').getContext('2d');
+            engagementChart = new Chart(engagementCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Active Users',
+                        data: [65, 59, 80, 81, 56, 55, 40],
+                        backgroundColor: 'rgba(212, 175, 55, 0.6)',
+                        borderColor: 'rgb(212, 175, 55)',
+                        borderWidth: 1
+                    }, {
+                        label: 'New Posts',
+                        data: [28, 48, 40, 19, 86, 27, 90],
+                        backgroundColor: 'rgba(59, 130, 246, 0.6)',
+                        borderColor: 'rgb(59, 130, 246)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+            // Performance Chart
+            const performanceCtx = document.getElementById('performanceChart').getContext('2d');
+            performanceChart = new Chart(performanceCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['Posts', 'Events', 'Library', 'Users', 'Engagement', 'Growth'],
+                    datasets: [{
+                        label: 'Performance',
+                        data: [85, 70, 90, 65, 80, 75],
+                        fill: true,
+                        backgroundColor: 'rgba(212, 175, 55, 0.2)',
+                        borderColor: 'rgb(212, 175, 55)',
+                        pointBackgroundColor: 'rgb(212, 175, 55)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgb(212, 175, 55)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: {
+                                display: true
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 100
+                        }
+                    }
+                }
+            });
+        }
+
+        // Load Top Content
+        async function loadTopContent() {
+            const tableBody = document.getElementById('topContentTable');
+            tableBody.innerHTML = '';
+            
+            // Sort posts by engagement (likes + comments)
+            const sortedPosts = [...posts].sort((a, b) => {
+                const aEngagement = (a.likes || 0) + (a.comments ? Object.keys(a.comments).length : 0);
+                const bEngagement = (b.likes || 0) + (b.comments ? Object.keys(b.comments).length : 0);
+                return bEngagement - aEngagement;
+            }).slice(0, 5);
+            
+            sortedPosts.forEach((post, index) => {
+                const engagement = (post.likes || 0) + (post.comments ? Object.keys(post.comments).length : 0);
+                const performance = Math.min(100, Math.floor(engagement / 10 * 100));
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <div style="font-weight: 600;">${post.title || 'Untitled'}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-secondary);">By ${post.authorName || 'Unknown'}</div>
+                    </td>
+                    <td><span class="status-badge">${post.category || 'Post'}</span></td>
+                    <td>${engagement}</td>
+                    <td>${post.views || 0}</td>
+                    <td>${post.shares || 0}</td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <div style="width: 100px; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden;">
+                                <div style="width: ${performance}%; height: 100%; background: var(--primary);"></div>
+                            </div>
+                            <span style="font-size: 0.75rem;">${performance}%</span>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
         }
 
         // Load Settings
         async function loadSettings() {
+            let settings = {};
+            
+            try {
+                const settingsSnapshot = await database.ref('systemSettings').once('value');
+                if (settingsSnapshot.exists()) {
+                    settings = settingsSnapshot.val();
+                }
+            } catch (error) {
+                console.error('Error loading settings:', error);
+            }
+            
             contentContainer.innerHTML = `
                 <div class="form-container">
                     <div class="form-section">
@@ -2295,15 +3749,15 @@
                         <div class="form-grid">
                             <div class="form-group">
                                 <label class="form-label">Site Name</label>
-                                <input type="text" class="form-input" id="siteName" value="THE SONGA">
+                                <input type="text" class="form-input" id="siteName" value="${settings.siteName || 'THE SONGA'}">
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Contact Email</label>
-                                <input type="email" class="form-input" id="contactEmail" value="info@thesongawelfare.com">
+                                <input type="email" class="form-input" id="contactEmail" value="${settings.contactEmail || 'info@thesongawelfare.com'}">
                             </div>
                             <div class="form-group full-width">
                                 <label class="form-label">Site Description</label>
-                                <textarea class="form-textarea" id="siteDescription">UNBOUND | UNBENT | UNBROKEN - Community for personal growth and empowerment</textarea>
+                                <textarea class="form-textarea" id="siteDescription" rows="3">${settings.siteDescription || 'UNBOUND | UNBENT | UNBROKEN - Community for personal growth and empowerment'}</textarea>
                             </div>
                         </div>
                     </div>
@@ -2313,17 +3767,54 @@
                         <div class="form-grid">
                             <div class="form-group">
                                 <label class="form-label">Default Borrow Duration (days)</label>
-                                <input type="number" class="form-input" id="borrowDuration" value="14" min="1" max="30">
+                                <input type="number" class="form-input" id="borrowDuration" value="${settings.borrowDuration || 14}" min="1" max="30">
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Daily Fine Amount (KSh)</label>
-                                <input type="number" class="form-input" id="dailyFine" value="50" min="0">
+                                <input type="number" class="form-input" id="dailyFine" value="${settings.dailyFine || 50}" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Max Books per User</label>
+                                <input type="number" class="form-input" id="maxBooks" value="${settings.maxBooks || 3}" min="1">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Auto-renew Memberships</label>
+                                <select class="form-select" id="autoRenew">
+                                    <option value="true" ${settings.autoRenew ? 'selected' : ''}>Enabled</option>
+                                    <option value="false" ${!settings.autoRenew ? 'selected' : ''}>Disabled</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3 class="form-title">Notification Settings</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <input type="checkbox" id="emailNotifications" ${settings.emailNotifications !== false ? 'checked' : ''}> Email Notifications
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <input type="checkbox" id="eventReminders" ${settings.eventReminders !== false ? 'checked' : ''}> Event Reminders
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <input type="checkbox" id="dueDateAlerts" ${settings.dueDateAlerts !== false ? 'checked' : ''}> Due Date Alerts
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <input type="checkbox" id="adminAlerts" ${settings.adminAlerts !== false ? 'checked' : ''}> Admin Alerts
+                                </label>
                             </div>
                         </div>
                     </div>
                     
                     <div class="form-actions">
-                        <button class="btn btn-secondary">Reset</button>
+                        <button class="btn btn-secondary" onclick="resetSettings()">Reset to Defaults</button>
                         <button class="btn btn-primary" onclick="saveSettings()">Save Changes</button>
                     </div>
                 </div>
@@ -2336,17 +3827,33 @@
                 siteName: document.getElementById('siteName').value,
                 contactEmail: document.getElementById('contactEmail').value,
                 siteDescription: document.getElementById('siteDescription').value,
-                borrowDuration: parseInt(document.getElementById('borrowDuration').value),
-                dailyFine: parseInt(document.getElementById('dailyFine').value),
-                updatedAt: new Date().toISOString()
+                borrowDuration: parseInt(document.getElementById('borrowDuration').value) || 14,
+                dailyFine: parseInt(document.getElementById('dailyFine').value) || 50,
+                maxBooks: parseInt(document.getElementById('maxBooks').value) || 3,
+                autoRenew: document.getElementById('autoRenew').value === 'true',
+                emailNotifications: document.getElementById('emailNotifications').checked,
+                eventReminders: document.getElementById('eventReminders').checked,
+                dueDateAlerts: document.getElementById('dueDateAlerts').checked,
+                adminAlerts: document.getElementById('adminAlerts').checked,
+                updatedAt: new Date().toISOString(),
+                updatedBy: currentUser.id
             };
             
             try {
                 await database.ref('systemSettings').update(settings);
+                await logAction('settings_updated', 'Updated system settings');
                 showAlert('Settings saved successfully', 'success');
             } catch (error) {
                 console.error('Error saving settings:', error);
                 showAlert('Failed to save settings', 'error');
+            }
+        }
+
+        // Reset Settings
+        function resetSettings() {
+            if (confirm('Are you sure you want to reset all settings to defaults?')) {
+                loadSettings();
+                showAlert('Settings reset to defaults', 'info');
             }
         }
 
@@ -2369,7 +3876,7 @@
                                     <span class="material-icons-sharp">cloud_download</span>
                                     Create Backup
                                 </button>
-                                <button class="btn btn-secondary" onclick="restoreBackup()">
+                                <button class="btn btn-secondary" onclick="showRestoreModal()">
                                     <span class="material-icons-sharp">cloud_upload</span>
                                     Restore Backup
                                 </button>
@@ -2390,17 +3897,305 @@
                                     </tr>
                                 </thead>
                                 <tbody id="backupsTable">
-                                    <tr>
-                                        <td colspan="4" style="text-align: center; padding: 2rem; color: var(--text-secondary);">
-                                            No backups available
-                                        </td>
-                                    </tr>
+                                    <!-- Backups will be loaded here -->
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
             `;
+            
+            await loadBackupsList();
+        }
+
+        // Create Backup
+        async function createBackup() {
+            try {
+                showAlert('Creating backup...', 'info');
+                
+                // Get all data
+                const [usersSnapshot, postsSnapshot, eventsSnapshot, booksSnapshot, settingsSnapshot] = await Promise.all([
+                    database.ref('users').once('value'),
+                    database.ref('communityPosts').once('value'),
+                    database.ref('events').once('value'),
+                    database.ref('libraryBooks').once('value'),
+                    database.ref('systemSettings').once('value')
+                ]);
+                
+                const backupData = {
+                    timestamp: new Date().toISOString(),
+                    data: {
+                        users: usersSnapshot.val() || {},
+                        posts: postsSnapshot.val() || {},
+                        events: eventsSnapshot.val() || {},
+                        books: booksSnapshot.val() || {},
+                        settings: settingsSnapshot.val() || {}
+                    },
+                    createdBy: currentUser.id,
+                    size: JSON.stringify(usersSnapshot.val()).length + 
+                          JSON.stringify(postsSnapshot.val()).length +
+                          JSON.stringify(eventsSnapshot.val()).length +
+                          JSON.stringify(booksSnapshot.val()).length +
+                          JSON.stringify(settingsSnapshot.val()).length
+                };
+                
+                const backupId = database.ref().child('backups').push().key;
+                await database.ref(`backups/${backupId}`).set(backupData);
+                await logAction('backup_created', 'Created database backup');
+                
+                showAlert('Backup created successfully', 'success');
+                loadBackupsList();
+            } catch (error) {
+                console.error('Error creating backup:', error);
+                showAlert('Failed to create backup', 'error');
+            }
+        }
+
+        // Load Backups List
+        async function loadBackupsList() {
+            try {
+                const backupsSnapshot = await database.ref('backups').orderByChild('timestamp').limitToLast(10).once('value');
+                const backupsData = backupsSnapshot.exists() ? backupsSnapshot.val() : {};
+                
+                const tableBody = document.getElementById('backupsTable');
+                tableBody.innerHTML = '';
+                
+                // Convert to array and sort by timestamp
+                const backupsArray = Object.entries(backupsData).map(([id, backup]) => ({ id, ...backup }));
+                backupsArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                
+                if (backupsArray.length === 0) {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td colspan="4" style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                            No backups available. Create your first backup.
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                    return;
+                }
+                
+                backupsArray.forEach(backup => {
+                    const sizeKB = Math.round(backup.size / 1024);
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${formatDate(backup.timestamp)}</td>
+                        <td>${sizeKB} KB</td>
+                        <td><span class="status-badge status-active">Ready</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-icon" onclick="downloadBackup('${backup.id}')" title="Download">
+                                    <span class="material-icons-sharp">download</span>
+                                </button>
+                                <button class="btn-icon delete" onclick="confirmDeleteBackup('${backup.id}')" title="Delete">
+                                    <span class="material-icons-sharp">delete</span>
+                                </button>
+                                <button class="btn-icon" onclick="restoreBackup('${backup.id}')" title="Restore">
+                                    <span class="material-icons-sharp">restore</span>
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error loading backups:', error);
+            }
+        }
+
+        // Download Backup
+        async function downloadBackup(backupId) {
+            try {
+                const backupSnapshot = await database.ref(`backups/${backupId}`).once('value');
+                const backup = backupSnapshot.val();
+                
+                const dataStr = JSON.stringify(backup, null, 2);
+                const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+                
+                const linkElement = document.createElement('a');
+                linkElement.setAttribute('href', dataUri);
+                linkElement.setAttribute('download', `the_songa_backup_${backupId}.json`);
+                linkElement.click();
+                
+                showAlert('Backup download started', 'success');
+            } catch (error) {
+                console.error('Error downloading backup:', error);
+                showAlert('Failed to download backup', 'error');
+            }
+        }
+
+        // Confirm Delete Backup
+        function confirmDeleteBackup(backupId) {
+            if (confirm('Are you sure you want to delete this backup?')) {
+                deleteBackup(backupId);
+            }
+        }
+
+        // Delete Backup
+        async function deleteBackup(backupId) {
+            try {
+                await database.ref(`backups/${backupId}`).remove();
+                await logAction('backup_deleted', 'Deleted database backup');
+                showAlert('Backup deleted successfully', 'success');
+                loadBackupsList();
+            } catch (error) {
+                console.error('Error deleting backup:', error);
+                showAlert('Failed to delete backup', 'error');
+            }
+        }
+
+        // Restore Backup
+        async function restoreBackup(backupId) {
+            if (!confirm('WARNING: This will overwrite all current data. Are you sure you want to restore from this backup?')) {
+                return;
+            }
+            
+            try {
+                showAlert('Restoring backup...', 'info');
+                
+                const backupSnapshot = await database.ref(`backups/${backupId}`).once('value');
+                const backup = backupSnapshot.val();
+                
+                // Restore each collection
+                await Promise.all([
+                    database.ref('users').set(backup.data.users || {}),
+                    database.ref('communityPosts').set(backup.data.posts || {}),
+                    database.ref('events').set(backup.data.events || {}),
+                    database.ref('libraryBooks').set(backup.data.books || {}),
+                    database.ref('systemSettings').set(backup.data.settings || {})
+                ]);
+                
+                await logAction('backup_restored', 'Restored database from backup');
+                showAlert('Backup restored successfully', 'success');
+                
+                // Reload current section
+                loadSection(currentSection);
+            } catch (error) {
+                console.error('Error restoring backup:', error);
+                showAlert('Failed to restore backup', 'error');
+            }
+        }
+
+        // Show Restore Modal
+        function showRestoreModal() {
+            const modalHTML = `
+                <div class="modal">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Restore from Backup</h3>
+                        <button class="modal-close" onclick="closeModal()">
+                            <span class="material-icons-sharp">close</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-warning">
+                            <span class="material-icons-sharp" style="vertical-align: middle; margin-right: 0.5rem;">warning</span>
+                            This will overwrite all current data. Make sure you have a recent backup before proceeding.
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Upload Backup File</label>
+                            <div class="file-upload" onclick="document.getElementById('backupFile').click()">
+                                <span class="material-icons-sharp" style="font-size: 3rem; color: var(--text-light); margin-bottom: 1rem;">cloud_upload</span>
+                                <div>Click to upload backup file</div>
+                                <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.5rem;">Only .json files are supported</div>
+                                <input type="file" id="backupFile" accept=".json" onchange="handleBackupUpload(event)" style="display: none;">
+                            </div>
+                            <div id="backupPreview" style="display: none;"></div>
+                        </div>
+                        <div class="alert alert-info">
+                            <span class="material-icons-sharp" style="vertical-align: middle; margin-right: 0.5rem;">info</span>
+                            You can also restore from an existing backup in the list below.
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                        <button class="btn btn-primary" onclick="uploadAndRestore()" id="restoreBtn" disabled>Restore</button>
+                    </div>
+                </div>
+            `;
+            
+            showModal(modalHTML);
+        }
+
+        // Handle Backup Upload
+        function handleBackupUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            if (!file.name.endsWith('.json')) {
+                showAlert('Please upload a JSON file', 'error');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const backupData = JSON.parse(e.target.result);
+                    const preview = document.getElementById('backupPreview');
+                    preview.innerHTML = `
+                        <div class="file-preview">
+                            <span class="material-icons-sharp" style="font-size: 2rem; color: var(--primary);">description</span>
+                            <div>
+                                <div style="font-weight: 600;">${file.name}</div>
+                                <div style="font-size: 0.75rem; color: var(--text-secondary);">
+                                    ${Math.round(file.size / 1024)} KB • ${backupData.timestamp ? formatDate(backupData.timestamp) : 'Unknown date'}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    preview.style.display = 'block';
+                    
+                    // Store the backup data temporarily
+                    window.uploadedBackup = backupData;
+                    document.getElementById('restoreBtn').disabled = false;
+                } catch (error) {
+                    showAlert('Invalid backup file', 'error');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // Upload and Restore
+        async function uploadAndRestore() {
+            if (!window.uploadedBackup) {
+                showAlert('No backup file selected', 'error');
+                return;
+            }
+            
+            if (!confirm('WARNING: This will overwrite all current data. Are you sure you want to restore from this backup?')) {
+                return;
+            }
+            
+            try {
+                showAlert('Restoring backup...', 'info');
+                const backup = window.uploadedBackup;
+                
+                // Restore each collection
+                await Promise.all([
+                    database.ref('users').set(backup.data.users || {}),
+                    database.ref('communityPosts').set(backup.data.posts || {}),
+                    database.ref('events').set(backup.data.events || {}),
+                    database.ref('libraryBooks').set(backup.data.books || {}),
+                    database.ref('systemSettings').set(backup.data.settings || {})
+                ]);
+                
+                // Save the backup to backups collection
+                const backupId = database.ref().child('backups').push().key;
+                await database.ref(`backups/${backupId}`).set({
+                    ...backup,
+                    restoredAt: new Date().toISOString(),
+                    restoredBy: currentUser.id
+                });
+                
+                await logAction('backup_uploaded', 'Uploaded and restored backup');
+                showAlert('Backup restored successfully', 'success');
+                closeModal();
+                
+                // Reload current section
+                loadSection(currentSection);
+            } catch (error) {
+                console.error('Error restoring uploaded backup:', error);
+                showAlert('Failed to restore backup', 'error');
+            }
         }
 
         // Load Logs
@@ -2409,6 +4204,12 @@
                 <div class="section-header">
                     <h2 class="section-title">System Logs</h2>
                     <div class="header-actions">
+                        <select class="form-select" id="logLevel" style="width: auto;">
+                            <option value="all">All Levels</option>
+                            <option value="info">Info</option>
+                            <option value="warning">Warning</option>
+                            <option value="error">Error</option>
+                        </select>
                         <button class="btn btn-secondary" onclick="clearLogs()">
                             <span class="material-icons-sharp">delete_sweep</span>
                             Clear Logs
@@ -2437,8 +4238,154 @@
                 </div>
             `;
             
-            // Load logs from database
-            loadSystemLogs();
+            await loadSystemLogs();
+            
+            // Add filter listener
+            document.getElementById('logLevel').addEventListener('change', (e) => {
+                filterLogs(e.target.value);
+            });
+        }
+
+        // Load System Logs
+        async function loadSystemLogs() {
+            try {
+                const logsSnapshot = await database.ref('logs').orderByChild('timestamp').limitToLast(100).once('value');
+                logs = logsSnapshot.exists() ? Object.entries(logsSnapshot.val()).map(([id, log]) => ({ id, ...log })) : [];
+                logs.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                
+                renderLogsTable(logs);
+            } catch (error) {
+                console.error('Error loading logs:', error);
+                showAlert('Failed to load logs', 'error');
+            }
+        }
+
+        // Render Logs Table
+        function renderLogsTable(logsList) {
+            const tableBody = document.getElementById('logsTable');
+            tableBody.innerHTML = '';
+            
+            if (logsList.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td colspan="5" style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                        No logs available.
+                    </td>
+                `;
+                tableBody.appendChild(row);
+                return;
+            }
+            
+            logsList.forEach(log => {
+                let levelClass = 'status-active';
+                if (log.level === 'warning') levelClass = 'status-pending';
+                if (log.level === 'error') levelClass = 'status-suspended';
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${formatDate(log.timestamp)}</td>
+                    <td><span class="status-badge ${levelClass}">${log.level}</span></td>
+                    <td>${log.module || 'System'}</td>
+                    <td>${log.message || 'No message'}</td>
+                    <td>${log.userName || 'System'}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Filter Logs
+        function filterLogs(level) {
+            if (level === 'all') {
+                renderLogsTable(logs);
+                return;
+            }
+            
+            const filteredLogs = logs.filter(log => log.level === level);
+            renderLogsTable(filteredLogs);
+        }
+
+        // Clear Logs
+        async function clearLogs() {
+            if (!confirm('Are you sure you want to clear all logs? This action cannot be undone.')) {
+                return;
+            }
+            
+            try {
+                await database.ref('logs').remove();
+                await logAction('logs_cleared', 'Cleared all system logs');
+                showAlert('Logs cleared successfully', 'success');
+                loadLogs();
+            } catch (error) {
+                console.error('Error clearing logs:', error);
+                showAlert('Failed to clear logs', 'error');
+            }
+        }
+
+        // Export Logs
+        function exportLogs() {
+            const data = logs.map(log => ({
+                Timestamp: log.timestamp,
+                Level: log.level,
+                Module: log.module || 'System',
+                Message: log.message,
+                User: log.userName || 'System',
+                'User ID': log.userId || 'N/A'
+            }));
+            
+            exportToCSV(data, `the_songa_logs_${new Date().toISOString().split('T')[0]}.csv`);
+        }
+
+        // Log Action
+        async function logAction(action, message, level = 'info') {
+            try {
+                const logId = database.ref().child('logs').push().key;
+                const logData = {
+                    id: logId,
+                    action: action,
+                    message: message,
+                    level: level,
+                    module: 'Admin Panel',
+                    userId: currentUser.id,
+                    userName: currentUser.fullName || 'Admin',
+                    timestamp: new Date().toISOString()
+                };
+                
+                await database.ref(`logs/${logId}`).set(logData);
+            } catch (error) {
+                console.error('Error logging action:', error);
+            }
+        }
+
+        // Export to CSV
+        function exportToCSV(data, filename) {
+            if (data.length === 0) {
+                showAlert('No data to export', 'warning');
+                return;
+            }
+            
+            const headers = Object.keys(data[0]);
+            const csvRows = [
+                headers.join(','),
+                ...data.map(row => 
+                    headers.map(header => {
+                        const cell = row[header];
+                        return typeof cell === 'string' && cell.includes(',') ? `"${cell}"` : cell;
+                    }).join(',')
+                )
+            ];
+            
+            const csvContent = csvRows.join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showAlert('Export completed', 'success');
         }
 
         // Show Modal
@@ -2453,7 +4400,9 @@
             modalOverlay.classList.remove('active');
             modalOverlay.innerHTML = '';
             document.body.style.overflow = '';
-            currentEditUserId = null;
+            currentEditId = null;
+            currentEditType = null;
+            delete window.uploadedBackup;
         }
 
         // Show Alert
@@ -2462,7 +4411,7 @@
             alert.className = `alert alert-${type}`;
             alert.innerHTML = `
                 <span class="material-icons-sharp" style="vertical-align: middle; margin-right: 0.5rem;">
-                    ${type === 'success' ? 'check_circle' : type === 'error' ? 'error' : 'info'}
+                    ${type === 'success' ? 'check_circle' : type === 'error' ? 'error' : type === 'warning' ? 'warning' : 'info'}
                 </span>
                 ${message}
             `;
@@ -2502,39 +4451,42 @@
 
         // Search Data
         function searchData(query) {
-            if (!query.trim()) {
-                // If search is empty, show all data
-                switch(currentSection) {
-                    case 'users':
-                        renderUsersTable(users);
-                        break;
-                    case 'posts':
-                        renderPostsTable();
-                        break;
-                }
+            if (!query.trim() || currentSection === 'dashboard' || currentSection === 'analytics' || currentSection === 'settings' || currentSection === 'backup' || currentSection === 'logs') {
                 return;
             }
             
             switch(currentSection) {
                 case 'users':
-                    const filteredUsers = users.filter(user => 
-                        user.firstName?.toLowerCase().includes(query) ||
-                        user.lastName?.toLowerCase().includes(query) ||
-                        user.email?.toLowerCase().includes(query) ||
-                        user.membershipTier?.toLowerCase().includes(query)
-                    );
-                    renderUsersTable(filteredUsers);
+                    searchUsers(query);
                     break;
-                    
                 case 'posts':
                     const filteredPosts = posts.filter(post =>
                         post.title?.toLowerCase().includes(query) ||
                         post.authorName?.toLowerCase().includes(query) ||
                         post.category?.toLowerCase().includes(query) ||
+                        post.content?.toLowerCase().includes(query) ||
                         (post.tags && post.tags.some(tag => tag.toLowerCase().includes(query)))
                     );
-                    // Re-render posts table with filtered data
                     renderPostsTable(filteredPosts);
+                    break;
+                case 'events':
+                    const filteredEvents = events.filter(event =>
+                        event.title?.toLowerCase().includes(query) ||
+                        event.description?.toLowerCase().includes(query) ||
+                        event.location?.toLowerCase().includes(query) ||
+                        event.organizer?.toLowerCase().includes(query)
+                    );
+                    renderEventsTable(filteredEvents);
+                    break;
+                case 'library':
+                    const filteredBooks = books.filter(book =>
+                        book.title?.toLowerCase().includes(query) ||
+                        book.author?.toLowerCase().includes(query) ||
+                        book.isbn?.toLowerCase().includes(query) ||
+                        book.category?.toLowerCase().includes(query) ||
+                        book.description?.toLowerCase().includes(query)
+                    );
+                    renderLibraryTable(filteredBooks);
                     break;
             }
         }
@@ -2553,6 +4505,12 @@
                     
                     // Update dashboard stats
                     updateDashboardStats();
+                    
+                    // Update membership chart
+                    if (membershipChart) {
+                        membershipChart.destroy();
+                        initMembershipChart();
+                    }
                 }
             });
             
@@ -2563,28 +4521,55 @@
                     
                     // Update UI if on posts section
                     if (currentSection === 'posts') {
-                        renderPostsTable();
+                        renderPostsTable(posts);
+                    } else if (currentSection === 'analytics') {
+                        loadTopContent();
                     }
                     
                     // Update dashboard stats
                     updateDashboardStats();
                 }
             });
-        }
-
-        // Export Users
-        function exportUsers() {
-            const dataStr = JSON.stringify(users, null, 2);
-            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
             
-            const exportFileDefaultName = `the_songa_users_${new Date().toISOString().split('T')[0]}.json`;
+            // Listen for event changes
+            database.ref('events').on('value', (snapshot) => {
+                if (snapshot.exists()) {
+                    events = Object.entries(snapshot.val()).map(([id, data]) => ({ id, ...data }));
+                    
+                    // Update UI if on events section
+                    if (currentSection === 'events') {
+                        renderEventsTable(events);
+                    }
+                    
+                    // Update dashboard stats
+                    updateDashboardStats();
+                }
+            });
             
-            const linkElement = document.createElement('a');
-            linkElement.setAttribute('href', dataUri);
-            linkElement.setAttribute('download', exportFileDefaultName);
-            linkElement.click();
+            // Listen for book changes
+            database.ref('libraryBooks').on('value', (snapshot) => {
+                if (snapshot.exists()) {
+                    books = Object.entries(snapshot.val()).map(([id, data]) => ({ id, ...data }));
+                    
+                    // Update UI if on library section
+                    if (currentSection === 'library') {
+                        renderLibraryTable(books);
+                    }
+                    
+                    // Update dashboard stats
+                    updateDashboardStats();
+                }
+            });
             
-            showAlert('Users exported successfully', 'success');
+            // Listen for log changes
+            database.ref('logs').limitToLast(1).on('child_added', () => {
+                if (currentSection === 'logs') {
+                    loadSystemLogs();
+                }
+                if (currentSection === 'dashboard') {
+                    loadRecentActivity();
+                }
+            });
         }
 
         // Initialize Admin Panel
