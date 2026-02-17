@@ -3,28 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>THE SONGA • Inner Circle</title>
+    <title>THE SONGA · Inner Circle</title>
     
     <!-- Preconnect -->
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     <link rel="preconnect" href="https://www.gstatic.com">
-    <link rel="preconnect" href="https://i.postimg.cc">
-    <link rel="preconnect" href="https://accounts.google.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://accounts.google.com">
 
     <!-- PWA -->
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#D4AF37">
     <link rel="icon" href="https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-    <!-- Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Fonts - Smaller & Professional -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* ==================== RESET & VARIABLES ==================== */
+        /* ==================== RESET ==================== */
         * {
             margin: 0;
             padding: 0;
@@ -37,51 +35,66 @@
             --gold-dark: #B8860B;
             --black: #000000;
             --white: #ffffff;
-            --gray-50: #f9f9f9;
-            --gray-100: #f0f0f0;
-            --gray-200: #e5e5e5;
-            --gray-300: #d4d4d4;
-            --gray-400: #a3a3a3;
-            --gray-500: #737373;
-            --gray-600: #525252;
-            --gray-700: #404040;
-            --gray-800: #262626;
-            --gray-900: #171717;
+            --gray-50: #f8f9fa;
+            --gray-100: #f1f3f5;
+            --gray-200: #e9ecef;
+            --gray-300: #dee2e6;
+            --gray-400: #ced4da;
+            --gray-500: #adb5bd;
+            --gray-600: #6c757d;
+            --gray-700: #495057;
+            --gray-800: #343a40;
+            --gray-900: #212529;
             --success: #2ecc71;
             --error: #e74c3c;
-            --info: #3498db;
-            --border-color: #eaeaea;
+            --border-color: #e9ecef;
             
             /* Layout */
-            --sidebar-width: 275px;
-            --header-height: 56px;
-            --bottom-nav-height: 60px;
+            --sidebar-width: 260px;
+            --header-height: 53px;
+            --bottom-nav-height: 52px;
+            
+            /* Font sizes - smaller and professional */
+            --fs-xs: 0.75rem;    /* 12px */
+            --fs-sm: 0.8125rem;   /* 13px */
+            --fs-md: 0.875rem;    /* 14px */
+            --fs-lg: 0.9375rem;   /* 15px */
+            --fs-xl: 1rem;        /* 16px */
+            --fs-2xl: 1.125rem;   /* 18px */
         }
 
         html {
-            scroll-behavior: smooth;
             font-size: 16px;
+            scroll-behavior: smooth;
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: var(--white);
+            font-family: 'Inter', -apple-system, sans-serif;
+            font-size: var(--fs-md);
+            background: var(--white);
             color: var(--gray-900);
             line-height: 1.5;
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
-            min-height: 100vh;
         }
 
         body.modal-open {
             overflow: hidden;
         }
 
+        /* ==================== TYPOGRAPHY ==================== */
+        h1 { font-size: var(--fs-2xl); font-weight: 700; }
+        h2 { font-size: var(--fs-xl); font-weight: 700; }
+        h3 { font-size: var(--fs-lg); font-weight: 600; }
+        p { font-size: var(--fs-md); line-height: 1.5; color: var(--gray-700); }
+        .text-sm { font-size: var(--fs-sm); }
+        .text-xs { font-size: var(--fs-xs); }
+
         /* ==================== LAYOUT ==================== */
         .app-wrapper {
             display: flex;
             min-height: 100vh;
-            max-width: 1400px;
+            max-width: 1280px;
             margin: 0 auto;
             position: relative;
         }
@@ -92,60 +105,58 @@
             position: sticky;
             top: 0;
             height: 100vh;
-            padding: 1rem 1.5rem;
+            padding: 0.75rem 1rem;
             border-right: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
             background: var(--white);
         }
 
-        .sidebar-logo {
-            margin-bottom: 2rem;
-            padding: 0.5rem 0;
+        .logo {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            margin-bottom: 1rem;
         }
 
-        .sidebar-logo img {
-            height: 48px;
-            width: 48px;
-            border-radius: 12px;
-            object-fit: cover;
+        .logo img {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
         }
 
-        .sidebar-logo span {
-            font-weight: 800;
-            font-size: 1.5rem;
+        .logo span {
+            font-weight: 700;
+            font-size: var(--fs-lg);
             color: var(--gold-dark);
-            letter-spacing: -0.5px;
+            letter-spacing: -0.3px;
         }
 
         .nav-menu {
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 0.25rem;
+            gap: 0.125rem;
         }
 
         .nav-item {
             display: flex;
             align-items: center;
             gap: 1rem;
-            padding: 0.75rem 1rem;
+            padding: 0.625rem 0.75rem;
             border-radius: 30px;
             color: var(--gray-800);
-            font-weight: 600;
-            font-size: 1.2rem;
+            font-weight: 500;
+            font-size: var(--fs-lg);
             transition: all 0.2s;
             cursor: pointer;
-            text-decoration: none;
             position: relative;
         }
 
         .nav-item i {
-            font-size: 1.5rem;
-            width: 2rem;
+            font-size: 1.25rem;
+            width: 1.5rem;
         }
 
         .nav-item:hover {
@@ -156,18 +167,19 @@
         .nav-item.active {
             background: var(--gold-light);
             color: var(--gold-dark);
-            font-weight: 700;
+            font-weight: 600;
         }
 
-        .nav-item .badge {
+        .badge {
             position: absolute;
             top: 0.25rem;
-            left: 2rem;
+            left: 1.75rem;
             background: var(--error);
             color: white;
-            font-size: 0.7rem;
-            padding: 0.1rem 0.4rem;
-            border-radius: 10px;
+            font-size: var(--fs-xs);
+            font-weight: 600;
+            padding: 0.125rem 0.375rem;
+            border-radius: 12px;
             min-width: 18px;
             text-align: center;
         }
@@ -176,71 +188,71 @@
             background: linear-gradient(135deg, var(--gold), var(--gold-dark));
             color: var(--black);
             border: none;
-            padding: 1rem;
+            padding: 0.75rem;
             border-radius: 30px;
-            font-weight: 700;
-            font-size: 1.1rem;
+            font-weight: 600;
+            font-size: var(--fs-md);
             cursor: pointer;
-            margin: 1rem 0;
+            margin: 0.75rem 0;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
-            transition: all 0.3s;
+            transition: all 0.2s;
         }
 
         .post-btn-large:hover {
             transform: scale(1.02);
-            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.25);
         }
 
-        .sidebar-user {
+        .user-section {
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            padding: 0.75rem;
+            padding: 0.625rem 0.75rem;
             border-radius: 40px;
             margin-top: auto;
             cursor: pointer;
             transition: background 0.2s;
-            position: relative;
         }
 
-        .sidebar-user:hover {
+        .user-section:hover {
             background: var(--gray-100);
         }
 
-        .sidebar-user-avatar {
-            width: 48px;
-            height: 48px;
+        .user-avatar {
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             overflow: hidden;
-            border: 2px solid var(--gold);
+            border: 2px solid var(--gold-light);
             flex-shrink: 0;
         }
 
-        .sidebar-user-avatar img {
+        .user-avatar img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
 
-        .sidebar-user-info {
+        .user-info {
             flex: 1;
             min-width: 0;
         }
 
-        .sidebar-user-name {
-            font-weight: 700;
+        .user-name {
+            font-weight: 600;
+            font-size: var(--fs-sm);
             color: var(--gray-900);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
-        .sidebar-user-handle {
-            font-size: 0.85rem;
-            color: var(--gray-500);
+        .user-handle {
+            font-size: var(--fs-xs);
+            color: var(--gray-600);
         }
 
         /* Main Content */
@@ -255,9 +267,9 @@
         .feed-header {
             position: sticky;
             top: 0;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(12px);
-            padding: 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(8px);
+            padding: 0.75rem 1rem;
             border-bottom: 1px solid var(--border-color);
             z-index: 10;
             display: flex;
@@ -266,47 +278,45 @@
         }
 
         .feed-header h1 {
-            font-size: 1.5rem;
-            font-weight: 800;
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
 
-        .inner-circle-badge {
+        .badge-gold {
             background: linear-gradient(135deg, var(--gold), var(--gold-dark));
             color: var(--black);
-            padding: 0.25rem 0.75rem;
+            padding: 0.125rem 0.5rem;
             border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 700;
+            font-size: var(--fs-xs);
+            font-weight: 600;
         }
 
         .new-posts-indicator {
             background: var(--gold);
             color: var(--black);
-            padding: 0.5rem 1rem;
+            padding: 0.375rem 0.75rem;
             border-radius: 30px;
-            font-size: 0.85rem;
-            font-weight: 700;
+            font-size: var(--fs-xs);
+            font-weight: 600;
             cursor: pointer;
             display: none;
             align-items: center;
-            gap: 0.5rem;
-            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+            gap: 0.375rem;
+            box-shadow: 0 2px 8px rgba(212, 175, 55, 0.25);
         }
 
         /* Compose Box */
         .compose-box {
-            padding: 1.5rem;
+            padding: 1rem;
             border-bottom: 1px solid var(--border-color);
             display: flex;
-            gap: 1rem;
+            gap: 0.75rem;
         }
 
         .compose-avatar {
-            width: 48px;
-            height: 48px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             overflow: hidden;
             flex-shrink: 0;
@@ -326,75 +336,69 @@
             width: 100%;
             border: none;
             outline: none;
-            font-size: 1.1rem;
-            padding: 0.75rem 0;
+            font-size: var(--fs-md);
+            padding: 0.5rem 0;
             resize: none;
             font-family: inherit;
             min-height: 60px;
         }
 
         .compose-input::placeholder {
-            color: var(--gray-400);
-        }
-
-        .compose-input:disabled {
-            background: transparent;
-            cursor: not-allowed;
+            color: var(--gray-500);
         }
 
         .compose-preview {
             display: none;
-            margin: 1rem 0;
+            margin: 0.75rem 0;
             position: relative;
         }
 
         .compose-preview img {
             width: 100%;
-            max-height: 300px;
+            max-height: 280px;
             object-fit: cover;
             border-radius: 16px;
+            border: 1px solid var(--border-color);
         }
 
         .remove-preview {
             position: absolute;
-            top: 10px;
-            right: 10px;
+            top: 8px;
+            right: 8px;
             background: rgba(0, 0, 0, 0.7);
             color: white;
             border: none;
             border-radius: 50%;
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            font-size: var(--fs-sm);
         }
 
         .compose-actions {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-top: 0.75rem;
-            padding-top: 0.75rem;
+            margin-top: 0.5rem;
+            padding-top: 0.5rem;
             border-top: 1px solid var(--border-color);
         }
 
         .compose-tools {
             display: flex;
-            gap: 1rem;
+            gap: 0.5rem;
         }
 
         .compose-tool {
             background: none;
             border: none;
             color: var(--gold-dark);
-            font-size: 1.2rem;
+            font-size: 1rem;
             cursor: pointer;
-            padding: 0.5rem;
+            padding: 0.375rem;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 32px;
+            height: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -408,9 +412,10 @@
             background: linear-gradient(135deg, var(--gold), var(--gold-dark));
             color: var(--black);
             border: none;
-            padding: 0.6rem 1.5rem;
+            padding: 0.375rem 1rem;
             border-radius: 30px;
-            font-weight: 700;
+            font-weight: 600;
+            font-size: var(--fs-sm);
             cursor: pointer;
         }
 
@@ -422,8 +427,8 @@
         /* Categories */
         .categories {
             display: flex;
-            gap: 0.5rem;
-            padding: 0.75rem 1.5rem;
+            gap: 0.25rem;
+            padding: 0.5rem 1rem;
             overflow-x: auto;
             border-bottom: 1px solid var(--border-color);
             scrollbar-width: none;
@@ -434,13 +439,13 @@
         }
 
         .category-btn {
-            padding: 0.5rem 1rem;
+            padding: 0.375rem 0.75rem;
             border: 1px solid var(--border-color);
             border-radius: 30px;
             background: var(--white);
-            color: var(--gray-600);
-            font-weight: 600;
-            font-size: 0.9rem;
+            color: var(--gray-700);
+            font-weight: 500;
+            font-size: var(--fs-xs);
             cursor: pointer;
             white-space: nowrap;
             transition: all 0.2s;
@@ -454,15 +459,16 @@
             background: var(--gold);
             color: var(--black);
             border-color: var(--gold);
+            font-weight: 600;
         }
 
-        /* Posts Feed */
+        /* Posts */
         .posts-feed {
             padding-bottom: 1rem;
         }
 
         .post-card {
-            padding: 1.5rem;
+            padding: 1rem;
             border-bottom: 1px solid var(--border-color);
             transition: background 0.2s;
             cursor: pointer;
@@ -479,23 +485,23 @@
         .pinned-indicator {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.375rem;
             color: var(--gold-dark);
-            font-size: 0.85rem;
-            margin-bottom: 0.75rem;
+            font-size: var(--fs-xs);
+            margin-bottom: 0.5rem;
             font-weight: 600;
         }
 
         .post-header {
             display: flex;
             gap: 0.75rem;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.25rem;
             position: relative;
         }
 
         .post-avatar {
-            width: 48px;
-            height: 48px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             overflow: hidden;
             border: 2px solid var(--gold-light);
@@ -512,35 +518,32 @@
             flex: 1;
         }
 
-        .post-author-row {
+        .post-row {
             display: flex;
             align-items: center;
             flex-wrap: wrap;
-            gap: 0.25rem 0.5rem;
-            margin-bottom: 0.25rem;
+            gap: 0.25rem 0.375rem;
+            margin-bottom: 0.125rem;
         }
 
         .post-author {
-            font-weight: 700;
+            font-weight: 600;
+            font-size: var(--fs-sm);
             color: var(--gray-900);
         }
 
-        .post-badge {
+        .post-category {
             background: var(--gold-light);
             color: var(--gold-dark);
-            padding: 0.15rem 0.5rem;
+            padding: 0.125rem 0.375rem;
             border-radius: 12px;
-            font-size: 0.7rem;
-            font-weight: 700;
+            font-size: var(--fs-xs);
+            font-weight: 600;
         }
 
         .post-time {
-            font-size: 0.85rem;
-            color: var(--gray-500);
-        }
-
-        .post-time i {
-            margin-right: 0.25rem;
+            font-size: var(--fs-xs);
+            color: var(--gray-600);
         }
 
         .post-options-btn {
@@ -549,25 +552,25 @@
             right: 0;
             background: none;
             border: none;
-            color: var(--gray-400);
-            padding: 0.5rem;
+            color: var(--gray-500);
+            padding: 0.375rem;
             border-radius: 50%;
             cursor: pointer;
         }
 
         .post-options-btn:hover {
-            background: var(--gray-100);
+            background: var(--gray-200);
             color: var(--gold-dark);
         }
 
         .post-options-dropdown {
             position: absolute;
-            top: 40px;
+            top: 32px;
             right: 0;
             background: var(--white);
-            border-radius: 16px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
-            min-width: 180px;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            min-width: 150px;
             z-index: 20;
             display: none;
             overflow: hidden;
@@ -579,11 +582,12 @@
         }
 
         .post-option {
-            padding: 0.75rem 1rem;
+            padding: 0.5rem 0.75rem;
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.5rem;
             cursor: pointer;
+            font-size: var(--fs-sm);
             color: var(--gray-700);
         }
 
@@ -596,76 +600,71 @@
             color: var(--error);
         }
 
-        .post-option.delete:hover {
-            background: rgba(231, 76, 60, 0.1);
-        }
-
         .post-content {
-            margin-left: 60px;
-            margin-bottom: 1rem;
+            margin-left: 52px;
+            margin-bottom: 0.75rem;
         }
 
         .post-title {
-            font-size: 1.2rem;
             font-weight: 700;
-            margin-bottom: 0.5rem;
+            font-size: var(--fs-md);
+            margin-bottom: 0.25rem;
             color: var(--gray-900);
         }
 
         .post-text {
+            font-size: var(--fs-sm);
             color: var(--gray-700);
             white-space: pre-line;
-            line-height: 1.6;
-            margin-bottom: 0.75rem;
+            line-height: 1.5;
         }
 
         .post-media {
-            margin: 1rem 0;
-            border-radius: 16px;
+            margin: 0.75rem 0;
+            border-radius: 12px;
             overflow: hidden;
             border: 1px solid var(--border-color);
         }
 
         .post-media img {
             width: 100%;
-            max-height: 400px;
+            max-height: 300px;
             object-fit: cover;
-            display: block;
         }
 
         .post-tags {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.5rem;
-            margin: 0.75rem 0;
+            gap: 0.375rem;
+            margin: 0.5rem 0;
         }
 
         .post-tag {
             color: var(--gold-dark);
             background: var(--gold-light);
-            padding: 0.25rem 0.75rem;
+            padding: 0.125rem 0.5rem;
             border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
+            font-size: var(--fs-xs);
+            font-weight: 500;
         }
 
         .post-actions {
             display: flex;
-            gap: 0.25rem;
-            margin-left: 60px;
-            margin-top: 0.75rem;
+            gap: 0.125rem;
+            margin-left: 52px;
+            margin-top: 0.5rem;
         }
 
         .post-action {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
+            gap: 0.375rem;
+            padding: 0.375rem 0.75rem;
             border: none;
             background: none;
-            color: var(--gray-500);
-            font-weight: 600;
-            font-size: 0.9rem;
+            color: var(--gray-600);
+            font-weight: 500;
+            font-size: var(--fs-xs);
             cursor: pointer;
             border-radius: 30px;
             transition: all 0.2s;
@@ -684,10 +683,10 @@
             color: var(--gold-dark);
         }
 
-        /* Comments Section */
+        /* Comments */
         .comments-section {
-            margin-top: 1rem;
-            padding-top: 1rem;
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
             border-top: 1px solid var(--border-color);
             display: none;
         }
@@ -700,42 +699,40 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
         }
 
         .comments-title {
-            font-size: 1.1rem;
-            font-weight: 700;
+            font-size: var(--fs-sm);
+            font-weight: 600;
         }
 
         .close-comments {
             background: none;
             border: none;
             color: var(--gray-500);
-            font-size: 1.2rem;
+            font-size: 1rem;
             cursor: pointer;
-            padding: 0.25rem;
-            border-radius: 50%;
         }
 
         .comments-list {
             max-height: 300px;
             overflow-y: auto;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
         }
 
         .comment-item {
             display: flex;
-            gap: 0.75rem;
-            margin-bottom: 1rem;
-            padding: 0.75rem;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            padding: 0.5rem;
             background: var(--gray-50);
-            border-radius: 12px;
+            border-radius: 8px;
         }
 
         .comment-avatar {
-            width: 36px;
-            height: 36px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             overflow: hidden;
             flex-shrink: 0;
@@ -754,41 +751,39 @@
         .comment-header {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 0.25rem;
+            gap: 0.375rem;
+            margin-bottom: 0.125rem;
             flex-wrap: wrap;
         }
 
         .comment-author {
-            font-weight: 700;
-            font-size: 0.9rem;
-            color: var(--gray-900);
+            font-weight: 600;
+            font-size: var(--fs-xs);
         }
 
         .comment-time {
-            font-size: 0.75rem;
+            font-size: var(--fs-xs);
             color: var(--gray-500);
         }
 
         .comment-text {
-            font-size: 0.9rem;
+            font-size: var(--fs-xs);
             color: var(--gray-700);
         }
 
         .comment-form {
             display: flex;
-            gap: 0.5rem;
+            gap: 0.375rem;
             align-items: center;
-            margin-top: 1rem;
         }
 
         .comment-input {
             flex: 1;
-            padding: 0.75rem 1rem;
+            padding: 0.5rem 0.75rem;
             border: 1px solid var(--border-color);
             border-radius: 30px;
             outline: none;
-            font-size: 0.9rem;
+            font-size: var(--fs-xs);
         }
 
         .comment-input:focus {
@@ -799,13 +794,10 @@
             background: var(--gold);
             color: var(--black);
             border: none;
-            width: 40px;
-            height: 40px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
         /* Right Sidebar */
@@ -814,18 +806,23 @@
             position: sticky;
             top: 0;
             height: 100vh;
-            padding: 1rem 1.5rem;
+            padding: 0.75rem 1rem;
             overflow-y: auto;
         }
 
         .search-box {
             background: var(--gray-100);
             border-radius: 30px;
-            padding: 0.75rem 1rem;
+            padding: 0.5rem 0.75rem;
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 1.5rem;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .search-box i {
+            color: var(--gray-500);
+            font-size: var(--fs-sm);
         }
 
         .search-box input {
@@ -833,23 +830,24 @@
             border: none;
             outline: none;
             width: 100%;
+            font-size: var(--fs-sm);
         }
 
-        .trends-card, .follow-card, .clubs-card {
+        .card {
             background: var(--gray-50);
             border-radius: 16px;
-            padding: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .card-title {
-            font-weight: 800;
-            font-size: 1.2rem;
+            padding: 0.75rem;
             margin-bottom: 1rem;
         }
 
+        .card-title {
+            font-weight: 700;
+            font-size: var(--fs-sm);
+            margin-bottom: 0.75rem;
+        }
+
         .trend-item {
-            padding: 0.75rem 0;
+            padding: 0.5rem 0;
             border-bottom: 1px solid var(--border-color);
         }
 
@@ -858,25 +856,25 @@
         }
 
         .trend-category {
-            font-size: 0.8rem;
-            color: var(--gray-500);
+            font-size: var(--fs-xs);
+            color: var(--gray-600);
         }
 
         .trend-name {
-            font-weight: 700;
-            color: var(--gray-900);
+            font-weight: 600;
+            font-size: var(--fs-sm);
         }
 
         .trend-count {
-            font-size: 0.8rem;
-            color: var(--gray-500);
+            font-size: var(--fs-xs);
+            color: var(--gray-600);
         }
 
         .follow-item {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 0;
+            gap: 0.5rem;
+            padding: 0.5rem 0;
             border-bottom: 1px solid var(--border-color);
         }
 
@@ -885,16 +883,10 @@
         }
 
         .follow-avatar {
-            width: 48px;
-            height: 48px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             overflow: hidden;
-        }
-
-        .follow-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
         }
 
         .follow-info {
@@ -902,47 +894,48 @@
         }
 
         .follow-name {
-            font-weight: 700;
+            font-weight: 600;
+            font-size: var(--fs-xs);
         }
 
         .follow-handle {
-            font-size: 0.85rem;
-            color: var(--gray-500);
+            font-size: var(--fs-xs);
+            color: var(--gray-600);
         }
 
         .follow-btn {
             background: var(--black);
             color: white;
             border: none;
-            padding: 0.5rem 1rem;
+            padding: 0.25rem 0.75rem;
             border-radius: 30px;
-            font-weight: 600;
-            font-size: 0.85rem;
+            font-weight: 500;
+            font-size: var(--fs-xs);
             cursor: pointer;
         }
 
         .club-chip {
             display: inline-block;
             background: var(--white);
-            padding: 0.5rem 1rem;
+            padding: 0.25rem 0.5rem;
             border-radius: 30px;
-            margin: 0.25rem;
-            font-weight: 600;
-            font-size: 0.9rem;
+            margin: 0.125rem;
+            font-weight: 500;
+            font-size: var(--fs-xs);
             border: 1px solid var(--border-color);
         }
 
-        /* Mobile Bottom Navigation */
+        /* Mobile Navigation */
         .mobile-nav {
             display: none;
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(10px);
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(8px);
             border-top: 1px solid var(--border-color);
-            padding: 0.5rem 0;
+            padding: 0.375rem 0;
             z-index: 100;
         }
 
@@ -956,15 +949,15 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            color: var(--gray-500);
+            color: var(--gray-600);
             text-decoration: none;
-            font-size: 0.7rem;
-            padding: 0.5rem;
+            font-size: var(--fs-xs);
+            padding: 0.375rem;
         }
 
         .mobile-nav-item i {
-            font-size: 1.3rem;
-            margin-bottom: 0.2rem;
+            font-size: 1.25rem;
+            margin-bottom: 0.125rem;
         }
 
         .mobile-nav-item.active {
@@ -974,15 +967,15 @@
         .mobile-post-btn {
             background: linear-gradient(135deg, var(--gold), var(--gold-dark));
             color: var(--black);
-            width: 50px;
-            height: 50px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.3rem;
-            margin-top: -25px;
-            box-shadow: 0 4px 12px rgba(212,175,55,0.3);
+            font-size: 1.25rem;
+            margin-top: -24px;
+            box-shadow: 0 2px 8px rgba(212,175,55,0.3);
         }
 
         /* Modals */
@@ -1006,10 +999,10 @@
 
         .modal-content {
             background: var(--white);
-            border-radius: 24px;
+            border-radius: 20px;
             width: 100%;
-            max-width: 500px;
-            max-height: 85vh;
+            max-width: 480px;
+            max-height: 80vh;
             overflow: hidden;
             display: flex;
             flex-direction: column;
@@ -1017,45 +1010,44 @@
         }
 
         @keyframes slideUp {
-            from {
-                transform: translateY(50px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
+            from { transform: translateY(40px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
 
         .modal-header {
             background: linear-gradient(135deg, var(--gold), var(--gold-dark));
             color: var(--black);
-            padding: 1.5rem;
+            padding: 1rem;
             text-align: center;
             position: relative;
         }
 
         .modal-header h2 {
-            font-size: 1.5rem;
-            font-weight: 800;
+            font-size: var(--fs-lg);
+        }
+
+        .modal-header p {
+            font-size: var(--fs-xs);
+            color: var(--black);
+            opacity: 0.9;
         }
 
         .close-modal {
             position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: rgba(0,0,0,0.15);
+            top: 0.75rem;
+            right: 0.75rem;
+            background: rgba(0,0,0,0.1);
             border: none;
             color: var(--black);
-            width: 36px;
-            height: 36px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             cursor: pointer;
-            font-size: 1.4rem;
+            font-size: 1.25rem;
         }
 
         .modal-body {
-            padding: 1.5rem;
+            padding: 1rem;
             overflow-y: auto;
         }
 
@@ -1063,21 +1055,21 @@
         .steps {
             display: flex;
             justify-content: center;
-            gap: 0.5rem;
-            margin: 1rem 0;
+            gap: 0.375rem;
+            margin: 0.75rem 0;
         }
 
         .step-dot {
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
             border-radius: 50%;
             background: var(--gray-300);
             transition: all 0.3s;
         }
 
         .step-dot.active {
-            width: 24px;
-            border-radius: 12px;
+            width: 20px;
+            border-radius: 10px;
             background: var(--gold);
         }
 
@@ -1092,15 +1084,15 @@
         .club-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin: 1.5rem 0;
+            gap: 0.5rem;
+            margin: 1rem 0;
         }
 
         .club-card {
             background: white;
-            border: 2px solid var(--border-color);
-            border-radius: 16px;
-            padding: 1.25rem;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.75rem;
             text-align: center;
             cursor: pointer;
         }
@@ -1111,23 +1103,34 @@
         }
 
         .club-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 14px;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
             background: linear-gradient(135deg, var(--gold-light), var(--gold));
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 0.75rem;
+            margin: 0 auto 0.5rem;
+            font-size: var(--fs-sm);
+        }
+
+        .club-card h4 {
+            font-size: var(--fs-sm);
+            font-weight: 600;
+        }
+
+        .club-card p {
+            font-size: var(--fs-xs);
         }
 
         .btn-primary {
             background: linear-gradient(135deg, var(--gold), var(--gold-dark));
             color: var(--black);
             border: none;
-            padding: 0.75rem 1.5rem;
+            padding: 0.5rem 1rem;
             border-radius: 30px;
-            font-weight: 700;
+            font-weight: 600;
+            font-size: var(--fs-sm);
             cursor: pointer;
             width: 100%;
         }
@@ -1139,27 +1142,30 @@
 
         .btn-outline {
             background: transparent;
-            border: 2px solid var(--border-color);
-            padding: 0.75rem 1.5rem;
+            border: 1px solid var(--border-color);
+            padding: 0.5rem 1rem;
             border-radius: 30px;
-            font-weight: 700;
+            font-weight: 500;
+            font-size: var(--fs-sm);
             cursor: pointer;
         }
 
         /* Toast */
         .toast {
             position: fixed;
-            top: 80px;
-            right: 20px;
+            top: 70px;
+            right: 16px;
             background: var(--gray-900);
             color: white;
-            padding: 0.75rem 1.5rem;
+            padding: 0.5rem 1rem;
             border-radius: 30px;
             z-index: 1000;
+            font-size: var(--fs-xs);
             opacity: 0;
             transform: translateY(-20px);
             transition: all 0.3s;
-            max-width: 300px;
+            max-width: 280px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
 
         .toast.show {
@@ -1179,10 +1185,10 @@
         /* Back to Top */
         .back-to-top {
             position: fixed;
-            bottom: 80px;
-            right: 20px;
-            width: 44px;
-            height: 44px;
+            bottom: 70px;
+            right: 16px;
+            width: 36px;
+            height: 36px;
             background: linear-gradient(135deg, var(--gold), var(--gold-dark));
             border-radius: 50%;
             display: flex;
@@ -1195,6 +1201,7 @@
             transition: all 0.3s;
             border: none;
             z-index: 99;
+            font-size: var(--fs-sm);
         }
 
         .back-to-top.visible {
@@ -1209,28 +1216,28 @@
             right: 10px;
             background: var(--gold);
             color: var(--black);
-            padding: 0.5rem 1rem;
+            padding: 0.375rem 0.75rem;
             border-radius: 30px;
-            font-size: 0.85rem;
-            font-weight: 600;
+            font-size: var(--fs-xs);
+            font-weight: 500;
             z-index: 1000;
             display: none;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.375rem;
         }
 
         .session-status.visible {
             display: flex;
         }
 
-        /* Loading States */
+        /* Loading */
         .loading-spinner {
             text-align: center;
             padding: 2rem;
         }
 
         .loading-spinner i {
-            font-size: 2rem;
+            font-size: 1.5rem;
             color: var(--gold);
             animation: spin 1s linear infinite;
         }
@@ -1241,19 +1248,19 @@
         }
 
         .skeleton {
-            padding: 1.5rem;
+            padding: 1rem;
             border-bottom: 1px solid var(--border-color);
         }
 
         .skeleton-header {
             display: flex;
-            gap: 0.75rem;
-            margin-bottom: 1rem;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
         }
 
         .skeleton-avatar {
-            width: 48px;
-            height: 48px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
             background-size: 200% 100%;
@@ -1261,12 +1268,12 @@
         }
 
         .skeleton-line {
-            height: 16px;
+            height: 12px;
             background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
             background-size: 200% 100%;
             animation: loading 1.5s infinite;
-            border-radius: 8px;
-            margin-bottom: 0.5rem;
+            border-radius: 6px;
+            margin-bottom: 0.375rem;
         }
 
         @keyframes loading {
@@ -1279,51 +1286,42 @@
         }
 
         /* Responsive */
-        @media (max-width: 1200px) {
+        @media (max-width: 1024px) {
             .left-sidebar {
-                width: 88px;
-                padding: 1rem 0.5rem;
+                width: 72px;
+                padding: 0.75rem 0.5rem;
             }
             
-            .sidebar-logo span,
+            .logo span,
             .nav-item span:not(.nav-icon),
-            .sidebar-user-info,
+            .user-info,
             .post-btn-large span {
                 display: none;
             }
             
             .nav-item {
                 justify-content: center;
-                padding: 0.75rem;
+                padding: 0.625rem;
             }
             
             .nav-item i {
                 margin: 0;
-                font-size: 1.8rem;
+                font-size: 1.25rem;
             }
             
             .post-btn-large {
-                padding: 0.75rem;
+                padding: 0.625rem;
                 justify-content: center;
             }
             
-            .sidebar-user {
+            .user-section {
                 justify-content: center;
-            }
-        }
-
-        @media (max-width: 992px) {
-            .right-sidebar {
-                display: none;
-            }
-            
-            .main-content {
-                max-width: 100%;
             }
         }
 
         @media (max-width: 768px) {
-            .left-sidebar {
+            .left-sidebar,
+            .right-sidebar {
                 display: none;
             }
             
@@ -1332,12 +1330,9 @@
             }
             
             .main-content {
+                max-width: 100%;
                 border-right: none;
                 padding-bottom: var(--bottom-nav-height);
-            }
-            
-            .feed-header {
-                padding: 0.75rem 1rem;
             }
             
             .post-content {
@@ -1353,8 +1348,8 @@
                 display: none;
             }
             
-            .compose-box {
-                padding: 1rem;
+            .feed-header {
+                padding: 0.5rem 0.75rem;
             }
         }
     </style>
@@ -1378,7 +1373,7 @@
     <div class="app-wrapper">
         <!-- Left Sidebar -->
         <aside class="left-sidebar">
-            <div class="sidebar-logo">
+            <div class="logo">
                 <img src="https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp" alt="THE SONGA">
                 <span>SONGA</span>
             </div>
@@ -1420,19 +1415,19 @@
                 </button>
             </nav>
 
-            <div class="sidebar-user" id="sidebarUser">
-                <div class="sidebar-user-avatar">
+            <div class="user-section" id="userSection">
+                <div class="user-avatar">
                     <img id="userAvatar" src="https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp" alt="">
                 </div>
-                <div class="sidebar-user-info">
-                    <div class="sidebar-user-name" id="userName">Sign In</div>
-                    <div class="sidebar-user-handle" id="userHandle">@guest</div>
+                <div class="user-info">
+                    <div class="user-name" id="userName">Sign In</div>
+                    <div class="user-handle" id="userHandle">@guest</div>
                 </div>
                 <i class="fas fa-ellipsis-h"></i>
             </div>
 
             <!-- User Dropdown -->
-            <div class="post-options-dropdown" id="userDropdown" style="position: fixed; bottom: 80px; left: 20px;">
+            <div class="post-options-dropdown" id="userDropdown" style="position: fixed; bottom: 70px; left: 16px;">
                 <div class="post-option" id="profileOption">
                     <i class="fas fa-user-circle"></i>
                     <span>My Profile</span>
@@ -1457,11 +1452,11 @@
             <div class="feed-header">
                 <h1>
                     Home
-                    <span class="inner-circle-badge">Inner Circle</span>
+                    <span class="badge-gold">Inner Circle</span>
                 </h1>
                 <div class="new-posts-indicator" id="newPostsIndicator">
                     <i class="fas fa-sync-alt"></i>
-                    <span>New posts</span>
+                    <span>New</span>
                 </div>
             </div>
 
@@ -1474,7 +1469,7 @@
                     <textarea 
                         class="compose-input" 
                         id="composeInput" 
-                        placeholder="What's happening in the Inner Circle?"
+                        placeholder="What's happening?"
                         rows="1"
                         disabled
                     ></textarea>
@@ -1492,8 +1487,8 @@
                                 <i class="fas fa-image"></i>
                             </label>
                             <input type="file" id="imageUpload" accept="image/*" style="display: none;">
-                            <button class="compose-tool" id="gifBtn">
-                                <i class="fas fa-gift"></i>
+                            <button class="compose-tool" id="emojiBtn">
+                                <i class="fas fa-smile"></i>
                             </button>
                         </div>
                         <button class="compose-submit" id="composeSubmit" disabled>
@@ -1505,7 +1500,7 @@
 
             <!-- Categories -->
             <div class="categories" id="categories">
-                <button class="category-btn active" data-category="all">For You</button>
+                <button class="category-btn active" data-category="all">For you</button>
                 <button class="category-btn" data-category="announcement">Announcements</button>
                 <button class="category-btn" data-category="event">Events</button>
                 <button class="category-btn" data-category="discussion">Discussions</button>
@@ -1514,7 +1509,7 @@
 
             <!-- Posts Feed -->
             <div class="posts-feed" id="postsFeed">
-                <!-- Posts will be loaded here -->
+                <!-- Posts loaded from Firebase -->
             </div>
         </main>
 
@@ -1522,29 +1517,35 @@
         <aside class="right-sidebar">
             <div class="search-box">
                 <i class="fas fa-search"></i>
-                <input type="text" placeholder="Search Inner Circle">
+                <input type="text" placeholder="Search">
             </div>
 
-            <!-- Trends will be loaded from Firebase -->
-            <div class="trends-card" id="trendsCard">
-                <h3 class="card-title">Trends for you</h3>
-                <div id="trendsList"></div>
+            <!-- Trends -->
+            <div class="card" id="trendsCard">
+                <h3 class="card-title">Trends</h3>
+                <div id="trendsList">
+                    <!-- Loaded from Firebase -->
+                </div>
             </div>
 
-            <!-- Who to follow will be loaded from Firebase -->
-            <div class="follow-card" id="followCard">
+            <!-- Who to follow -->
+            <div class="card" id="followCard">
                 <h3 class="card-title">Who to follow</h3>
-                <div id="followList"></div>
+                <div id="followList">
+                    <!-- Loaded from Firebase -->
+                </div>
             </div>
 
-            <!-- Clubs will be loaded from Firebase -->
-            <div class="clubs-card" id="clubsCard">
-                <h3 class="card-title">Your Clubs</h3>
-                <div id="clubsList"></div>
+            <!-- Your clubs -->
+            <div class="card" id="clubsCard">
+                <h3 class="card-title">Your clubs</h3>
+                <div id="clubsList">
+                    <!-- Loaded from Firebase -->
+                </div>
             </div>
 
-            <div style="font-size: 0.8rem; color: var(--gray-500); padding: 1rem 0;">
-                © 2026 THE SONGA Inner Circle
+            <div class="text-xs" style="color: var(--gray-500); padding: 0.5rem 0;">
+                © 2026 THE SONGA
             </div>
         </aside>
 
@@ -1580,23 +1581,23 @@
     <div class="modal" id="signinModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Join the Inner Circle</h2>
+                <h2>Join Inner Circle</h2>
                 <p>UNBOUND | UNBENT | UNBROKEN</p>
                 <button class="close-modal" id="closeSigninModal">&times;</button>
             </div>
             <div class="modal-body">
-                <!-- Step 1: Welcome -->
+                <!-- Step 1 -->
                 <div class="slide active" id="step1">
-                    <h3 style="margin-bottom: 1rem;">Welcome to THE SONGA</h3>
-                    <p>Experience exclusive access to our members-only platform.</p>
+                    <h3 style="margin-bottom: 0.75rem;">Welcome</h3>
+                    <p style="margin-bottom: 1rem;">Experience exclusive access to our members-only platform.</p>
                     
-                    <div style="background: var(--gray-50); padding: 1.5rem; border-radius: 16px; margin: 1.5rem 0;">
-                        <h4 style="margin-bottom: 1rem; color: var(--gold-dark);">Inner Circle Benefits:</h4>
-                        <ul style="list-style: none;">
-                            <li style="margin-bottom: 0.75rem;">📅 Priority event updates</li>
-                            <li style="margin-bottom: 0.75rem;">📚 Curated learning programs</li>
-                            <li style="margin-bottom: 0.75rem;">🌟 Talent development</li>
-                            <li style="margin-bottom: 0.75rem;">🤝 Exclusive networking</li>
+                    <div style="background: var(--gray-50); padding: 1rem; border-radius: 12px; margin-bottom: 1rem;">
+                        <h4 style="margin-bottom: 0.5rem; color: var(--gold-dark);">Benefits:</h4>
+                        <ul style="list-style: none; font-size: var(--fs-xs);">
+                            <li style="margin-bottom: 0.375rem;">📅 Priority event updates</li>
+                            <li style="margin-bottom: 0.375rem;">📚 Curated learning programs</li>
+                            <li style="margin-bottom: 0.375rem;">🌟 Talent development</li>
+                            <li>🤝 Exclusive networking</li>
                         </ul>
                     </div>
                     
@@ -1605,51 +1606,51 @@
                     </button>
                 </div>
                 
-                <!-- Step 2: Club Selection -->
+                <!-- Step 2 -->
                 <div class="slide" id="step2">
-                    <h3 style="margin-bottom: 1rem;">Choose Your Clubs</h3>
-                    <p>Select the clubs that match your interests:</p>
+                    <h3 style="margin-bottom: 0.75rem;">Choose clubs</h3>
+                    <p style="margin-bottom: 1rem; font-size: var(--fs-xs);">Select your interests:</p>
                     
                     <div class="club-grid">
                         <div class="club-card" data-club="logos">
                             <div class="club-icon"><i class="fas fa-book-open"></i></div>
                             <h4>Logos</h4>
-                            <p style="font-size: 0.8rem;">Reading Club</p>
+                            <p>Reading</p>
                         </div>
                         <div class="club-card" data-club="workfit">
                             <div class="club-icon"><i class="fas fa-dumbbell"></i></div>
                             <h4>WorkFit</h4>
-                            <p style="font-size: 0.8rem;">Fitness Club</p>
+                            <p>Fitness</p>
                         </div>
                         <div class="club-card" data-club="talantae">
                             <div class="club-icon"><i class="fas fa-star"></i></div>
                             <h4>Talantae</h4>
-                            <p style="font-size: 0.8rem;">Talent Club</p>
+                            <p>Talent</p>
                         </div>
                         <div class="club-card" data-club="stratum">
                             <div class="club-icon"><i class="fas fa-briefcase"></i></div>
                             <h4>Stratum</h4>
-                            <p style="font-size: 0.8rem;">Business Club</p>
+                            <p>Business</p>
                         </div>
                     </div>
                     
-                    <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                    <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
                         <button class="btn-outline" id="backToStep1Btn" style="flex: 1;">Back</button>
                         <button class="btn-primary" id="continueBtn" style="flex: 1;" disabled>Continue</button>
                     </div>
                 </div>
                 
-                <!-- Step 3: Google Sign-in -->
+                <!-- Step 3 -->
                 <div class="slide" id="step3">
-                    <h3 style="margin-bottom: 1rem;">Complete Your Membership</h3>
-                    <p>Sign in with Google to access exclusive benefits.</p>
+                    <h3 style="margin-bottom: 0.75rem;">Sign in</h3>
+                    <p style="margin-bottom: 1rem; font-size: var(--fs-xs);">Complete your membership</p>
                     
-                    <div id="selectedClubsDisplay" style="margin: 1.5rem 0; padding: 1rem; background: var(--gray-50); border-radius: 12px;">
-                        <h4 style="margin-bottom: 0.75rem;">Your Selected Clubs:</h4>
-                        <div id="selectedClubsList" style="display: flex; flex-wrap: wrap; gap: 0.5rem;"></div>
+                    <div id="selectedClubsDisplay" style="margin: 1rem 0; padding: 0.75rem; background: var(--gray-50); border-radius: 8px;">
+                        <h4 style="margin-bottom: 0.5rem; font-size: var(--fs-xs);">Your clubs:</h4>
+                        <div id="selectedClubsList" style="display: flex; flex-wrap: wrap; gap: 0.25rem;"></div>
                     </div>
                     
-                    <div style="margin: 2rem 0; text-align: center;">
+                    <div style="margin: 1.5rem 0; text-align: center;">
                         <div id="g_id_onload"
                              data-client_id="123922889572-9dmjivsoese0b0o78poo5mgu7nqqm6e6.apps.googleusercontent.com"
                              data-context="signin"
@@ -1662,14 +1663,14 @@
                              data-shape="rectangular"
                              data-theme="outline"
                              data-text="signin_with"
-                             data-size="large">
+                             data-size="medium">
                         </div>
                     </div>
                     
                     <button class="btn-outline" id="backToStep2Btn" style="width: 100%;">Back</button>
                 </div>
                 
-                <!-- Progress Steps -->
+                <!-- Progress -->
                 <div class="steps">
                     <div class="step-dot active" data-step="1"></div>
                     <div class="step-dot" data-step="2"></div>
@@ -1683,25 +1684,25 @@
     <div class="modal" id="createPostModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Create Post</h2>
+                <h2>Create post</h2>
                 <button class="close-modal" id="closeCreateModal">&times;</button>
             </div>
             <div class="modal-body">
-                <textarea id="modalPostContent" class="compose-input" placeholder="What's happening?" rows="4" style="width: 100%; padding: 1rem; border: 1px solid var(--border-color); border-radius: 12px;"></textarea>
+                <textarea id="modalPostContent" class="compose-input" placeholder="What's happening?" rows="3" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px;"></textarea>
                 
-                <div style="margin: 1rem 0;">
-                    <label for="modalImageUpload" style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: var(--gold-dark);">
-                        <i class="fas fa-image"></i> Add Image
+                <div style="margin: 0.75rem 0;">
+                    <label for="modalImageUpload" style="display: flex; align-items: center; gap: 0.375rem; cursor: pointer; color: var(--gold-dark); font-size: var(--fs-xs);">
+                        <i class="fas fa-image"></i> Add image
                     </label>
                     <input type="file" id="modalImageUpload" accept="image/*" style="display: none;">
                 </div>
                 
                 <div class="compose-preview" id="modalPreview" style="display: none;">
-                    <img id="modalPreviewImage" src="" style="width: 100%; border-radius: 12px;">
+                    <img id="modalPreviewImage" src="" style="width: 100%; border-radius: 8px;">
                     <button class="remove-preview" id="removeModalPreview">&times;</button>
                 </div>
                 
-                <button class="btn-primary" id="submitModalPost" style="margin-top: 1rem;">Post</button>
+                <button class="btn-primary" id="submitModalPost" style="margin-top: 0.75rem;">Post</button>
             </div>
         </div>
     </div>
@@ -1714,7 +1715,7 @@
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 
     <script>
-        // ==================== FIREBASE INIT ====================
+        // ==================== FIREBASE CONFIG ====================
         const firebaseConfig = {
             apiKey: "AIzaSyBDZicoo7dFLtSmgRPvQE_gdm-tNOyCTXA",
             authDomain: "the-songa-77b1b.firebaseapp.com",
@@ -1725,19 +1726,19 @@
             appId: "1:123922889572:web:482b2a624930baaf92d871"
         };
 
+        // Initialize Firebase
         let app, database, auth, storage;
-        
         try {
             app = firebase.initializeApp(firebaseConfig);
             database = firebase.database();
             auth = firebase.auth();
             storage = firebase.storage();
-            console.log('Firebase initialized');
+            console.log('✅ Firebase initialized');
         } catch (e) {
-            console.error('Firebase init error:', e);
+            console.error('❌ Firebase init error:', e);
         }
 
-        // ==================== GLOBAL STATE ====================
+        // ==================== STATE ====================
         let currentUser = null;
         let currentUserData = null;
         let posts = [];
@@ -1745,7 +1746,6 @@
         let currentFilter = 'all';
         let postToDelete = null;
         let currentImageFile = null;
-        let lastPostTime = Date.now();
         let listeners = [];
 
         // DOM Elements
@@ -1758,7 +1758,7 @@
             userAvatar: document.getElementById('userAvatar'),
             userName: document.getElementById('userName'),
             userHandle: document.getElementById('userHandle'),
-            sidebarUser: document.getElementById('sidebarUser'),
+            userSection: document.getElementById('userSection'),
             userDropdown: document.getElementById('userDropdown'),
             signOutOption: document.getElementById('signOutOption'),
             profileOption: document.getElementById('profileOption'),
@@ -1814,7 +1814,6 @@
             submitModalPost: document.getElementById('submitModalPost')
         };
 
-        // Club data
         const clubs = {
             logos: { name: 'Logos', icon: 'fa-book-open', color: '#3498db' },
             workfit: { name: 'WorkFit', icon: 'fa-dumbbell', color: '#2ecc71' },
@@ -1868,10 +1867,10 @@
                     }
                     
                     fetchUserData(currentUser.uid);
-                    setupListeners();
-                    loadPosts();
-                    loadTrends();
-                    loadSuggestions();
+                    setupRealtimeListeners();
+                    loadPostsFromFirebase();
+                    loadTrendsFromFirebase();
+                    loadSuggestionsFromFirebase();
                     return true;
                 } catch (e) {
                     clearSession();
@@ -1881,8 +1880,7 @@
             } else {
                 clearSession();
                 showSigninModal();
-                loadSamplePosts();
-                loadSampleTrends();
+                loadPostsFromFirebase(); // Will show empty state
                 return false;
             }
         }
@@ -1908,9 +1906,9 @@
 
         function updateUIForUser() {
             if (!currentUser) {
-                // Guest mode
+                // Guest state
                 el.userAvatar.src = 'https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp';
-                el.userName.textContent = 'Guest';
+                el.userName.textContent = 'Sign In';
                 el.userHandle.textContent = '@guest';
                 el.composeAvatar.src = 'https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp';
                 el.composeInput.disabled = true;
@@ -1924,7 +1922,7 @@
             el.userHandle.textContent = `@${(currentUser.firstName || 'user').toLowerCase()}`;
             el.composeAvatar.src = currentUser.picture || 'https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp';
             el.composeInput.disabled = false;
-            el.composeInput.placeholder = "What's happening in the Inner Circle?";
+            el.composeInput.placeholder = "What's happening?";
         }
 
         async function fetchUserData(uid) {
@@ -1935,6 +1933,7 @@
                     if (currentUserData.selectedClubs) {
                         selectedClubs = currentUserData.selectedClubs;
                     }
+                    updateClubsList();
                 }
             } catch (e) {
                 console.error('Error fetching user data:', e);
@@ -2004,7 +2003,7 @@
             
             el.selectedClubsList.innerHTML = selectedClubs.map(club => {
                 const c = clubs[club];
-                return `<span style="background: var(--gold-light); padding: 0.5rem 1rem; border-radius: 30px;">
+                return `<span style="background: var(--gold-light); padding: 0.25rem 0.5rem; border-radius: 20px; font-size: var(--fs-xs);">
                     <i class="fas ${c.icon}" style="color: ${c.color};"></i> ${c.name}
                 </span>`;
             }).join('');
@@ -2013,8 +2012,8 @@
         // ==================== GOOGLE SIGN IN ====================
         window.handleGoogleSignIn = async function(response) {
             try {
-                const cred = response.credential;
-                const user = parseJwt(cred);
+                const credential = response.credential;
+                const user = parseJwt(credential);
                 
                 currentUser = {
                     uid: user.sub,
@@ -2025,8 +2024,9 @@
                     picture: user.picture
                 };
                 
-                saveSession(currentUser, cred);
+                saveSession(currentUser, credential);
                 
+                // Save to Firebase
                 const userRef = database.ref(`users/${currentUser.uid}`);
                 const snap = await userRef.once('value');
                 
@@ -2041,7 +2041,10 @@
                         joinedDate: new Date().toISOString(),
                         lastLogin: new Date().toISOString(),
                         membershipStatus: 'active',
-                        membershipTier: 'inner-circle'
+                        membershipTier: 'inner-circle',
+                        bookmarkedPosts: [],
+                        followers: [],
+                        following: []
                     });
                 } else {
                     await userRef.update({
@@ -2057,8 +2060,11 @@
                 
                 showToast(`Welcome, ${currentUser.firstName}!`, 'success');
                 
-                loadPosts();
-                setupListeners();
+                // Load real data
+                loadPostsFromFirebase();
+                setupRealtimeListeners();
+                loadTrendsFromFirebase();
+                loadSuggestionsFromFirebase();
                 
             } catch (e) {
                 console.error('Sign in error:', e);
@@ -2081,15 +2087,34 @@
             updateUIForUser();
             showToast('Signed out', 'success');
             showSigninModal();
-            loadSamplePosts();
-            loadSampleTrends();
+            loadPostsFromFirebase(); // Will show empty/guest view
         }
 
         // ==================== POSTS ====================
-        async function loadPosts() {
+        function showSkeletons(count = 3) {
+            let html = '';
+            for (let i = 0; i < count; i++) {
+                html += `
+                    <div class="skeleton">
+                        <div class="skeleton-header">
+                            <div class="skeleton-avatar"></div>
+                            <div style="flex: 1;">
+                                <div class="skeleton-line" style="width: 40%;"></div>
+                                <div class="skeleton-line" style="width: 30%;"></div>
+                            </div>
+                        </div>
+                        <div class="skeleton-line" style="width: 90%;"></div>
+                        <div class="skeleton-line" style="width: 80%;"></div>
+                        <div class="skeleton-line" style="width: 85%;"></div>
+                    </div>
+                `;
+            }
+            el.postsFeed.innerHTML = html;
+        }
+
+        async function loadPostsFromFirebase() {
             if (!el.postsFeed) return;
             
-            // Show skeleton
             showSkeletons(3);
             
             try {
@@ -2106,54 +2131,32 @@
                         .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
                     
                     renderPosts(posts);
-                    checkNewPosts();
+                    checkForNewPosts();
                 } else {
-                    loadSamplePosts();
+                    renderEmptyState();
                 }
             } catch (e) {
                 console.error('Error loading posts:', e);
-                loadSamplePosts();
+                renderEmptyState('Error loading posts. Please refresh.');
             }
-        }
-
-        function showSkeletons(count) {
-            let html = '';
-            for (let i = 0; i < count; i++) {
-                html += `
-                    <div class="skeleton">
-                        <div class="skeleton-header">
-                            <div class="skeleton-avatar"></div>
-                            <div style="flex: 1;">
-                                <div class="skeleton-line" style="width: 60%;"></div>
-                                <div class="skeleton-line" style="width: 40%;"></div>
-                            </div>
-                        </div>
-                        <div class="skeleton-line" style="width: 100%;"></div>
-                        <div class="skeleton-line" style="width: 90%;"></div>
-                        <div class="skeleton-line" style="width: 95%;"></div>
-                    </div>
-                `;
-            }
-            el.postsFeed.innerHTML = html;
         }
 
         function renderPosts(postsArray) {
             if (!el.postsFeed) return;
             
             if (!postsArray || postsArray.length === 0) {
-                el.postsFeed.innerHTML = `
-                    <div style="text-align: center; padding: 3rem;">
-                        <i class="fas fa-newspaper" style="font-size: 3rem; color: var(--gray-300);"></i>
-                        <h3 style="margin: 1rem 0;">No posts yet</h3>
-                        ${currentUser ? '<button class="btn-primary" onclick="document.getElementById(\'composeInput\').focus()">Create Post</button>' : ''}
-                    </div>
-                `;
+                renderEmptyState();
                 return;
             }
             
             const filtered = currentFilter === 'all' 
                 ? postsArray 
                 : postsArray.filter(p => p.category === currentFilter);
+            
+            if (filtered.length === 0) {
+                renderEmptyState(`No ${currentFilter} posts yet`);
+                return;
+            }
             
             el.postsFeed.innerHTML = filtered.map(post => {
                 const isLiked = currentUser && post.likedBy?.includes(currentUser.uid);
@@ -2174,9 +2177,11 @@
                                 <img src="${post.authorAvatar || 'https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp'}" alt="">
                             </div>
                             <div class="post-info">
-                                <div class="post-author-row">
+                                <div class="post-row">
                                     <span class="post-author">${post.authorName || 'Member'}</span>
-                                    <span class="post-badge">${post.category || 'post'}</span>
+                                    <span class="post-category">${post.category || 'post'}</span>
+                                    <span class="post-time">· ${formatTime(post.createdAt)}</span>
+                                    ${post.views ? `<span class="post-time">· ${post.views} views</span>` : ''}
                                     ${isOwner ? `
                                         <button class="post-options-btn" onclick="toggleOptions('${post.id}', event)">
                                             <i class="fas fa-ellipsis-h"></i>
@@ -2188,10 +2193,6 @@
                                         </div>
                                     ` : ''}
                                 </div>
-                                <div class="post-time">
-                                    <i class="far fa-clock"></i> ${formatTime(post.createdAt)}
-                                    ${post.views ? ` • <i class="far fa-eye"></i> ${post.views}` : ''}
-                                </div>
                             </div>
                         </div>
                         
@@ -2200,7 +2201,7 @@
                             <div class="post-text">${post.content || ''}</div>
                             ${post.imageUrl ? `
                                 <div class="post-media">
-                                    <img src="${post.imageUrl}" onclick="viewImage('${post.imageUrl}')">
+                                    <img src="${post.imageUrl}" onclick="viewImage('${post.imageUrl}')" loading="lazy">
                                 </div>
                             ` : ''}
                             ${post.tags?.length ? `
@@ -2235,60 +2236,24 @@
             }).join('');
         }
 
-        function loadSamplePosts() {
-            const samples = [
-                {
-                    id: 'sample1',
-                    authorName: 'THE SONGA',
-                    authorAvatar: 'https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp',
-                    content: 'Welcome to THE SONGA Inner Circle! This is your space to connect, learn, and grow.',
-                    category: 'announcement',
-                    likes: 42,
-                    comments: 12,
-                    shares: 8,
-                    bookmarks: 25,
-                    createdAt: new Date(Date.now() - 3600000).toISOString(),
-                    isPinned: true
-                },
-                {
-                    id: 'sample2',
-                    authorName: 'Mugera Moses',
-                    authorAvatar: 'https://randomuser.me/api/portraits/men/32.jpg',
-                    content: 'Just finished "Atomic Habits" - life changing! Highly recommend to everyone in Logos club.',
-                    category: 'discussion',
-                    tags: ['books', 'habits'],
-                    likes: 18,
-                    comments: 5,
-                    shares: 2,
-                    bookmarks: 7,
-                    createdAt: new Date(Date.now() - 86400000).toISOString()
-                },
-                {
-                    id: 'sample3',
-                    authorName: 'Sarah Johnson',
-                    authorAvatar: 'https://randomuser.me/api/portraits/women/44.jpg',
-                    content: 'Great workout session with WorkFit this morning! Who\'s joining next week?',
-                    category: 'event',
-                    imageUrl: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48',
-                    likes: 24,
-                    comments: 8,
-                    shares: 3,
-                    bookmarks: 5,
-                    createdAt: new Date(Date.now() - 172800000).toISOString()
-                }
-            ];
-            
-            posts = samples;
-            renderPosts(samples);
+        function renderEmptyState(message = 'No posts yet') {
+            el.postsFeed.innerHTML = `
+                <div style="text-align: center; padding: 3rem 1rem;">
+                    <i class="fas fa-newspaper" style="font-size: 2.5rem; color: var(--gray-300); margin-bottom: 1rem;"></i>
+                    <h3 style="font-size: var(--fs-md); margin-bottom: 0.5rem;">${message}</h3>
+                    <p style="font-size: var(--fs-xs); color: var(--gray-500);">${currentUser ? 'Be the first to share something!' : 'Sign in to see posts from the community.'}</p>
+                    ${currentUser ? '<button class="btn-primary" style="margin-top: 1rem; width: auto; padding: 0.5rem 1.5rem;" onclick="document.getElementById(\'composeInput\').focus()">Create post</button>' : ''}
+                </div>
+            `;
         }
 
-        function checkNewPosts() {
+        function checkForNewPosts() {
             const last = localStorage.getItem('songa_last_viewed');
             if (last) {
                 const newPosts = posts.filter(p => new Date(p.createdAt) > new Date(parseInt(last)));
                 if (newPosts.length > 0 && el.newPostsIndicator) {
                     el.newPostsIndicator.style.display = 'flex';
-                    el.newPostsIndicator.querySelector('span').textContent = `${newPosts.length} new post${newPosts.length > 1 ? 's' : ''}`;
+                    el.newPostsIndicator.querySelector('span').textContent = `${newPosts.length} new`;
                 }
             }
         }
@@ -2329,13 +2294,16 @@
                     if (post.authorId !== currentUser.uid) {
                         await createNotification(post.authorId, 'like', {
                             postId, postTitle: post.title,
-                            userId: currentUser.uid, userName: currentUser.firstName
+                            userId: currentUser.uid, 
+                            userName: currentUser.firstName,
+                            userAvatar: currentUser.picture
                         });
                     }
                 }
                 
                 await ref.update({ likedBy: liked, likes });
                 
+                // Update UI
                 const btn = document.querySelector(`#post-${postId} .post-action:first-child span`);
                 if (btn) btn.textContent = likes;
                 
@@ -2417,10 +2385,13 @@
             if (!section) return;
             
             try {
-                const snap = await database.ref(`comments/${postId}`).once('value');
+                const snap = await database.ref(`comments/${postId}`)
+                    .orderByChild('createdAt')
+                    .limitToLast(20)
+                    .once('value');
                 
                 if (snap.exists()) {
-                    const comments = Object.values(snap.val());
+                    const comments = Object.values(snap.val()).reverse();
                     
                     section.innerHTML = `
                         <div class="comments-header">
@@ -2431,7 +2402,7 @@
                             ${comments.map(c => `
                                 <div class="comment-item">
                                     <div class="comment-avatar">
-                                        <img src="${c.authorAvatar || 'https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp'}">
+                                        <img src="${c.authorAvatar || 'https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp'}" loading="lazy">
                                     </div>
                                     <div class="comment-content">
                                         <div class="comment-header">
@@ -2445,7 +2416,7 @@
                         </div>
                         ${currentUser ? `
                             <div class="comment-form">
-                                <input type="text" class="comment-input" id="comment-${postId}" placeholder="Write a comment...">
+                                <input type="text" class="comment-input" id="comment-${postId}" placeholder="Add a comment...">
                                 <button class="comment-submit" onclick="submitComment('${postId}')">
                                     <i class="fas fa-paper-plane"></i>
                                 </button>
@@ -2458,12 +2429,12 @@
                             <h4 class="comments-title">Comments</h4>
                             <button class="close-comments" onclick="toggleComments('${postId}')">&times;</button>
                         </div>
-                        <div style="text-align: center; padding: 2rem; color: var(--gray-500);">
+                        <div style="text-align: center; padding: 1rem; color: var(--gray-500); font-size: var(--fs-xs);">
                             <p>No comments yet</p>
                         </div>
                         ${currentUser ? `
                             <div class="comment-form">
-                                <input type="text" class="comment-input" id="comment-${postId}" placeholder="Write a comment...">
+                                <input type="text" class="comment-input" id="comment-${postId}" placeholder="Add a comment...">
                                 <button class="comment-submit" onclick="submitComment('${postId}')">
                                     <i class="fas fa-paper-plane"></i>
                                 </button>
@@ -2554,7 +2525,7 @@
             modal.innerHTML = `
                 <div class="modal-content" style="max-width: 90vw; background: transparent;">
                     <button class="close-modal" onclick="this.parentElement.parentElement.remove()">&times;</button>
-                    <img src="${url}" style="width: 100%; border-radius: 12px;">
+                    <img src="${url}" style="width: 100%; border-radius: 8px;">
                 </div>
             `;
             document.body.appendChild(modal);
@@ -2579,6 +2550,9 @@
                 el.composePreview.style.display = 'none';
                 el.imageUpload.value = '';
                 currentImageFile = null;
+                if (el.composeSubmit) {
+                    el.composeSubmit.disabled = !el.composeInput.value.trim();
+                }
             });
             
             el.composeSubmit?.addEventListener('click', submitPost);
@@ -2600,6 +2574,11 @@
             
             if (file.size > 10 * 1024 * 1024) {
                 showToast('Image too large (max 10MB)', 'error');
+                return;
+            }
+            
+            if (!file.type.startsWith('image/')) {
+                showToast('Please select an image', 'error');
                 return;
             }
             
@@ -2653,7 +2632,7 @@
                     status: 'published'
                 });
                 
-                // Reset
+                // Reset compose
                 el.composeInput.value = '';
                 el.composeInput.style.height = 'auto';
                 el.composePreview.style.display = 'none';
@@ -2705,70 +2684,109 @@
         }
 
         // ==================== TRENDS ====================
-        async function loadTrends() {
+        async function loadTrendsFromFirebase() {
             if (!el.trendsList) return;
             
             try {
-                const snap = await database.ref('analytics/trends').once('value');
+                // Get trending hashtags from posts
+                const snap = await database.ref('communityPosts')
+                    .orderByChild('createdAt')
+                    .limitToLast(100)
+                    .once('value');
+                
                 if (snap.exists()) {
-                    const trends = snap.val();
-                    renderTrends(trends);
+                    const posts = Object.values(snap.val());
+                    const tagCount = {};
+                    
+                    posts.forEach(post => {
+                        if (post.tags) {
+                            post.tags.forEach(tag => {
+                                tagCount[tag] = (tagCount[tag] || 0) + 1;
+                            });
+                        }
+                    });
+                    
+                    const trends = Object.entries(tagCount)
+                        .sort((a, b) => b[1] - a[1])
+                        .slice(0, 5);
+                    
+                    if (trends.length > 0) {
+                        el.trendsList.innerHTML = trends.map(([tag, count]) => `
+                            <div class="trend-item">
+                                <div class="trend-category">Trending</div>
+                                <div class="trend-name">#${tag}</div>
+                                <div class="trend-count">${count} posts</div>
+                            </div>
+                        `).join('');
+                    } else {
+                        el.trendsList.innerHTML = '<div class="trend-item"><span class="text-sm">No trends yet</span></div>';
+                    }
                 } else {
-                    loadSampleTrends();
+                    el.trendsList.innerHTML = '<div class="trend-item"><span class="text-sm">No trends yet</span></div>';
                 }
-            } catch {
-                loadSampleTrends();
+            } catch (e) {
+                console.error('Error loading trends:', e);
+                el.trendsList.innerHTML = '<div class="trend-item"><span class="text-sm">Error loading trends</span></div>';
             }
         }
 
-        function loadSampleTrends() {
-            if (!el.trendsList) return;
-            
-            el.trendsList.innerHTML = `
-                <div class="trend-item">
-                    <div class="trend-category">Trending</div>
-                    <div class="trend-name">#InnerCircle</div>
-                    <div class="trend-count">245 posts</div>
-                </div>
-                <div class="trend-item">
-                    <div class="trend-category">Logos Club</div>
-                    <div class="trend-name">#ReadingChallenge</div>
-                    <div class="trend-count">89 posts</div>
-                </div>
-                <div class="trend-item">
-                    <div class="trend-category">WorkFit</div>
-                    <div class="trend-name">#Wellness</div>
-                    <div class="trend-count">156 posts</div>
-                </div>
-            `;
-        }
-
-        function renderTrends(trends) {
-            // Implementation
-        }
-
-        async function loadSuggestions() {
+        async function loadSuggestionsFromFirebase() {
             if (!el.followList) return;
             
-            el.followList.innerHTML = `
-                <div class="follow-item">
-                    <div class="follow-avatar">
-                        <img src="https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp">
-                    </div>
-                    <div class="follow-info">
-                        <div class="follow-name">THE SONGA</div>
-                        <div class="follow-handle">@thesonga</div>
-                    </div>
-                    <button class="follow-btn">Follow</button>
-                </div>
-            `;
+            try {
+                const snap = await database.ref('users')
+                    .orderByChild('joinedDate')
+                    .limitToFirst(5)
+                    .once('value');
+                
+                if (snap.exists()) {
+                    const users = Object.values(snap.val())
+                        .filter(u => !currentUser || u.uid !== currentUser.uid)
+                        .slice(0, 3);
+                    
+                    if (users.length > 0) {
+                        el.followList.innerHTML = users.map(user => `
+                            <div class="follow-item">
+                                <div class="follow-avatar">
+                                    <img src="${user.profilePicture || 'https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp'}" loading="lazy">
+                                </div>
+                                <div class="follow-info">
+                                    <div class="follow-name">${user.firstName || 'Member'}</div>
+                                    <div class="follow-handle">@${(user.firstName || 'user').toLowerCase()}</div>
+                                </div>
+                                <button class="follow-btn" onclick="followUser('${user.uid}')">Follow</button>
+                            </div>
+                        `).join('');
+                    } else {
+                        el.followList.innerHTML = '<div class="follow-item"><span class="text-sm">No suggestions</span></div>';
+                    }
+                } else {
+                    el.followList.innerHTML = '<div class="follow-item"><span class="text-sm">No suggestions</span></div>';
+                }
+            } catch (e) {
+                console.error('Error loading suggestions:', e);
+                el.followList.innerHTML = '<div class="follow-item"><span class="text-sm">Error loading</span></div>';
+            }
         }
 
-        // ==================== LISTENERS ====================
-        function setupListeners() {
+        function updateClubsList() {
+            if (!el.clubsList) return;
+            
+            if (selectedClubs.length > 0) {
+                el.clubsList.innerHTML = selectedClubs.map(club => {
+                    const c = clubs[club];
+                    return `<span class="club-chip"><i class="fas ${c.icon}" style="color: ${c.color};"></i> ${c.name}</span>`;
+                }).join('');
+            } else {
+                el.clubsList.innerHTML = '<span class="text-sm" style="color: var(--gray-500);">Join clubs to see them here</span>';
+            }
+        }
+
+        // ==================== REALTIME LISTENERS ====================
+        function setupRealtimeListeners() {
             if (!currentUser || !database) return;
             
-            // Notifications
+            // Notifications listener
             const notifListener = database.ref(`notifications/${currentUser.uid}`)
                 .limitToLast(20)
                 .on('value', (snap) => {
@@ -2783,7 +2801,7 @@
             
             listeners.push(() => database.ref(`notifications/${currentUser.uid}`).off('value', notifListener));
             
-            // Posts
+            // Posts listener
             const postListener = database.ref('communityPosts')
                 .orderByChild('createdAt')
                 .limitToLast(50)
@@ -2796,7 +2814,7 @@
                             .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
                         
                         renderPosts(posts);
-                        checkNewPosts();
+                        checkForNewPosts();
                     }
                 });
             
@@ -2818,10 +2836,14 @@
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             });
             
-            // Sidebar user dropdown
-            el.sidebarUser?.addEventListener('click', (e) => {
+            // User dropdown
+            el.userSection?.addEventListener('click', (e) => {
                 e.stopPropagation();
-                el.userDropdown?.classList.toggle('active');
+                if (!currentUser) {
+                    showSigninModal();
+                } else {
+                    el.userDropdown?.classList.toggle('active');
+                }
             });
             
             document.addEventListener('click', () => {
@@ -2832,19 +2854,12 @@
             // Sign out
             el.signOutOption?.addEventListener('click', signOut);
             
-            // Profile option
-            el.profileOption?.addEventListener('click', () => {
-                el.userDropdown.classList.remove('active');
-                // Navigate to profile
-            });
-            
-            // Close signin modal
+            // Close modals
             el.closeSigninModal?.addEventListener('click', () => {
                 el.signinModal.classList.remove('active');
                 document.body.classList.remove('modal-open');
             });
             
-            // Close create modal
             el.closeCreateModal?.addEventListener('click', closeCreateModal);
             
             // Onboarding
@@ -2887,6 +2902,10 @@
             el.modalImageUpload?.addEventListener('change', (e) => {
                 const file = e.target.files[0];
                 if (file) {
+                    if (file.size > 10 * 1024 * 1024) {
+                        showToast('Image too large', 'error');
+                        return;
+                    }
                     const reader = new FileReader();
                     reader.onload = (e) => {
                         el.modalPreviewImage.src = e.target.result;
@@ -2965,10 +2984,10 @@
             setupCompose();
             initEventListeners();
             
-            if (!currentUser) {
-                loadSamplePosts();
-                loadSampleTrends();
-            }
+            // Load data from Firebase (will show empty states if none)
+            loadPostsFromFirebase();
+            loadTrendsFromFirebase();
+            loadSuggestionsFromFirebase();
         }
 
         document.addEventListener('DOMContentLoaded', init);
