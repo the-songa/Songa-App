@@ -71,7 +71,7 @@
         body {
             font-family: 'Inter', -apple-system, sans-serif;
             font-size: var(--fs-md);
-            background: var(--white);
+            background: var(--gray-50);
             color: var(--gray-900);
             line-height: 1.5;
             overflow-x: hidden;
@@ -97,6 +97,7 @@
             max-width: 1280px;
             margin: 0 auto;
             position: relative;
+            background: var(--white);
         }
 
         /* Left Sidebar */
@@ -312,6 +313,7 @@
             border-bottom: 1px solid var(--border-color);
             display: flex;
             gap: 0.75rem;
+            background: var(--white);
         }
 
         .compose-avatar {
@@ -373,6 +375,13 @@
             height: 28px;
             cursor: pointer;
             font-size: var(--fs-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .remove-preview:hover {
+            background: rgba(0, 0, 0, 0.9);
         }
 
         .compose-actions {
@@ -432,6 +441,7 @@
             overflow-x: auto;
             border-bottom: 1px solid var(--border-color);
             scrollbar-width: none;
+            background: var(--white);
         }
 
         .categories::-webkit-scrollbar {
@@ -462,23 +472,29 @@
             font-weight: 600;
         }
 
-        /* Posts Feed - Enhanced Styling */
+        /* Posts Feed - Improved Spacing */
         .posts-feed {
-            padding-bottom: 1rem;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
         }
 
         .post-card {
-            padding: 1rem;
-            border-bottom: 1px solid var(--border-color);
+            padding: 1.25rem;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
             transition: all 0.2s ease;
             cursor: pointer;
             position: relative;
+            background: var(--white);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
 
         .post-card:hover {
-            background: var(--gray-50);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            border-color: var(--gold-light);
         }
 
         .post-card.pinned {
@@ -492,14 +508,14 @@
             gap: 0.375rem;
             color: var(--gold-dark);
             font-size: var(--fs-xs);
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
             font-weight: 600;
         }
 
         .post-header {
             display: flex;
             gap: 0.75rem;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
             position: relative;
         }
 
@@ -544,6 +560,7 @@
         .post-author:hover {
             color: var(--gold-dark);
             text-decoration: underline;
+            cursor: pointer;
         }
 
         .post-category {
@@ -557,6 +574,11 @@
         }
 
         .post-time {
+            font-size: var(--fs-xs);
+            color: var(--gray-600);
+        }
+
+        .post-handle {
             font-size: var(--fs-xs);
             color: var(--gray-600);
         }
@@ -591,6 +613,10 @@
             display: none;
             overflow: hidden;
             border: 1px solid var(--border-color);
+        }
+
+        .post-options-dropdown.active {
+            display: block;
             animation: fadeIn 0.2s ease;
         }
 
@@ -599,12 +625,8 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .post-options-dropdown.active {
-            display: block;
-        }
-
         .post-option {
-            padding: 0.625rem 1rem;
+            padding: 0.75rem 1rem;
             display: flex;
             align-items: center;
             gap: 0.75rem;
@@ -635,13 +657,13 @@
 
         .post-content {
             margin-left: 60px;
-            margin-bottom: 0.75rem;
+            margin-bottom: 1rem;
         }
 
         .post-title {
             font-weight: 700;
             font-size: var(--fs-md);
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.5rem;
             color: var(--gray-900);
         }
 
@@ -649,14 +671,14 @@
             font-size: var(--fs-sm);
             color: var(--gray-700);
             white-space: pre-line;
-            line-height: 1.5;
+            line-height: 1.6;
             word-break: break-word;
         }
 
         /* Enhanced Image Styling */
         .post-media {
             margin: 0.75rem 0;
-            border-radius: 16px;
+            border-radius: 12px;
             overflow: hidden;
             border: 1px solid var(--border-color);
             cursor: pointer;
@@ -666,8 +688,8 @@
         }
 
         .post-media:hover {
-            transform: scale(1.02);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            transform: scale(1.01);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
         }
 
         .post-media img {
@@ -679,7 +701,7 @@
         }
 
         .post-media:hover img {
-            transform: scale(1.05);
+            transform: scale(1.02);
         }
 
         .post-media::after {
@@ -690,10 +712,10 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) scale(0);
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.8);
             color: white;
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -712,13 +734,13 @@
             display: flex;
             flex-wrap: wrap;
             gap: 0.375rem;
-            margin: 0.5rem 0;
+            margin: 0.75rem 0 0.25rem;
         }
 
         .post-tag {
             color: var(--gold-dark);
             background: var(--gold-light);
-            padding: 0.125rem 0.5rem;
+            padding: 0.25rem 0.625rem;
             border-radius: 20px;
             font-size: var(--fs-xs);
             font-weight: 500;
@@ -733,16 +755,17 @@
 
         .post-actions {
             display: flex;
-            gap: 0.125rem;
+            gap: 0.25rem;
             margin-left: 60px;
-            margin-top: 0.75rem;
-            padding-top: 0.5rem;
+            margin-top: 1rem;
+            padding-top: 0.75rem;
             border-top: 1px solid var(--border-color);
         }
 
         .post-action {
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 0.5rem;
             padding: 0.5rem 0.75rem;
             border: none;
@@ -754,7 +777,6 @@
             border-radius: 30px;
             transition: all 0.2s;
             flex: 1;
-            justify-content: center;
         }
 
         .post-action:hover {
@@ -771,6 +793,7 @@
         }
 
         .post-action.liked i {
+            font-weight: 900;
             animation: heartBeat 0.3s;
         }
 
@@ -789,12 +812,13 @@
 
         /* Comments Section */
         .comments-section {
-            margin-top: 0.75rem;
+            margin-top: 1rem;
             padding: 1rem;
             border-top: 1px solid var(--border-color);
             display: none;
             background: var(--gray-50);
             border-radius: 12px;
+            margin-left: 60px;
         }
 
         .comments-section.active {
@@ -849,7 +873,7 @@
             display: flex;
             gap: 0.5rem;
             margin-bottom: 0.75rem;
-            padding: 0.5rem;
+            padding: 0.75rem;
             background: var(--white);
             border-radius: 8px;
             animation: fadeIn 0.3s ease;
@@ -877,7 +901,7 @@
             display: flex;
             align-items: center;
             gap: 0.375rem;
-            margin-bottom: 0.125rem;
+            margin-bottom: 0.25rem;
             flex-wrap: wrap;
         }
 
@@ -896,18 +920,19 @@
             font-size: var(--fs-xs);
             color: var(--gray-700);
             word-break: break-word;
+            line-height: 1.5;
         }
 
         .comment-form {
             display: flex;
-            gap: 0.375rem;
+            gap: 0.5rem;
             align-items: center;
-            margin-top: 0.5rem;
+            margin-top: 0.75rem;
         }
 
         .comment-input {
             flex: 1;
-            padding: 0.5rem 0.75rem;
+            padding: 0.625rem 1rem;
             border: 1px solid var(--border-color);
             border-radius: 30px;
             outline: none;
@@ -917,18 +942,21 @@
 
         .comment-input:focus {
             border-color: var(--gold);
-            box-shadow: 0 0 0 2px var(--gold-light);
+            box-shadow: 0 0 0 3px var(--gold-light);
         }
 
         .comment-submit {
             background: var(--gold);
             color: var(--black);
             border: none;
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             cursor: pointer;
             transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .comment-submit:hover {
@@ -944,12 +972,13 @@
             height: 100vh;
             padding: 0.75rem 1rem;
             overflow-y: auto;
+            background: var(--white);
         }
 
         .search-box {
             background: var(--gray-100);
             border-radius: 30px;
-            padding: 0.5rem 0.75rem;
+            padding: 0.625rem 1rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
@@ -972,7 +1001,7 @@
         .card {
             background: var(--gray-50);
             border-radius: 16px;
-            padding: 0.75rem;
+            padding: 1rem;
             margin-bottom: 1rem;
         }
 
@@ -984,15 +1013,16 @@
         }
 
         .trend-item {
-            padding: 0.5rem 0;
+            padding: 0.625rem 0;
             border-bottom: 1px solid var(--border-color);
             transition: all 0.2s;
             cursor: pointer;
         }
 
         .trend-item:hover {
-            background: var(--white);
             padding-left: 0.5rem;
+            background: var(--white);
+            border-radius: 8px;
         }
 
         .trend-item:last-child {
@@ -1019,15 +1049,15 @@
         .follow-item {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 0;
+            gap: 0.75rem;
+            padding: 0.625rem 0;
             border-bottom: 1px solid var(--border-color);
             transition: all 0.2s;
         }
 
         .follow-item:hover {
             background: var(--white);
-            padding: 0.5rem;
+            padding: 0.625rem;
             margin: -0.25rem;
             border-radius: 8px;
         }
@@ -1042,6 +1072,7 @@
             border-radius: 50%;
             overflow: hidden;
             border: 2px solid var(--gold-light);
+            flex-shrink: 0;
         }
 
         .follow-avatar img {
@@ -1052,17 +1083,24 @@
 
         .follow-info {
             flex: 1;
+            min-width: 0;
         }
 
         .follow-name {
             font-weight: 600;
             font-size: var(--fs-xs);
             color: var(--gray-900);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .follow-handle {
             font-size: var(--fs-xs);
             color: var(--gray-600);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .follow-btn {
@@ -1075,6 +1113,7 @@
             font-size: var(--fs-xs);
             cursor: pointer;
             transition: all 0.2s;
+            white-space: nowrap;
         }
 
         .follow-btn:hover {
@@ -1095,7 +1134,7 @@
         .club-chip {
             display: inline-block;
             background: var(--white);
-            padding: 0.25rem 0.5rem;
+            padding: 0.375rem 0.75rem;
             border-radius: 30px;
             margin: 0.125rem;
             font-weight: 500;
@@ -1152,20 +1191,221 @@
         .mobile-post-btn {
             background: linear-gradient(135deg, var(--gold), var(--gold-dark));
             color: var(--black);
-            width: 44px;
-            height: 44px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.25rem;
             margin-top: -24px;
-            box-shadow: 0 2px 8px rgba(212,175,55,0.3);
+            box-shadow: 0 4px 12px rgba(212,175,55,0.3);
             transition: all 0.2s;
         }
 
         .mobile-post-btn:hover {
             transform: scale(1.1);
+        }
+
+        /* Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--white);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 480px;
+            max-height: 90vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(40px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: var(--black);
+            padding: 1.25rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .modal-header h2 {
+            font-size: var(--fs-lg);
+            margin-bottom: 0.25rem;
+        }
+
+        .modal-header p {
+            font-size: var(--fs-xs);
+            color: var(--black);
+            opacity: 0.9;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            background: rgba(0,0,0,0.1);
+            border: none;
+            color: var(--black);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-modal:hover {
+            background: rgba(0,0,0,0.2);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+
+        /* Onboarding */
+        .steps {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 1rem 0 0.5rem;
+        }
+
+        .step-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--gray-300);
+            transition: all 0.3s;
+        }
+
+        .step-dot.active {
+            width: 24px;
+            border-radius: 12px;
+            background: var(--gold);
+        }
+
+        .slide {
+            display: none;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        .club-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+            margin: 1rem 0;
+        }
+
+        .club-card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem 0.75rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .club-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .club-card.selected {
+            border-color: var(--gold);
+            background: linear-gradient(135deg, rgba(212,175,55,0.05), rgba(212,175,55,0.1));
+            box-shadow: 0 4px 12px rgba(212,175,55,0.1);
+        }
+
+        .club-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--gold-light), var(--gold));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.75rem;
+            font-size: var(--fs-md);
+            color: var(--black);
+        }
+
+        .club-card h4 {
+            font-size: var(--fs-sm);
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .club-card p {
+            font-size: var(--fs-xs);
+            color: var(--gray-600);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: var(--black);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: var(--fs-sm);
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(212,175,55,0.25);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            padding: 0.75rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 500;
+            font-size: var(--fs-sm);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-outline:hover {
+            background: var(--gray-100);
         }
 
         /* Image Modal */
@@ -1201,8 +1441,8 @@
             background: rgba(255,255,255,0.2);
             color: white;
             border: none;
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             font-size: 1.5rem;
             cursor: pointer;
@@ -1224,15 +1464,15 @@
             right: 16px;
             background: var(--gray-900);
             color: white;
-            padding: 0.5rem 1rem;
+            padding: 0.75rem 1.25rem;
             border-radius: 30px;
             z-index: 1000;
-            font-size: var(--fs-xs);
+            font-size: var(--fs-sm);
             opacity: 0;
             transform: translateY(-20px);
             transition: all 0.3s;
-            max-width: 280px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            max-width: 320px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
         }
 
         .toast.show {
@@ -1249,6 +1489,71 @@
             background: var(--error);
         }
 
+        .toast.info {
+            background: var(--gray-700);
+        }
+
+        /* Back to Top */
+        .back-to-top {
+            position: fixed;
+            bottom: 70px;
+            right: 16px;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--black);
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s;
+            border: none;
+            z-index: 99;
+            font-size: var(--fs-sm);
+            box-shadow: 0 4px 12px rgba(212,175,55,0.3);
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 16px rgba(212,175,55,0.4);
+        }
+
+        /* Session Status */
+        .session-status {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: var(--gold);
+            color: var(--black);
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            font-size: var(--fs-xs);
+            font-weight: 500;
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .session-status.visible {
+            display: flex;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
         /* Loading States */
         .loading-spinner {
             text-align: center;
@@ -1256,7 +1561,7 @@
         }
 
         .loading-spinner i {
-            font-size: 1.5rem;
+            font-size: 2rem;
             color: var(--gold);
             animation: spin 1s linear infinite;
         }
@@ -1267,19 +1572,22 @@
         }
 
         .skeleton {
-            padding: 1rem;
-            border-bottom: 1px solid var(--border-color);
+            padding: 1.25rem;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            background: var(--white);
+            margin-bottom: 1rem;
         }
 
         .skeleton-header {
             display: flex;
-            gap: 0.5rem;
-            margin-bottom: 0.75rem;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
         }
 
         .skeleton-avatar {
-            width: 40px;
-            height: 40px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
             background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
             background-size: 200% 100%;
@@ -1287,12 +1595,12 @@
         }
 
         .skeleton-line {
-            height: 12px;
+            height: 14px;
             background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
             background-size: 200% 100%;
             animation: loading 1.5s infinite;
             border-radius: 6px;
-            margin-bottom: 0.375rem;
+            margin-bottom: 0.5rem;
         }
 
         @keyframes loading {
@@ -1302,6 +1610,13 @@
 
         .hidden {
             display: none !important;
+        }
+
+        /* Google Sign In Button Styling */
+        .g_id_signin {
+            display: flex;
+            justify-content: center;
+            margin: 1rem 0;
         }
 
         /* Responsive */
@@ -1320,7 +1635,7 @@
             
             .nav-item {
                 justify-content: center;
-                padding: 0.625rem;
+                padding: 0.75rem;
             }
             
             .nav-item i {
@@ -1329,12 +1644,13 @@
             }
             
             .post-btn-large {
-                padding: 0.625rem;
+                padding: 0.75rem;
                 justify-content: center;
             }
             
             .user-section {
                 justify-content: center;
+                padding: 0.5rem;
             }
         }
 
@@ -1363,12 +1679,21 @@
                 justify-content: space-around;
             }
             
-            .post-action span {
-                display: inline;
+            .comments-section {
+                margin-left: 0;
             }
             
             .feed-header {
-                padding: 0.5rem 0.75rem;
+                padding: 0.5rem 1rem;
+            }
+            
+            .posts-feed {
+                padding: 0.75rem;
+                gap: 0.75rem;
+            }
+            
+            .post-card {
+                padding: 1rem;
             }
             
             .post-media:hover {
@@ -1423,7 +1748,7 @@
                 <div class="nav-item" data-page="notifications" id="navNotifications">
                     <i class="fas fa-bell"></i>
                     <span>Notifications</span>
-                    <span class="badge hidden" id="notificationBadge">3</span>
+                    <span class="badge hidden" id="notificationBadge"></span>
                 </div>
                 <div class="nav-item" data-page="messages">
                     <i class="fas fa-envelope"></i>
@@ -1675,8 +2000,8 @@
                 
                 <!-- Step 3 -->
                 <div class="slide" id="step3">
-                    <h3 style="margin-bottom: 0.75rem;">Sign in</h3>
-                    <p style="margin-bottom: 1rem; font-size: var(--fs-xs);">Complete your membership</p>
+                    <h3 style="margin-bottom: 0.75rem;">Sign in with Google</h3>
+                    <p style="margin-bottom: 1rem; font-size: var(--fs-xs);">Complete your membership to start connecting</p>
                     
                     <div id="selectedClubsDisplay" style="margin: 1rem 0; padding: 0.75rem; background: var(--gray-50); border-radius: 8px;">
                         <h4 style="margin-bottom: 0.5rem; font-size: var(--fs-xs);">Your selected clubs:</h4>
@@ -1696,7 +2021,8 @@
                              data-shape="rectangular"
                              data-theme="outline"
                              data-text="signin_with"
-                             data-size="medium">
+                             data-size="large"
+                             data-logo_alignment="left">
                         </div>
                     </div>
                     
@@ -1721,21 +2047,21 @@
                 <button class="close-modal" id="closeCreateModal">&times;</button>
             </div>
             <div class="modal-body">
-                <textarea id="modalPostContent" class="compose-input" placeholder="What's happening?" rows="3" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px;"></textarea>
+                <textarea id="modalPostContent" class="compose-input" placeholder="What's happening?" rows="3" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 1rem;"></textarea>
                 
                 <div style="margin: 0.75rem 0;">
-                    <label for="modalImageUpload" style="display: flex; align-items: center; gap: 0.375rem; cursor: pointer; color: var(--gold-dark); font-size: var(--fs-xs);">
-                        <i class="fas fa-image"></i> Add image
+                    <label for="modalImageUpload" style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: var(--gold-dark); font-size: var(--fs-sm); padding: 0.5rem; border: 1px dashed var(--border-color); border-radius: 8px;">
+                        <i class="fas fa-image"></i> Add image (max 10MB)
                     </label>
                     <input type="file" id="modalImageUpload" accept="image/*" style="display: none;">
                 </div>
                 
-                <div class="compose-preview" id="modalPreview" style="display: none;">
+                <div class="compose-preview" id="modalPreview" style="display: none; margin: 0.75rem 0;">
                     <img id="modalPreviewImage" src="" style="width: 100%; border-radius: 8px;">
                     <button class="remove-preview" id="removeModalPreview">&times;</button>
                 </div>
                 
-                <button class="btn-primary" id="submitModalPost" style="margin-top: 0.75rem;">Post</button>
+                <button class="btn-primary" id="submitModalPost" style="margin-top: 1rem;">Post</button>
             </div>
         </div>
     </div>
@@ -1911,6 +2237,7 @@
                     loadSuggestionsFromFirebase();
                     return true;
                 } catch (e) {
+                    console.error('Error parsing stored user:', e);
                     clearSession();
                     showSigninModal();
                     return false;
@@ -2050,8 +2377,14 @@
         // ==================== GOOGLE SIGN IN ====================
         window.handleGoogleSignIn = async function(response) {
             try {
+                showToast('Signing in...', 'info');
+                
                 const credential = response.credential;
                 const user = parseJwt(credential);
+                
+                if (!user || !user.sub) {
+                    throw new Error('Invalid user data from Google');
+                }
                 
                 currentUser = {
                     uid: user.sub,
@@ -2087,6 +2420,7 @@
                 } else {
                     await userRef.update({
                         lastLogin: new Date().toISOString(),
+                        profilePicture: currentUser.picture,
                         selectedClubs: selectedClubs
                     });
                 }
@@ -2106,7 +2440,7 @@
                 
             } catch (e) {
                 console.error('Sign in error:', e);
-                showToast('Sign in failed', 'error');
+                showToast('Sign in failed. Please try again.', 'error');
             }
         };
 
@@ -2115,7 +2449,8 @@
                 const base64Url = token.split('.')[1];
                 const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
                 return JSON.parse(atob(base64));
-            } catch {
+            } catch (e) {
+                console.error('Error parsing JWT:', e);
                 return {};
             }
         }
@@ -2123,7 +2458,7 @@
         function signOut() {
             clearSession();
             updateUIForUser();
-            showToast('Signed out', 'success');
+            showToast('Signed out successfully', 'success');
             showSigninModal();
             loadPostsFromFirebase();
         }
@@ -2133,6 +2468,11 @@
             if (!currentUser) {
                 showToast('Please sign in to follow users', 'error');
                 showSigninModal();
+                return;
+            }
+
+            if (userId === currentUser.uid) {
+                showToast('You cannot follow yourself', 'info');
                 return;
             }
 
@@ -2147,6 +2487,11 @@
 
                 const userData = userSnap.val() || {};
                 const targetData = targetSnap.val() || {};
+
+                if (!targetData.uid) {
+                    showToast('User not found', 'error');
+                    return;
+                }
 
                 let following = userData.following || [];
                 let followers = targetData.followers || [];
@@ -2179,7 +2524,7 @@
                 ]);
 
                 // Update UI
-                updateFollowButtons();
+                await updateFollowButtons();
 
             } catch (e) {
                 console.error('Follow error:', e);
@@ -2190,24 +2535,30 @@
         async function updateFollowButtons() {
             if (!currentUser || !el.followList) return;
 
-            const userSnap = await database.ref(`users/${currentUser.uid}`).once('value');
-            const userData = userSnap.val() || {};
-            const following = userData.following || [];
+            try {
+                const userSnap = await database.ref(`users/${currentUser.uid}`).once('value');
+                const userData = userSnap.val() || {};
+                const following = userData.following || [];
 
-            document.querySelectorAll('.follow-btn').forEach(btn => {
-                const userId = btn.dataset.userId;
-                if (following.includes(userId)) {
-                    btn.textContent = 'Following';
-                    btn.classList.add('following');
-                } else {
-                    btn.textContent = 'Follow';
-                    btn.classList.remove('following');
-                }
-            });
+                document.querySelectorAll('.follow-btn').forEach(btn => {
+                    const userId = btn.getAttribute('data-user-id');
+                    if (following.includes(userId)) {
+                        btn.textContent = 'Following';
+                        btn.classList.add('following');
+                    } else {
+                        btn.textContent = 'Follow';
+                        btn.classList.remove('following');
+                    }
+                });
+            } catch (e) {
+                console.error('Error updating follow buttons:', e);
+            }
         }
 
         // ==================== POSTS ====================
         function showSkeletons(count = 3) {
+            if (!el.postsFeed) return;
+            
             let html = '';
             for (let i = 0; i < count; i++) {
                 html += `
@@ -2225,7 +2576,7 @@
                     </div>
                 `;
             }
-            if (el.postsFeed) el.postsFeed.innerHTML = html;
+            el.postsFeed.innerHTML = html;
         }
 
         async function loadPostsFromFirebase() {
@@ -2289,16 +2640,16 @@
                         ` : ''}
                         
                         <div class="post-header">
-                            <div class="post-avatar">
+                            <div class="post-avatar" onclick="viewProfile('${post.authorId}')">
                                 <img src="${post.authorAvatar || 'https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp'}" alt="${post.authorName}">
                             </div>
                             <div class="post-info">
                                 <div class="post-row">
-                                    <span class="post-author">${post.authorName || 'Member'}</span>
+                                    <span class="post-author" onclick="viewProfile('${post.authorId}')">${post.authorName || 'Member'}</span>
                                     <span class="post-category">${post.category || 'post'}</span>
                                     <span class="post-time">· ${formatTime(post.createdAt)}</span>
                                 </div>
-                                ${post.authorHandle ? `<div class="post-handle">@${post.authorHandle}</div>` : ''}
+                                ${post.authorHandle ? `<div class="post-handle" onclick="viewProfile('${post.authorId}')">@${post.authorHandle}</div>` : ''}
                             </div>
                             ${isOwner ? `
                                 <button class="post-options-btn" onclick="toggleOptions('${post.id}', event)">
@@ -2355,8 +2706,8 @@
         function renderEmptyState(message = 'No posts yet') {
             if (!el.postsFeed) return;
             el.postsFeed.innerHTML = `
-                <div style="text-align: center; padding: 3rem 1rem;">
-                    <i class="fas fa-newspaper" style="font-size: 2.5rem; color: var(--gray-300); margin-bottom: 1rem;"></i>
+                <div style="text-align: center; padding: 3rem 1rem; background: var(--white); border-radius: 16px; border: 1px solid var(--border-color);">
+                    <i class="fas fa-newspaper" style="font-size: 3rem; color: var(--gray-300); margin-bottom: 1rem;"></i>
                     <h3 style="font-size: var(--fs-md); margin-bottom: 0.5rem;">${message}</h3>
                     <p style="font-size: var(--fs-xs); color: var(--gray-500);">${currentUser ? 'Be the first to share something!' : 'Sign in to see posts from the community.'}</p>
                     ${currentUser ? '<button class="btn-primary" style="margin-top: 1rem; width: auto; padding: 0.5rem 1.5rem;" onclick="document.getElementById(\'composeInput\').focus()">Create post</button>' : ''}
@@ -2654,6 +3005,16 @@
             document.querySelectorAll('.post-options-dropdown.active').forEach(d => d.classList.remove('active'));
         }
 
+        // ==================== PROFILE VIEW ====================
+        window.viewProfile = function(userId) {
+            if (!currentUser) {
+                showToast('Please sign in to view profiles', 'info');
+                showSigninModal();
+                return;
+            }
+            showToast('Profile page coming soon', 'info');
+        };
+
         // ==================== IMAGE HANDLING ====================
         window.openImageModal = function(url) {
             if (el.modalImage && el.imageModal) {
@@ -2744,19 +3105,26 @@
             }
             
             const content = el.composeInput?.value.trim();
-            if (!content && !currentImageFile) return;
+            if (!content && !currentImageFile) {
+                showToast('Please add some content or an image', 'info');
+                return;
+            }
             
             try {
                 el.composeSubmit.disabled = true;
-                el.composeSubmit.textContent = 'Posting...';
+                el.composeSubmit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Posting...';
                 
                 let imageUrl = null;
                 if (currentImageFile && storage) {
+                    showToast('Uploading image...', 'info');
                     const fileExt = currentImageFile.name.split('.').pop();
                     const fileName = `posts/${Date.now()}_${currentUser.uid}.${fileExt}`;
-                    const ref = storage.ref().child(fileName);
-                    await ref.put(currentImageFile);
-                    imageUrl = await ref.getDownloadURL();
+                    const storageRef = storage.ref().child(fileName);
+                    
+                    // Upload with progress monitoring
+                    const uploadTask = await storageRef.put(currentImageFile);
+                    imageUrl = await storageRef.getDownloadURL();
+                    showToast('Image uploaded!', 'success');
                 }
                 
                 const postRef = database.ref('communityPosts').push();
@@ -2766,8 +3134,8 @@
                     authorName: currentUser.firstName || 'Member',
                     authorHandle: (currentUser.firstName || 'user').toLowerCase(),
                     authorAvatar: currentUser.picture,
-                    content,
-                    imageUrl,
+                    content: content || '',
+                    imageUrl: imageUrl,
                     category: 'discussion',
                     likes: 0,
                     likedBy: [],
@@ -2793,7 +3161,7 @@
                 
             } catch (e) {
                 console.error('Post error:', e);
-                showToast('Error publishing post', 'error');
+                showToast('Error publishing post: ' + e.message, 'error');
             } finally {
                 el.composeSubmit.disabled = false;
                 el.composeSubmit.textContent = 'Post';
@@ -2886,7 +3254,7 @@
             try {
                 const snap = await database.ref('users')
                     .orderByChild('joinedDate')
-                    .limitToFirst(5)
+                    .limitToFirst(10)
                     .once('value');
                 
                 if (snap.exists()) {
@@ -2897,10 +3265,10 @@
                     if (users.length > 0) {
                         el.followList.innerHTML = users.map(user => `
                             <div class="follow-item">
-                                <div class="follow-avatar">
+                                <div class="follow-avatar" onclick="viewProfile('${user.uid}')">
                                     <img src="${user.profilePicture || 'https://i.postimg.cc/BbdzCkxQ/20260116-0851-Elegant-Lion-Emblem-remix-01kf2npwbtf06ttr4htekjnd47-removebg-preview-2.webp'}" loading="lazy">
                                 </div>
-                                <div class="follow-info">
+                                <div class="follow-info" onclick="viewProfile('${user.uid}')">
                                     <div class="follow-name">${user.firstName || 'Member'}</div>
                                     <div class="follow-handle">@${(user.firstName || 'user').toLowerCase()}</div>
                                 </div>
@@ -2910,7 +3278,7 @@
                         
                         // Update button states if user is logged in
                         if (currentUser) {
-                            updateFollowButtons();
+                            setTimeout(() => updateFollowButtons(), 500);
                         }
                     } else {
                         el.followList.innerHTML = '<div class="follow-item"><span class="text-sm">No suggestions</span></div>';
@@ -2940,6 +3308,10 @@
         // ==================== REALTIME LISTENERS ====================
         function setupRealtimeListeners() {
             if (!currentUser || !database) return;
+            
+            // Clean up existing listeners
+            listeners.forEach(off => off && off());
+            listeners = [];
             
             // Notifications listener
             const notifListener = database.ref(`notifications/${currentUser.uid}`)
@@ -3003,8 +3375,10 @@
                 }
             });
             
-            document.addEventListener('click', () => {
-                el.userDropdown?.classList.remove('active');
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.user-section') && !e.target.closest('#userDropdown')) {
+                    el.userDropdown?.classList.remove('active');
+                }
                 closeOptions();
             });
             
@@ -3055,7 +3429,11 @@
             el.startBtn?.addEventListener('click', () => goToStep(2));
             el.backToStep1Btn?.addEventListener('click', () => goToStep(1));
             el.backToStep2Btn?.addEventListener('click', () => goToStep(2));
-            el.continueBtn?.addEventListener('click', () => goToStep(3));
+            el.continueBtn?.addEventListener('click', () => {
+                if (selectedClubs.length > 0) {
+                    goToStep(3);
+                }
+            });
             
             // Club selection
             el.clubCards.forEach(card => {
@@ -3077,6 +3455,7 @@
                 localStorage.setItem('songa_last_viewed', Date.now().toString());
                 el.newPostsIndicator.style.display = 'none';
                 window.scrollTo({ top: 0, behavior: 'smooth' });
+                loadPostsFromFirebase();
             });
             
             // Mobile nav
@@ -3084,6 +3463,13 @@
                 item.addEventListener('click', () => {
                     el.mobileNavItems.forEach(i => i.classList.remove('active'));
                     item.classList.add('active');
+                    
+                    const page = item.dataset.page;
+                    if (page === 'home') {
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    } else {
+                        showToast(`${page} page coming soon`, 'info');
+                    }
                 });
             });
             
@@ -3093,6 +3479,10 @@
                 if (file) {
                     if (file.size > 10 * 1024 * 1024) {
                         showToast('Image too large (max 10MB)', 'error');
+                        return;
+                    }
+                    if (!file.type.startsWith('image/')) {
+                        showToast('Please select an image', 'error');
                         return;
                     }
                     const reader = new FileReader();
@@ -3111,20 +3501,33 @@
             
             el.submitModalPost?.addEventListener('click', async () => {
                 const content = el.modalPostContent?.value.trim();
-                if (!content && !el.modalImageUpload?.files[0]) return;
+                const file = el.modalImageUpload?.files[0];
+                
+                if (!content && !file) {
+                    showToast('Please add some content or an image', 'info');
+                    return;
+                }
+                
+                if (!currentUser) {
+                    closeCreateModal();
+                    showSigninModal();
+                    return;
+                }
                 
                 try {
                     el.submitModalPost.disabled = true;
-                    el.submitModalPost.textContent = 'Posting...';
+                    el.submitModalPost.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Posting...';
                     
                     let imageUrl = null;
-                    const file = el.modalImageUpload?.files[0];
                     if (file && storage) {
+                        showToast('Uploading image...', 'info');
                         const fileExt = file.name.split('.').pop();
                         const fileName = `posts/${Date.now()}_${currentUser.uid}.${fileExt}`;
-                        const ref = storage.ref().child(fileName);
-                        await ref.put(file);
-                        imageUrl = await ref.getDownloadURL();
+                        const storageRef = storage.ref().child(fileName);
+                        
+                        await storageRef.put(file);
+                        imageUrl = await storageRef.getDownloadURL();
+                        showToast('Image uploaded!', 'success');
                     }
                     
                     const postRef = database.ref('communityPosts').push();
@@ -3134,8 +3537,8 @@
                         authorName: currentUser.firstName || 'Member',
                         authorHandle: (currentUser.firstName || 'user').toLowerCase(),
                         authorAvatar: currentUser.picture,
-                        content,
-                        imageUrl,
+                        content: content || '',
+                        imageUrl: imageUrl,
                         category: 'discussion',
                         likes: 0,
                         likedBy: [],
@@ -3152,7 +3555,7 @@
                     
                 } catch (e) {
                     console.error('Error:', e);
-                    showToast('Error publishing post', 'error');
+                    showToast('Error publishing post: ' + e.message, 'error');
                 } finally {
                     el.submitModalPost.disabled = false;
                     el.submitModalPost.textContent = 'Post';
@@ -3207,6 +3610,11 @@
             loadPostsFromFirebase();
             loadTrendsFromFirebase();
             loadSuggestionsFromFirebase();
+            
+            // Check for URL params (for OAuth redirect)
+            if (window.location.hash || window.location.search.includes('credential')) {
+                console.log('OAuth redirect detected');
+            }
         }
 
         document.addEventListener('DOMContentLoaded', init);
